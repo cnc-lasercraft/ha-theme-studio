@@ -3,6 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { getRegistryStats } from "../core/schema-registry";
 import type { HomeAssistant, PanelRoute } from "../types";
 import "./theme-picker";
+import "./controls/_demo";
 
 @customElement("theme-studio-panel")
 export class ThemeStudioPanel extends LitElement {
@@ -15,12 +16,28 @@ export class ThemeStudioPanel extends LitElement {
   @state() private _selected: { file: string; theme_name: string } | null =
     null;
 
+  // Demo-Mode via URL-Hash `#demo` — zeigt <ts-controls-demo> statt Picker.
+  // Schnellster Weg, die Controls aus Step 5 isoliert zu testen, ohne
+  // eine eigene Route oder Router-Logik bauen zu müssen.
+  @state() private _demoMode = false;
+
   override connectedCallback() {
     super.connectedCallback();
     // Step-4-Diagnose: einmaliger Log auf der Browser-Console.
     // Wird in Step 7 (Editor) durch echte Nutzung der Registry ersetzt.
     console.info("[theme-studio] registry:", getRegistryStats());
+    this._demoMode = window.location.hash === "#demo";
+    window.addEventListener("hashchange", this._onHashChange);
   }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("hashchange", this._onHashChange);
+  }
+
+  private _onHashChange = () => {
+    this._demoMode = window.location.hash === "#demo";
+  };
 
   static override styles = css`
     :host {
@@ -72,6 +89,9 @@ export class ThemeStudioPanel extends LitElement {
   }
 
   private _renderBody() {
+    if (this._demoMode) {
+      return html`<ts-controls-demo></ts-controls-demo>`;
+    }
     if (!this._selected) {
       return html`
         <theme-picker
