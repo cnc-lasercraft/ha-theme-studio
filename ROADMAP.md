@@ -5,9 +5,9 @@
 | Version | Inhalt | Aufwand | Status |
 |---|---|---|---|
 | **v0.1** | Core + ha-core-Plugin + Backend + Live-Preview lokal | ~1 Woche | ✓ **fertig** (2026-05-25, Tag `v0.1.0`) |
-| **v0.2** | Bubble-Card-Plugin (Variablen) + Mushroom-Plugin | ~3 Tage | offen |
-| **v0.3** | Iframe-Dashboard-Preview + Theme-Switcher | ~3 Tage | offen |
-| **v0.4** | Bubble-Card-Module-Verwaltung (CRUD auf YAML-Module) | ~4 Tage | offen |
+| **v0.2** | Bubble-Card-Plugin + Mushroom-Plugin + Plugin-Tabs + HACS-Detection | ~3 Tage | ✓ **fertig** (2026-05-25) |
+| **v0.3** | iframe-Dashboard-Preview + Modes (light/dark) + Background-Picker + Variable-Remove + Tag v0.3.0 | ~3 Tage | ✓ **fertig** (2026-05-25, Tag `v0.3.0`) |
+| **v0.4** | Bubble-Card-Module-Verwaltung (CRUD auf YAML-Module), Theme-Switcher | ~4 Tage | offen |
 | **v1.0** | Polishing, Doku, HACS-Release | ~3 Tage | offen |
 
 ## v0.1 – Schritte im Detail
@@ -27,22 +27,33 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 
 **Nach Schritt 8:** Funktionsfähiger Minimal-Editor für **jedes** Theme im Verzeichnis. Plugin-Schemas decken bekannte Variablen ab, Heuristik fängt unbekannte ab. Live-Preview auf `:root`, persistenter Save mit Auto-Backup, sauberes Cleanup beim Verlassen. Noch ohne Bubble-Card-Plugin und ohne iframe-Preview, aber Theme-agnostisch.
 
-## v0.2 – Plugins ausbauen
+## v0.2 – Plugins ausbauen (✓ abgeschlossen)
 
-- `plugins/bubble-card/schema.json` mit globalen Variablen + pro Card-Typ
-- `plugins/mushroom/schema.json` mit `--mush-*`-Variablen
-- UI: Plugin-Tabs / Kategorien-Navigation
-- Detection: Welche Custom Cards sind via HACS installiert? (Optional zu diesem Zeitpunkt)
+| Feature | Status | Commit |
+|---|---|---|
+| ha-core-Schema von 30 auf 116 Variablen erweitert (alle user-aktiven Vars + neue Kategorien: state-colors, switches, tables, polymer-legacy, mdc, rgb, form-inputs, dialogs, label-badge) | ✓ | `888db45` + `63e2051` + `936b9c9` |
+| Value-basierte Heuristik (`rgba(...)` → color, `12px` → length) + erweiterte Prefix-Map | ✓ | `2175d1f` |
+| `plugins/bubble-card/schema.json` mit 107 Vars über 15 Kategorien | ✓ | `9f9d9e5` |
+| `plugins/mushroom/schema.json` mit ~109 Vars über 12 Kategorien (inkl. Material- und State-RGB-Paletten) | ✓ | `939fe61` |
+| Plugin-Tabs im Editor: "Im Theme" + pro Plugin, lazy-loaded Vars mit "default"/"+ wird ergänzt"-Tags | ✓ | `2912df1` |
+| HACS-Detection: Backend liest `.storage/hacs.repositories`, Frontend filtert Plugins mit `detect.method: hacs-repo` | ✓ | `5eb22ca` |
+| Plugin-Sortierung: ha-core zuerst, andere alphabetisch | ✓ | `5eb22ca` |
 
-## v0.3 – Echte Vorschau
+## v0.3 – Echte Vorschau + UX-Reife (✓ abgeschlossen)
 
-- iframe lädt eines der Dashboards des Users
-- `postMessage`-Kanal: Editor pusht Theme-Overrides ins iframe
-- Theme-Switcher: Mehrere Themes parallel laden, vergleichen, kopieren
+| Feature | Status | Commit |
+|---|---|---|
+| Modes (light/dark) editierbar — Mode-Selector, separate Edits pro Mode, Save preserves modes-Struktur | ✓ | `34f56d0` |
+| iframe-Dashboard-Preview mit Live-Theme-Overrides via Same-Origin-CSS — 2-Spalten-Layout, Sticky-Pane | ✓ | `d9db358` |
+| Background-Picker für CSS-`url(...)`-Werte (Thumbnail + URL + Modifier + Presets) | ✓ | `a2a3d5a` |
+| Background-Picker: Auto-Conversion `/homeassistant/www/...` → `/local/...` | ✓ | `ee945d5` |
+| Variable-Entfernen-Button (Trash-Icon, markedForRemoval-Workflow) | ✓ | `931645f` |
 
-## v0.4 – Bubble-Card-Module
+**Verschoben aus v0.3:** Theme-Switcher (mehrere Themes parallel) — kommt in v0.4.
 
-Bubble-Card-Module sind YAML-Snippets mit `code:`-CSS-Blöcken. Studio bekommt einen Modul-Verwaltungs-Layer:
+## v0.4 – Bubble-Card-Module + Theme-Switcher (offen)
+
+Bubble-Card-Module sind YAML-Snippets mit `code:`-CSS-Blöcken in Lovelace-Storage. Studio bekommt einen Modul-Verwaltungs-Layer:
 
 - Liste vorhandener Module (lesen aus Bubble-Card-Storage)
 - Editor mit Syntax-Highlighting für das CSS
@@ -50,6 +61,8 @@ Bubble-Card-Module sind YAML-Snippets mit `code:`-CSS-Blöcken. Studio bekommt e
 - Speichern zurück über Backend
 
 Damit sind die 3 visionOS-Module (Default/Title/Separator) im Studio integriert.
+
+Zusätzlich: **Theme-Switcher** — Picker erlaubt 2 Themes gleichzeitig zu öffnen, Werte side-by-side vergleichen und kopieren.
 
 ## v1.0 – Release-tauglich
 

@@ -8,7 +8,13 @@ HA hat kein UI um Theme-Variablen grafisch zu pflegen. Stattdessen: YAML editier
 
 ## Status
 
-**v0.1 live** (Tag `v0.1.0`, 2026-05-25). Editor für jedes HA-Theme im `themes/`-Verzeichnis, mit ha-core-Plugin-Schema + Namens-Heuristik-Fallback, Live-Preview auf `:root`, Save mit Auto-Backup. Nächste Phase: v0.2 (Bubble-Card- + Mushroom-Plugins, Plugin-Tabs).
+**v0.3 live** (Tag `v0.3.0`, 2026-05-25).
+
+Drei Plugins (HACS-gefiltert): **ha-core** (116 Vars / 17 Kategorien), **bubble-card** (107 Vars / 15 Kategorien), **mushroom** (~109 Vars / 12 Kategorien). Plus Namens-/Wert-Heuristik für unbekannte Vars.
+
+Editor mit Plugin-Tabs, **Modes (light/dark)**, **iframe-Dashboard-Preview** (Live-Override im echten Dashboard), Spezial-Controls für Farben/Längen/Backgrounds, Variable-Hinzufügen-und-Entfernen, Auto-Backup bei jedem Save.
+
+Nächste Phase: **v0.4** (Bubble-Card-Module-Editor + Theme-Switcher).
 
 ## Architektur in einem Satz
 
@@ -18,7 +24,7 @@ Lit/TypeScript Custom Panel + Python Custom Integration (Backend für File-I/O),
 → Phasen: [`ROADMAP.md`](./ROADMAP.md)
 → Festgelegte Entscheidungen: [`DECISIONS.md`](./DECISIONS.md)
 
-## Installation (v0.1, manuell)
+## Installation (manuell, Pre-HACS)
 
 Noch kein HACS-Repo — manueller Install auf den HA-Host:
 
@@ -40,9 +46,11 @@ Detaillierte Tar+SSH-Befehle und Re-Deploy-Cheatsheet: [`CLAUDE.md`](./CLAUDE.md
 ## Nutzung
 
 1. Theme im Picker auswählen
-2. Variablen ändern — Live-Preview greift sofort auf das ganze HA-Frontend
-3. Reset-Button (`↺`) pro Variable, oder "Alles verwerfen" oben
-4. "Speichern" → automatisches Timestamp-Backup unter `themes/.backups/` + `frontend.reload_themes`
+2. Tab wählen: **"Im Theme"** (was schon im YAML steht) oder einen **Plugin-Tab** (alle Schema-Vars, auch nicht-im-Theme — können hinzugefügt werden)
+3. Bei Themes mit `modes:` → **Mode-Selector** wählt zwischen Default / Light / Dark
+4. Variablen ändern — Live-Preview greift sofort auf das HA-Frontend; **"👁 Preview"-Toggle** öffnet zusätzlich ein iframe mit deinem Dashboard
+5. Pro Variable: **Reset (`↺`)** oder **Entfernen (`🗑`)**. "Alles verwerfen" wirkt über alle Modes/Tabs
+6. **"Speichern"** → automatisches Timestamp-Backup unter `themes/.backups/`, dann `frontend.reload_themes`
 
 ## Test-Umgebung
 

@@ -28,13 +28,18 @@ Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – 
 
 ## Aktueller Stand (Stand: 2026-05-25)
 
-**v0.1 live.** Tag `v0.1.0`, alle 8 ROADMAP-Schritte abgeschlossen. Läuft auf der Produktiv-HA des Users:
+**v0.3 live.** Tag `v0.3.0`. Läuft auf der Produktiv-HA des Users:
 - Custom-Panel "Theme Studio" in der Sidebar (`/theme-studio`)
-- Picker listet alle Themes aus `<config>/themes/`
-- Editor mit Live-Preview auf `:root`, Save mit Timestamp-Backup unter `themes/.backups/`
-- Plugin-Schema `ha-core` (30 Variablen) + Namens-Heuristik für unbekannte Variablen
+- Picker listet alle Themes aus `<config>/themes/` (auch in Subdirs, auch mit Spaces in Filenames)
+- **Drei Plugins** (HACS-gefiltert): ha-core (116 Vars / 17 Kategorien), bubble-card (107 Vars / 15 Kategorien, nur wenn Clooos/Bubble-Card installiert), mushroom (~109 Vars / 12 Kategorien, nur wenn piitaya/lovelace-mushroom installiert) — plus Namens-/Wert-Heuristik für unbekannte Variablen
+- Editor mit **Tab-Layout**: "Im Theme" + pro aktivem Plugin. Plugin-Tabs zeigen alle Schema-Vars (auch nicht-im-Theme), mit "default"/"+ wird ergänzt"-Tags
+- **Modes (light/dark)** als Mode-Selector — separates Editieren pro Mode, Save preserves komplette modes-Struktur
+- **Live-Preview** via `:root.style.setProperty` (greift sofort auf das HA-Frontend) PLUS **iframe-Dashboard-Preview** (sticky 2-Spalten-Layout, Same-Origin-Override, überlebt Navigation im iframe)
+- **Spezial-Controls:** `<ts-color-picker>`, `<ts-length-slider>`, `<ts-background-picker>` (mit Thumbnail + Modifier + Preset-Buttons + Auto-Conversion `/homeassistant/www/...` → `/local/...`)
+- **Save** mit Timestamp-Backup unter `themes/.backups/`, atomar via tmp+rename, triggert `frontend.reload_themes`
+- **Variable-Entfernen** via Trash-Button (markedForRemoval-Workflow)
 
-Nächste Phase: **v0.2** — `bubble-card`-Plugin + `mushroom`-Plugin + Plugin-Tabs-Navigation. Siehe [`ROADMAP.md`](./ROADMAP.md).
+Nächste Phase: **v0.4** — Bubble-Card-Module-Verwaltung + Theme-Switcher. Siehe [`ROADMAP.md`](./ROADMAP.md).
 
 ## Deployment auf den HA-Host
 
