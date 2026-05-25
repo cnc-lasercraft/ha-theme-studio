@@ -214,10 +214,12 @@ export class TsEditorView extends LitElement {
       margin-right: 4px;
     }
     .description {
-      font-size: 0.8rem;
-      color: var(--secondary-text-color);
-      margin-top: 2px;
+      font-size: 0.9rem;
+      color: var(--primary-text-color);
+      opacity: 0.78;
+      margin-top: 6px;
       display: block;
+      line-height: 1.45;
     }
     .heuristic-tag {
       display: inline-block;

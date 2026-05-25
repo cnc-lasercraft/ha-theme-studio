@@ -6,7 +6,7 @@
 // beiden JSON-Files. Kein Code-Change hier nötig — Vite picked es beim
 // nächsten Build auf.
 
-import { inferType } from "./heuristic";
+import { inferHint, inferType } from "./heuristic";
 import type {
   LoadedPlugin,
   PluginManifest,
@@ -73,7 +73,13 @@ export function getVariableMeta(name: string): VariableMeta {
   if (hit) {
     return { ...hit.def, source: "schema", plugin: hit.pluginId };
   }
-  return { name, type: inferType(name), source: "heuristic" };
+  const type = inferType(name);
+  return {
+    name,
+    type,
+    description: inferHint(name, type),
+    source: "heuristic",
+  };
 }
 
 /** Diagnose-Helper für DevTools-Console. */

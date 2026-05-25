@@ -16,28 +16,28 @@
       "type": "color",
       "category": "branding",
       "default": "#03a9f4",
-      "description": "Hauptfarbe — Akzente, aktive Icons, Links."
+      "description": "Hauptfarbe der HA-UI. Wirkt auf: App-Header-Hintergrund (Default), aktive Icons in Cards, Links, ausgewählte Sidebar-Einträge, Switches und Slider im 'On'-Zustand. Wird von vielen anderen Variablen via var() referenziert — Änderung hier kaskadiert auf eine Menge UI-Elemente."
     },
     {
       "name": "--accent-color",
       "type": "color",
       "category": "branding",
       "default": "#ff9800",
-      "description": "Akzentfarbe — sekundäre Highlights, FAB."
+      "description": "Sekundäre Akzentfarbe für Highlights und FAB-Buttons (der runde '+'-Button rechts unten in der View-Edit-Ansicht). Weniger sichtbar als --primary-color, oft als Komplementärfarbe gewählt."
     },
     {
       "name": "--dark-primary-color",
       "type": "color",
       "category": "branding",
       "default": "#0288d1",
-      "description": "Dunklere Variante der Hauptfarbe (z.B. Header-Hintergrund)."
+      "description": "Dunklere Variation der Hauptfarbe. Wirkt auf: Status-Bar in mobilen Apps, manche dunklere Header-Akzente. Setzt sich nur durch wenn explizit referenziert — viele Themes lassen die Variable ungenutzt."
     },
     {
       "name": "--light-primary-color",
       "type": "color",
       "category": "branding",
       "default": "#b3e5fc",
-      "description": "Hellere Variante der Hauptfarbe (z.B. Hover-States)."
+      "description": "Hellere Variation der Hauptfarbe. Wirkt auf: Hover-States in einigen Listen-Komponenten, leichte Background-Akzente. Wie --dark-primary-color seltener direkt sichtbar."
     },
 
     {
@@ -45,21 +45,21 @@
       "type": "color",
       "category": "background",
       "default": "#fafafa",
-      "description": "Haupt-Seitenhintergrund."
+      "description": "Haupt-Seitenhintergrund — alles ausserhalb von Cards. Wirkt auf: Body, leere Lovelace-Bereiche, Sidebar-Default (ausser --sidebar-background-color ist explizit gesetzt)."
     },
     {
       "name": "--secondary-background-color",
       "type": "color",
       "category": "background",
       "default": "#e5e5e5",
-      "description": "Sekundärer Hintergrund — z.B. Sidebar-Bereiche, Dialoge."
+      "description": "Sekundärer Hintergrund — sichtbar zwischen Cards in Grid-Layouts oder als Dialog-Background. Etwas dunkler/heller als der Primary für visuelle Trennung."
     },
     {
       "name": "--card-background-color",
       "type": "color",
       "category": "background",
       "default": "#ffffff",
-      "description": "Default-Card-Hintergrund (fällt auf --ha-card-background zurück, wenn gesetzt)."
+      "description": "Default-Hintergrund für ha-card-Elemente. Wird von --ha-card-background überschrieben, wenn das spezifisch gesetzt ist. Tipp: in Light-Themes meist weiss, in Dark-Themes ein dunkles Grau."
     },
 
     {
@@ -67,21 +67,21 @@
       "type": "color",
       "category": "text",
       "default": "#212121",
-      "description": "Standard-Textfarbe."
+      "description": "Standard-Textfarbe für alle Card-Inhalte, Titel, Buttons, Werte. Wirkt praktisch überall im HA-Frontend, ausser eine speziellere Variable überschreibt für einen bestimmten Bereich."
     },
     {
       "name": "--secondary-text-color",
       "type": "color",
       "category": "text",
       "default": "#727272",
-      "description": "Sekundär-Text (Labels, Hinweise, Untertitel)."
+      "description": "Textfarbe für weniger wichtige Information: Labels neben Werten, Timestamps, Sub-Titel, Hinweis-Texte. Sollte schwächer aber lesbar gegenüber --primary-text-color sein."
     },
     {
       "name": "--disabled-text-color",
       "type": "color",
       "category": "text",
       "default": "#bdbdbd",
-      "description": "Text für deaktivierte Zustände."
+      "description": "Text-Farbe für deaktivierte UI-Elemente — ausgegraute Buttons, Switches im Disabled-State, nicht-klickbare Menü-Einträge. Sollte sich deutlich von --primary-text-color absetzen."
     },
 
     {
@@ -89,28 +89,28 @@
       "type": "color",
       "category": "state",
       "default": "#44739e",
-      "description": "Standard-Icon-Farbe (inaktive Entities)."
+      "description": "Standard-Icon-Farbe für *inaktive* Entities: Lichter aus, Schalter off, Sensoren bei Default-Wert. Wirkt auf alle Entity-Icons in Cards und Listen, sofern kein State-spezifischer Override greift."
     },
     {
       "name": "--state-icon-active-color",
       "type": "color",
       "category": "state",
       "default": "#fdd835",
-      "description": "Icon-Farbe wenn Entity aktiv ist (Licht an, Schalter on, …)."
+      "description": "Icon-Farbe wenn Entity *aktiv* ist: Licht an, Schalter on, Heizung läuft, Pumpe aktiv. Standardmässig Amber/Gelb für 'leuchtet'-Optik. Eine der meistgesehenen Variablen im HA-Frontend."
     },
     {
       "name": "--error-color",
       "type": "color",
       "category": "state",
       "default": "#db4437",
-      "description": "Fehler-/Alarm-Farbe."
+      "description": "Farbe für Fehler, kritische Alarme. Wirkt auf: Error-Notifications oben, kritische Sensoren-Badges, ungültige Eingaben in Forms, Repair-Issues mit hoher Severity."
     },
     {
       "name": "--warning-color",
       "type": "color",
       "category": "state",
       "default": "#ffa600",
-      "description": "Warnungs-Farbe."
+      "description": "Farbe für Warnungen, nicht-kritische Hinweise. Wirkt auf: Warning-Notifications, Repair-Hinweise mit niedrigerer Severity, Update-Available-Badges."
     },
 
     {
@@ -118,7 +118,7 @@
       "type": "color",
       "category": "card",
       "default": "var(--card-background-color)",
-      "description": "Hintergrund von ha-card-Elementen. Überschreibt --card-background-color."
+      "description": "Hintergrund speziell für ha-card-Elemente (also fast alle Karten im HA-Frontend). Überschreibt --card-background-color spezifisch für Cards. Default referenziert --card-background-color — wird also vererbt, wenn nicht explizit gesetzt."
     },
     {
       "name": "--ha-card-border-radius",
@@ -128,7 +128,7 @@
       "unit": ["px", "rem"],
       "min": 0,
       "max": 40,
-      "description": "Ecken-Rundung aller ha-card-Elemente."
+      "description": "Ecken-Rundung aller ha-card-Elemente (Lovelace, Bubble Card, Mushroom etc., sofern sie ha-card als Basis nutzen). 0 = scharfe Ecken, 12px = HA-Default (Material), 24px+ = sehr rund / Pill-Style."
     },
     {
       "name": "--ha-card-border-width",
@@ -138,21 +138,21 @@
       "unit": ["px"],
       "min": 0,
       "max": 10,
-      "description": "Border-Breite der Cards (0 = kein Rand)."
+      "description": "Border-Breite der Cards. Default 0px = unsichtbarer Border, Schatten übernimmt die optische Trennung. Bei > 0 wird --ha-card-border-color verwendet."
     },
     {
       "name": "--ha-card-border-color",
       "type": "color",
       "category": "card",
       "default": "var(--divider-color)",
-      "description": "Border-Farbe — nur sichtbar bei --ha-card-border-width > 0."
+      "description": "Border-Farbe der Cards. Nur sichtbar wenn --ha-card-border-width > 0 ist. Default referenziert --divider-color für stimmige Trennlinien."
     },
     {
       "name": "--ha-card-box-shadow",
       "type": "shadow",
       "category": "card",
       "default": "0 2px 4px rgba(0, 0, 0, 0.12)",
-      "description": "Schatten unter Cards. 'none' für flaches Design."
+      "description": "Schatten unter Cards. Default ist ein dezenter Drop-Shadow für Material-Design-Optik. Setze 'none' für ein komplett flaches Design (z.B. iOS-Stil)."
     },
 
     {
@@ -160,28 +160,28 @@
       "type": "color",
       "category": "sidebar",
       "default": "var(--primary-background-color)",
-      "description": "Hintergrund der Sidebar."
+      "description": "Hintergrund der linken Sidebar (Navigation). Default referenziert --primary-background-color — explizit setzen, wenn Sidebar sich vom Haupt-Background absetzen soll."
     },
     {
       "name": "--sidebar-text-color",
       "type": "color",
       "category": "sidebar",
       "default": "var(--primary-text-color)",
-      "description": "Standardfarbe der Sidebar-Einträge."
+      "description": "Default-Textfarbe der Sidebar-Einträge (für die **nicht** ausgewählten Views). Default referenziert --primary-text-color."
     },
     {
       "name": "--sidebar-selected-background-color",
       "type": "color",
       "category": "sidebar",
       "default": "#ffffff",
-      "description": "Hintergrund des aktiven Sidebar-Eintrags."
+      "description": "Hintergrund des aktuell ausgewählten Sidebar-Eintrags (die View die du gerade ansiehst). Default Weiss — für dunkle Themes oft auf einen Akzent setzen, sonst verschwindet die Selektion."
     },
     {
       "name": "--sidebar-selected-text-color",
       "type": "color",
       "category": "sidebar",
       "default": "var(--primary-color)",
-      "description": "Textfarbe des aktiven Sidebar-Eintrags."
+      "description": "Textfarbe des aktiven Sidebar-Eintrags. Default referenziert --primary-color für visuelle Konsistenz mit dem Branding."
     },
 
     {
@@ -189,14 +189,14 @@
       "type": "color",
       "category": "header",
       "default": "var(--primary-color)",
-      "description": "Hintergrund der App-Header-Leiste."
+      "description": "Hintergrund der App-Header-Leiste oben (mit View-Tabs und Titel). Default referenziert --primary-color — deshalb ändert sich der Header automatisch beim Anpassen der Hauptfarbe, ausser du setzt diese Variable explizit auf etwas anderes."
     },
     {
       "name": "--app-header-text-color",
       "type": "color",
       "category": "header",
       "default": "#ffffff",
-      "description": "Textfarbe in der App-Header-Leiste."
+      "description": "Textfarbe in der App-Header-Leiste (View-Tabs, Titel, Menü-Icons). Default Weiss für maximalen Kontrast auf farbigem Header."
     },
 
     {
@@ -204,35 +204,35 @@
       "type": "color",
       "category": "controls",
       "default": "rgba(0, 0, 0, 0.12)",
-      "description": "Trennlinien zwischen Listen-Items, Card-Sections, etc."
+      "description": "Trennlinien zwischen Listen-Items, Card-Sections, Tabs, Form-Feldern. Wirkt auf viele subtile Linien im HA-Frontend. Default leichtes Schwarz mit 12% Alpha — passt sich automatisch an Light/Dark an."
     },
     {
       "name": "--switch-checked-color",
       "type": "color",
       "category": "controls",
       "default": "var(--primary-color)",
-      "description": "Farbe eingeschalteter Switches."
+      "description": "Farbe eingeschalteter Switches (Toggle-Track wenn 'On'). Default referenziert --primary-color, damit Toggles dem Branding folgen."
     },
     {
       "name": "--switch-unchecked-color",
       "type": "color",
       "category": "controls",
       "default": "#bdbdbd",
-      "description": "Farbe ausgeschalteter Switches."
+      "description": "Farbe ausgeschalteter Switches (Toggle-Track wenn 'Off'). Default Grau für klares 'inaktiv'-Signal."
     },
     {
       "name": "--paper-slider-active-color",
       "type": "color",
       "category": "controls",
       "default": "var(--primary-color)",
-      "description": "Slider-Track-Farbe (gefüllter Teil)."
+      "description": "Slider-Track-Farbe für den *gefüllten* Teil (links vom Knopf). Wirkt auf: Light-Brightness-Slider, Volume-Slider, alle Range-Slider in HA. Default referenziert --primary-color."
     },
     {
       "name": "--paper-slider-knob-color",
       "type": "color",
       "category": "controls",
       "default": "var(--primary-color)",
-      "description": "Farbe des Slider-Knopfs."
+      "description": "Farbe des Slider-Knopfs (Thumb). Default referenziert --primary-color für visuelle Konsistenz mit der aktiven Track-Farbe."
     }
   ]
 }
