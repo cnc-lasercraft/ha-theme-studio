@@ -40,6 +40,7 @@ import type { HomeAssistant } from "../types";
 import "./controls/color-picker";
 import "./controls/length-slider";
 import "./controls/raw-input";
+import "./preview-pane";
 
 interface GetThemeResult {
   file: string;
@@ -117,6 +118,8 @@ export class TsEditorView extends LitElement {
   @state() private _activeTab: string = IN_THEME_TAB;
   @state() private _activeMode: string = DEFAULT_MODE;
   @state() private _modes: string[] = [DEFAULT_MODE];
+  @state() private _showPreview = false;
+  @state() private _previewSrc = "/lovelace/0";
 
   private _appliedVars = new Set<string>();
   private _originalFullTheme: Record<string, unknown> = {};
@@ -127,6 +130,41 @@ export class TsEditorView extends LitElement {
       max-width: 1100px;
       margin: 0 auto;
       font-family: var(--paper-font-body1_-_font-family, "Roboto", sans-serif);
+      transition: max-width 0.15s ease;
+    }
+    :host(.with-preview) {
+      max-width: none;
+    }
+    .body-grid {
+      display: block;
+    }
+    .body-grid.with-preview {
+      display: grid;
+      grid-template-columns: minmax(520px, 1fr) minmax(480px, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .editor-col,
+    .preview-col {
+      min-width: 0;
+    }
+    .preview-toggle {
+      background: none;
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      border-radius: 6px;
+      padding: 8px 14px;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+      font-size: 0.9rem;
+    }
+    .preview-toggle:hover {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+    }
+    .preview-toggle.active {
+      background: var(--primary-color);
+      color: #fff;
+      border-color: var(--primary-color);
     }
     .toolbar {
       display: flex;
@@ -889,6 +927,13 @@ export class TsEditorView extends LitElement {
         </div>
         ${this._renderDirtyBadge()}
         <button
+          class="preview-toggle ${this._showPreview ? "active" : ""}"
+          @click=${this._togglePreview}
+          title="Live-Preview eines Dashboards in einem iframe daneben"
+        >
+          👁 Preview
+        </button>
+        <button
           class="danger-btn"
           ?disabled=${this._dirtyCount() === 0 ||
           this._saveStatus.state === "saving"}
@@ -906,8 +951,43 @@ export class TsEditorView extends LitElement {
         </button>
       </div>
       ${this._renderModeBar()} ${this._renderTabs()}
-      ${this._renderSaveStatus()} ${this._renderBody()}
+      ${this._renderSaveStatus()}
+      <div class="body-grid ${this._showPreview ? "with-preview" : ""}">
+        <div class="editor-col">${this._renderBody()}</div>
+        ${this._showPreview
+          ? html`<div class="preview-col">
+              <ts-preview-pane
+                .src=${this._previewSrc}
+                .overrides=${this._currentOverrides()}
+                @src-changed=${this._onPreviewSrcChange}
+              ></ts-preview-pane>
+            </div>`
+          : ""}
+      </div>
     `;
+  }
+
+  private _togglePreview() {
+    this._showPreview = !this._showPreview;
+    this.classList.toggle("with-preview", this._showPreview);
+  }
+
+  private _onPreviewSrcChange(e: CustomEvent<{ src: string }>) {
+    this._previewSrc = e.detail.src;
+  }
+
+  /**
+   * Aktuelle CSS-Overrides als Map — alle Rows wo `current !== original`,
+   * unabhängig vom Mode (Live-Preview ist mode-agnostisch).
+   */
+  private _currentOverrides(): Map<string, string> {
+    const m = new Map<string, string>();
+    for (const r of this._rows) {
+      if (r.current !== r.original) {
+        m.set(r.varName, r.current);
+      }
+    }
+    return m;
   }
 
   private _renderModeBar() {
