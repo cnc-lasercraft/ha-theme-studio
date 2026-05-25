@@ -28,6 +28,18 @@ interface GetThemeResult {
   variables: Record<string, unknown>;
 }
 
+interface SaveThemeResult {
+  file: string;
+  theme_name: string;
+  backup: string | null;
+}
+
+type SaveStatus =
+  | { state: "idle" }
+  | { state: "saving" }
+  | { state: "success"; backup: string | null }
+  | { state: "error"; msg: string };
+
 interface EditorRow {
   varName: string; // e.g. "--primary-color" (mit `--`)
   yamlKey: string; // e.g. "primary-color"   (ohne `--`)
@@ -62,10 +74,16 @@ export class TsEditorView extends LitElement {
   @state() private _rows: EditorRow[] = [];
   @state() private _categories: CategoryGroup[] = [];
   @state() private _skippedKeys: string[] = [];
+  @state() private _saveStatus: SaveStatus = { state: "idle" };
 
   // Set aller CSS-Variablen, die wir auf :root überschrieben haben — für
   // sauberen Cleanup beim Verlassen oder beim "Alles verwerfen".
   private _appliedVars = new Set<string>();
+
+  // Vollständiger Theme-Object vom get_theme-Result, inklusive Dict-Keys
+  // wie `modes:`, die der Editor nicht abbildet aber beim Save bewahren
+  // muss.
+  private _originalFullTheme: Record<string, unknown> = {};
 
   static override styles = css`
     :host {
@@ -244,6 +262,28 @@ export class TsEditorView extends LitElement {
       padding: 1px 4px;
       border-radius: 3px;
     }
+    .status-banner {
+      padding: 10px 16px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+    }
+    .status-banner.success {
+      background: rgba(67, 160, 71, 0.12);
+      border-left: 4px solid var(--success-color, #43a047);
+      color: var(--primary-text-color);
+    }
+    .status-banner.error {
+      background: rgba(219, 68, 55, 0.12);
+      border-left: 4px solid var(--error-color, #db4437);
+      color: var(--primary-text-color);
+    }
+    .status-banner code {
+      font-family: ui-monospace, monospace;
+      background: rgba(0, 0, 0, 0.08);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
   `;
 
   override connectedCallback() {
@@ -274,6 +314,7 @@ export class TsEditorView extends LitElement {
   private async _load() {
     this._loading = true;
     this._error = null;
+    this._saveStatus = { state: "idle" };
     try {
       const result =
         await this.hass.connection.sendMessagePromise<GetThemeResult>({
@@ -281,11 +322,59 @@ export class TsEditorView extends LitElement {
           file: this.file,
           theme_name: this.themeName,
         });
+      this._originalFullTheme = result.variables;
       this._buildRows(result.variables);
     } catch (err) {
       this._error = err instanceof Error ? err.message : String(err);
     } finally {
       this._loading = false;
+    }
+  }
+
+  // ─── Save-Flow ──────────────────────────────────────────────────────
+
+  private async _save() {
+    const dirty = this._dirtyCount();
+    if (dirty === 0 || this._saveStatus.state === "saving") return;
+
+    const confirmMsg =
+      `${dirty} Änderung${dirty === 1 ? "" : "en"} in '${this.file}' ` +
+      `> '${this.themeName}' speichern?\n\n` +
+      `Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
+    if (!confirm(confirmMsg)) return;
+
+    this._saveStatus = { state: "saving" };
+
+    // Merge: iteriere die Original-Theme-Keys (Key-Form bleibt erhalten),
+    // ersetze Scalar-Werte mit dem aktuellen Editor-Stand. Dict-Keys wie
+    // `modes:` werden 1:1 übernommen, ohne Editor-Wissen darüber zu
+    // benötigen.
+    const merged: Record<string, unknown> = {};
+    for (const [origKey, origVal] of Object.entries(this._originalFullTheme)) {
+      const normalized = origKey.startsWith("--") ? origKey.slice(2) : origKey;
+      const row = this._rows.find((r) => r.yamlKey === normalized);
+      merged[origKey] = row ? row.current : origVal;
+    }
+
+    try {
+      const result =
+        await this.hass.connection.sendMessagePromise<SaveThemeResult>({
+          type: "theme_studio/save_theme",
+          file: this.file,
+          theme_name: this.themeName,
+          variables: merged,
+        });
+
+      // Erfolg: originals = currents → Dirty-State weg. _appliedVars
+      // bleibt — die Overrides werden erst beim Verlassen gecleant
+      // (vermeidet Flackern während frontend.reload_themes lädt).
+      this._originalFullTheme = merged;
+      this._rows = this._rows.map((r) => ({ ...r, original: r.current }));
+      this._categories = this._groupByCategory(this._rows);
+      this._saveStatus = { state: "success", backup: result.backup };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this._saveStatus = { state: "error", msg };
     }
   }
 
@@ -440,16 +529,39 @@ export class TsEditorView extends LitElement {
         ${this._renderDirtyBadge()}
         <button
           class="danger-btn"
-          ?disabled=${this._dirtyCount() === 0}
+          ?disabled=${this._dirtyCount() === 0 ||
+          this._saveStatus.state === "saving"}
           @click=${this._resetAll}
         >
           Alles verwerfen
         </button>
-        <button class="primary-btn" disabled title="Save-Flow folgt in Step 8">
-          Speichern (Step 8)
+        <button
+          class="primary-btn"
+          ?disabled=${this._dirtyCount() === 0 ||
+          this._saveStatus.state === "saving"}
+          @click=${this._save}
+        >
+          ${this._saveStatus.state === "saving" ? "Speichere…" : "Speichern"}
         </button>
       </div>
-      ${this._renderBody()}
+      ${this._renderSaveStatus()} ${this._renderBody()}
+    `;
+  }
+
+  private _renderSaveStatus() {
+    const s = this._saveStatus;
+    if (s.state === "idle" || s.state === "saving") return "";
+    if (s.state === "success") {
+      return html`
+        <div class="status-banner success">
+          ✓ Gespeichert${s.backup
+            ? html` &middot; Backup: <code>${s.backup}</code>`
+            : ""}
+        </div>
+      `;
+    }
+    return html`
+      <div class="status-banner error">✗ Speichern fehlgeschlagen: ${s.msg}</div>
     `;
   }
 
