@@ -11,11 +11,16 @@ import "./theme-picker";
 import "./editor-view";
 import "./module-picker";
 import "./module-editor";
+import "./compare-view";
 import "./controls/_demo";
 
 const TAB_THEMES = "themes";
 const TAB_MODULES = "modules";
-type TopTab = typeof TAB_THEMES | typeof TAB_MODULES;
+const TAB_COMPARE = "compare";
+type TopTab =
+  | typeof TAB_THEMES
+  | typeof TAB_MODULES
+  | typeof TAB_COMPARE;
 
 @customElement("theme-studio-panel")
 export class ThemeStudioPanel extends LitElement {
@@ -203,7 +208,6 @@ export class ThemeStudioPanel extends LitElement {
     const showModules = getActivePlugins().some(
       (p) => p.manifest.id === "bubble-card",
     );
-    if (!showModules) return "";
     return html`
       <div class="top-tabs">
         <button
@@ -212,11 +216,23 @@ export class ThemeStudioPanel extends LitElement {
         >
           Themes
         </button>
+        ${showModules
+          ? html`
+              <button
+                class="top-tab ${this._topTab === TAB_MODULES
+                  ? "active"
+                  : ""}"
+                @click=${() => this._setTopTab(TAB_MODULES)}
+              >
+                Bubble Card Module
+              </button>
+            `
+          : ""}
         <button
-          class="top-tab ${this._topTab === TAB_MODULES ? "active" : ""}"
-          @click=${() => this._setTopTab(TAB_MODULES)}
+          class="top-tab ${this._topTab === TAB_COMPARE ? "active" : ""}"
+          @click=${() => this._setTopTab(TAB_COMPARE)}
         >
-          Bubble Card Module
+          Vergleichen
         </button>
       </div>
     `;
@@ -230,6 +246,9 @@ export class ThemeStudioPanel extends LitElement {
           @module-selected=${this._onModuleSelect}
         ></ts-module-picker>
       `;
+    }
+    if (this._topTab === TAB_COMPARE) {
+      return html`<ts-compare-view .hass=${this.hass}></ts-compare-view>`;
     }
     return html`
       <theme-picker
