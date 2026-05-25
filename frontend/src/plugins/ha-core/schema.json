@@ -72,14 +72,14 @@
     },
     {
       "name": "--background-image",
-      "type": "raw",
+      "type": "background",
       "category": "background",
       "default": "none",
-      "description": "Hintergrund-Bild des HA-Frontends. Wert ist eine CSS-`url(...)`-Funktion (z.B. `url(/local/bg.png)`) oder ein Gradient. Häufig in Glas-/Vision-Themes, um eine Tapete hinter den semi-transparenten Cards zu legen. Setze `none` für keinen Bild-Hintergrund."
+      "description": "Hintergrund-Bild des HA-Frontends. CSS-`background`-Shorthand: typisch `center / cover no-repeat fixed url('https://...')` für eine fixierte Vollbild-Tapete. Häufig in Glas-/Vision-Themes, um ein Bild hinter die semi-transparenten Cards zu legen. Setze `none` für keinen Bild-Hintergrund."
     },
     {
       "name": "--lovelace-background",
-      "type": "raw",
+      "type": "background",
       "category": "background",
       "default": "var(--primary-background-color)",
       "description": "Hintergrund des Lovelace-View-Containers (alles unter App-Header). Oft auf `var(--background-image)` gesetzt, um ein Bild als Tapete zu nutzen. Wert kann eine Farbe ODER ein `url(...)`/Gradient sein."

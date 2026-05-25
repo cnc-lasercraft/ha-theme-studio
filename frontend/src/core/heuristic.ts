@@ -17,6 +17,7 @@ import type { VariableType } from "./types";
 const LENGTH_SUFFIXES =
   /-(radius|size|width|height|padding|margin|gap)$/;
 const COLOR_SUFFIXES = /-(color|bg|background)$/;
+const BACKGROUND_SUFFIXES = /-(image|background-image)$/;
 
 // Wert-Pattern für Color-Erkennung.
 const COLOR_VALUE_DIRECT = [
@@ -37,6 +38,7 @@ const LENGTH_VALUE_VARREF =
 function inferTypeFromValue(value: string): VariableType | undefined {
   const v = value.trim();
   if (!v) return undefined;
+  if (/url\s*\(/i.test(v) || /gradient\s*\(/i.test(v)) return "background";
   if (COLOR_VALUE_DIRECT.some((re) => re.test(v))) return "color";
   if (COLOR_VALUE_VARREF.test(v)) return "color";
   if (LENGTH_VALUE_DIRECT.test(v)) return "length";
@@ -47,6 +49,7 @@ function inferTypeFromValue(value: string): VariableType | undefined {
 export function inferType(name: string, value?: string): VariableType {
   if (/-family$/.test(name)) return "font-family";
   if (/-shadow$/.test(name)) return "shadow";
+  if (BACKGROUND_SUFFIXES.test(name)) return "background";
   if (LENGTH_SUFFIXES.test(name)) return "length";
   if (COLOR_SUFFIXES.test(name)) return "color";
   if (value !== undefined) {
@@ -100,6 +103,7 @@ const TYPE_LABELS: Record<VariableType, string> = {
   color: "Farbe",
   length: "Länge / Größe",
   shadow: "Schatten",
+  background: "Hintergrund-Bild",
   "font-family": "Schriftart-Stack",
   enum: "Auswahl",
   "var-ref": "var()-Referenz",

@@ -4,6 +4,7 @@ export type VariableType =
   | "color"
   | "length"
   | "shadow"
+  | "background"
   | "font-family"
   | "enum"
   | "var-ref"

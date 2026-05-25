@@ -40,6 +40,7 @@ import type { HomeAssistant } from "../types";
 import "./controls/color-picker";
 import "./controls/length-slider";
 import "./controls/raw-input";
+import "./controls/background-picker";
 import "./preview-pane";
 
 interface GetThemeResult {
@@ -1209,6 +1210,13 @@ export class TsEditorView extends LitElement {
             .max=${row.meta.max ?? 100}
             @value-changed=${onChange}
           ></ts-length-slider>
+        `;
+      case "background":
+        return html`
+          <ts-background-picker
+            .value=${row.current}
+            @value-changed=${onChange}
+          ></ts-background-picker>
         `;
       default:
         return html`

@@ -103,7 +103,7 @@
 
     { "name": "--bubble-event-accent-color",               "type": "color",  "category": "event", "description": "Bubble Card · Event · Akzent-Farbe für Event-Card-Highlights." },
     { "name": "--bubble-event-background-color",           "type": "color",  "category": "event", "description": "Bubble Card · Event · Hintergrund-Farbe der Event-Card." },
-    { "name": "--bubble-event-background-image",           "type": "raw",    "category": "event", "description": "Bubble Card · Event · Hintergrund-Bild der Event-Card (CSS-`url(...)`)." },
+    { "name": "--bubble-event-background-image",           "type": "background", "category": "event", "description": "Bubble Card · Event · Hintergrund-Bild der Event-Card (CSS-`url(...)`)." },
 
     { "name": "--bubble-footer-bottom",                    "type": "length", "category": "footer", "unit": ["px", "rem"], "min": 0, "max": 200, "description": "Bubble Card · Footer · Abstand des Footers vom unteren Rand." },
     { "name": "--bubble-footer-box-shadow",                "type": "shadow", "category": "footer", "description": "Bubble Card · Footer · Schatten unter dem Footer-Container." },
