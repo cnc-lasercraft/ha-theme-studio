@@ -6,10 +6,20 @@
 // `value-changed` direkt als `document.documentElement.style.setProperty`
 // in den Live-Preview.
 //
-// Save kommt in Step 8 — diese Komponente hält alles in-memory und
-// markiert Änderungen als "dirty". `disconnectedCallback` revertet
-// sämtliche CSS-Overrides, damit man das Theme-Studio sauber verlassen
-// kann ohne Phantom-Styles auf dem HA-Frontend.
+// Tabs (v0.2):
+//   - "Im Theme"  — zeigt nur Variablen, die im YAML schon gesetzt sind
+//                   (Default-View beim Öffnen).
+//   - "<Plugin>"  — pro registriertem Plugin ein Tab, zeigt ALLE Vars
+//                   aus dessen schema.json, auch wenn sie im aktuellen
+//                   Theme nicht vorkommen. Default-Wert aus Schema =
+//                   "Original", User kann frei editieren. Beim Save
+//                   wird nur dann geschrieben, wenn `current !==
+//                   original`. So lassen sich neue Variablen einfach
+//                   ins Theme aufnehmen.
+//
+// `disconnectedCallback` revertet sämtliche CSS-Overrides, damit man
+// das Theme-Studio sauber verlassen kann ohne Phantom-Styles auf dem
+// HA-Frontend.
 
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -46,6 +56,12 @@ interface EditorRow {
   meta: VariableMeta;
   original: string;
   current: string;
+  /**
+   * True, wenn diese Variable schon im geladenen Theme stand.
+   * False für Schema-Vars, die nur sichtbar werden, weil der User auf
+   * einem Plugin-Tab ist und die Variable ggf. neu aufnehmen will.
+   */
+  inTheme: boolean;
 }
 
 interface CategoryGroup extends Category {
@@ -63,6 +79,8 @@ const OTHER_CAT: Category = {
   icon: "mdi:dots-horizontal",
 };
 
+const IN_THEME_TAB = "in-theme";
+
 @customElement("ts-editor-view")
 export class TsEditorView extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
@@ -72,9 +90,9 @@ export class TsEditorView extends LitElement {
   @state() private _loading = true;
   @state() private _error: string | null = null;
   @state() private _rows: EditorRow[] = [];
-  @state() private _categories: CategoryGroup[] = [];
   @state() private _skippedKeys: string[] = [];
   @state() private _saveStatus: SaveStatus = { state: "idle" };
+  @state() private _activeTab: string = IN_THEME_TAB;
 
   // Set aller CSS-Variablen, die wir auf :root überschrieben haben — für
   // sauberen Cleanup beim Verlassen oder beim "Alles verwerfen".
@@ -96,7 +114,7 @@ export class TsEditorView extends LitElement {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
     .back-btn,
@@ -120,7 +138,8 @@ export class TsEditorView extends LitElement {
       color: var(--error-color, #db4437);
       border-color: var(--error-color, #db4437);
     }
-    .primary-btn[disabled] {
+    .primary-btn[disabled],
+    .danger-btn[disabled] {
       opacity: 0.5;
       cursor: not-allowed;
     }
@@ -147,6 +166,50 @@ export class TsEditorView extends LitElement {
       font-size: 0.8rem;
       font-weight: 600;
     }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin: 0 0 16px;
+      border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 8px 14px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      color: var(--secondary-text-color);
+      font: inherit;
+      font-size: 0.9rem;
+      margin-bottom: -1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 6px 6px 0 0;
+    }
+    .tab:hover {
+      color: var(--primary-text-color);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+    }
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+      font-weight: 500;
+    }
+    .tab-count {
+      padding: 1px 8px;
+      border-radius: 10px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.06));
+      font-size: 0.75rem;
+      color: var(--secondary-text-color);
+    }
+    .tab.active .tab-count {
+      background: var(--primary-color);
+      color: #fff;
+    }
+
     .loading,
     .error,
     .empty {
@@ -221,16 +284,27 @@ export class TsEditorView extends LitElement {
       display: block;
       line-height: 1.45;
     }
-    .heuristic-tag {
+    .row-tag {
       display: inline-block;
       margin-left: 8px;
       padding: 1px 6px;
       border-radius: 8px;
-      background: rgba(0, 0, 0, 0.08);
       font-size: 0.7rem;
-      color: var(--secondary-text-color);
       font-family: var(--paper-font-body1_-_font-family);
       vertical-align: middle;
+    }
+    .row-tag.heuristic {
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--secondary-text-color);
+    }
+    .row-tag.default {
+      background: rgba(3, 169, 244, 0.12);
+      color: var(--info-color, var(--primary-color));
+    }
+    .row-tag.adding {
+      background: rgba(67, 160, 71, 0.15);
+      color: var(--success-color, #43a047);
+      font-weight: 500;
     }
     .reset-btn {
       background: none;
@@ -299,8 +373,6 @@ export class TsEditorView extends LitElement {
   }
 
   override updated(changed: Map<string, unknown>) {
-    // Wenn file/themeName nach dem ersten Mount wechseln (z.B. weil der
-    // Panel-Container die Komponente wiederverwendet), neu laden.
     const fileChanged =
       changed.has("file") && changed.get("file") !== undefined;
     const nameChanged =
@@ -308,7 +380,7 @@ export class TsEditorView extends LitElement {
     if (fileChanged || nameChanged) {
       this._revertAll();
       this._rows = [];
-      this._categories = [];
+      this._activeTab = IN_THEME_TAB;
       this._load();
     }
   }
@@ -333,29 +405,114 @@ export class TsEditorView extends LitElement {
     }
   }
 
+  private _buildRows(vars: Record<string, unknown>) {
+    const rows: EditorRow[] = [];
+    const skipped: string[] = [];
+    for (const [key, val] of Object.entries(vars)) {
+      if (val === null || val === undefined) continue;
+      if (typeof val === "object") {
+        skipped.push(key);
+        continue;
+      }
+      const sval = String(val);
+      const varName = key.startsWith("--") ? key : `--${key}`;
+      const yamlKey = varName.slice(2);
+      const meta = getVariableMeta(varName, sval);
+      rows.push({
+        varName,
+        yamlKey,
+        meta,
+        original: sval,
+        current: sval,
+        inTheme: true,
+      });
+    }
+    this._skippedKeys = skipped;
+    this._rows = rows;
+  }
+
+  /**
+   * Beim Wechsel auf einen Plugin-Tab: alle Vars dieses Plugins, die
+   * noch nicht in `_rows` sind, mit Default-Wert anhängen
+   * (`inTheme: false`).
+   */
+  private _ensurePluginRows(pluginId: string) {
+    const plugin = getPlugins().find((p) => p.manifest.id === pluginId);
+    if (!plugin) return;
+    const existing = new Set(this._rows.map((r) => r.varName));
+    const newRows: EditorRow[] = [];
+    for (const v of plugin.schema.variables) {
+      if (existing.has(v.name)) continue;
+      const def = v.default ?? "";
+      newRows.push({
+        varName: v.name,
+        yamlKey: v.name.startsWith("--") ? v.name.slice(2) : v.name,
+        meta: { ...v, source: "schema", plugin: plugin.manifest.id },
+        original: def,
+        current: def,
+        inTheme: false,
+      });
+    }
+    if (newRows.length > 0) {
+      this._rows = [...this._rows, ...newRows];
+    }
+  }
+
   // ─── Save-Flow ──────────────────────────────────────────────────────
 
   private async _save() {
     const dirty = this._dirtyCount();
     if (dirty === 0 || this._saveStatus.state === "saving") return;
 
+    const adding = this._rows.filter(
+      (r) => !r.inTheme && r.current !== r.original,
+    ).length;
+    const modifying = dirty - adding;
+
+    const parts: string[] = [];
+    if (modifying > 0)
+      parts.push(`${modifying} bestehende Änderung${modifying === 1 ? "" : "en"}`);
+    if (adding > 0)
+      parts.push(`${adding} neue Variable${adding === 1 ? "" : "n"}`);
+    const what = parts.join(" + ");
+
     const confirmMsg =
-      `${dirty} Änderung${dirty === 1 ? "" : "en"} in '${this.file}' ` +
-      `> '${this.themeName}' speichern?\n\n` +
+      `${what} in '${this.file}' > '${this.themeName}' speichern?\n\n` +
       `Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
     if (!confirm(confirmMsg)) return;
 
     this._saveStatus = { state: "saving" };
 
-    // Merge: iteriere die Original-Theme-Keys (Key-Form bleibt erhalten),
-    // ersetze Scalar-Werte mit dem aktuellen Editor-Stand. Dict-Keys wie
-    // `modes:` werden 1:1 übernommen, ohne Editor-Wissen darüber zu
-    // benötigen.
+    // Build merged YAML object.
     const merged: Record<string, unknown> = {};
+    const consumedKeys = new Set<string>();
+
+    // 1. Iterate original theme keys (preserves key form + dict-keys).
     for (const [origKey, origVal] of Object.entries(this._originalFullTheme)) {
+      if (typeof origVal === "object" && origVal !== null) {
+        // modes, etc. — keep untouched
+        merged[origKey] = origVal;
+        continue;
+      }
       const normalized = origKey.startsWith("--") ? origKey.slice(2) : origKey;
-      const row = this._rows.find((r) => r.yamlKey === normalized);
-      merged[origKey] = row ? row.current : origVal;
+      const row = this._rows.find(
+        (r) => r.inTheme && r.yamlKey === normalized,
+      );
+      if (row) {
+        merged[origKey] = row.current;
+        consumedKeys.add(row.varName);
+      } else {
+        // No row covers this key (shouldn't happen for scalars) — keep.
+        merged[origKey] = origVal;
+      }
+    }
+
+    // 2. Add non-inTheme rows that were edited (becomes new YAML entries).
+    for (const row of this._rows) {
+      if (row.inTheme) continue;
+      if (row.current === row.original) continue;
+      if (consumedKeys.has(row.varName)) continue;
+      merged[row.yamlKey] = row.current;
     }
 
     try {
@@ -367,12 +524,18 @@ export class TsEditorView extends LitElement {
           variables: merged,
         });
 
-      // Erfolg: originals = currents → Dirty-State weg. _appliedVars
-      // bleibt — die Overrides werden erst beim Verlassen gecleant
-      // (vermeidet Flackern während frontend.reload_themes lädt).
       this._originalFullTheme = merged;
-      this._rows = this._rows.map((r) => ({ ...r, original: r.current }));
-      this._categories = this._groupByCategory(this._rows);
+      // Post-save: dirty rows have their original synced to current.
+      // Non-inTheme rows that were edited are promoted to inTheme=true.
+      this._rows = this._rows.map((r) => {
+        if (r.inTheme) {
+          return { ...r, original: r.current };
+        }
+        if (r.current !== r.original) {
+          return { ...r, original: r.current, inTheme: true };
+        }
+        return r;
+      });
       this._saveStatus = { state: "success", backup: result.backup };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -380,32 +543,9 @@ export class TsEditorView extends LitElement {
     }
   }
 
-  private _buildRows(vars: Record<string, unknown>) {
-    const rows: EditorRow[] = [];
-    const skipped: string[] = [];
-    for (const [key, val] of Object.entries(vars)) {
-      if (val === null || val === undefined) continue;
-      if (typeof val === "object") {
-        // z.B. `modes: { light: {...}, dark: {...} }` — komplexe Strukturen,
-        // die der Variablen-Editor in v0.1 nicht abbildet.
-        skipped.push(key);
-        continue;
-      }
-      const sval = String(val);
-      const varName = key.startsWith("--") ? key : `--${key}`;
-      const yamlKey = varName.slice(2);
-      // Wert mitgeben — die Heuristik fällt darauf zurück, wenn der Name
-      // nichts verrät (z.B. `--label-badge-red: rgba(...)` → color).
-      const meta = getVariableMeta(varName, sval);
-      rows.push({ varName, yamlKey, meta, original: sval, current: sval });
-    }
-    this._skippedKeys = skipped;
-    this._rows = rows;
-    this._categories = this._groupByCategory(rows);
-  }
+  // ─── Kategorien-Gruppierung ─────────────────────────────────────────
 
   private _groupByCategory(rows: EditorRow[]): CategoryGroup[] {
-    // Alle Kategorien aus allen Plugins sammeln, in deren Reihenfolge.
     const known = new Map<string, Category>();
     for (const p of getPlugins()) {
       for (const c of p.schema.categories) {
@@ -470,7 +610,6 @@ export class TsEditorView extends LitElement {
     this._rows = this._rows.map((r) =>
       r.varName === row.varName ? { ...r, current: value } : r,
     );
-    this._categories = this._groupByCategory(this._rows);
   }
 
   private _resetRow(row: EditorRow) {
@@ -478,7 +617,6 @@ export class TsEditorView extends LitElement {
     this._rows = this._rows.map((r) =>
       r.varName === row.varName ? { ...r, current: r.original } : r,
     );
-    this._categories = this._groupByCategory(this._rows);
   }
 
   private _resetAll() {
@@ -493,7 +631,6 @@ export class TsEditorView extends LitElement {
     }
     this._revertAll();
     this._rows = this._rows.map((r) => ({ ...r, current: r.original }));
-    this._categories = this._groupByCategory(this._rows);
   }
 
   private _dirtyCount(): number {
@@ -518,6 +655,23 @@ export class TsEditorView extends LitElement {
     this.dispatchEvent(
       new CustomEvent("back-to-picker", { bubbles: true, composed: true }),
     );
+  }
+
+  // ─── Tab-Handling ───────────────────────────────────────────────────
+
+  private _onTabSelect(tabId: string) {
+    if (tabId === this._activeTab) return;
+    if (tabId !== IN_THEME_TAB) {
+      this._ensurePluginRows(tabId);
+    }
+    this._activeTab = tabId;
+  }
+
+  private _visibleRows(): EditorRow[] {
+    if (this._activeTab === IN_THEME_TAB) {
+      return this._rows.filter((r) => r.inTheme);
+    }
+    return this._rows.filter((r) => r.meta.plugin === this._activeTab);
   }
 
   // ─── Rendering ──────────────────────────────────────────────────────
@@ -548,7 +702,40 @@ export class TsEditorView extends LitElement {
           ${this._saveStatus.state === "saving" ? "Speichere…" : "Speichern"}
         </button>
       </div>
-      ${this._renderSaveStatus()} ${this._renderBody()}
+      ${this._renderTabs()} ${this._renderSaveStatus()}
+      ${this._renderBody()}
+    `;
+  }
+
+  private _renderTabs() {
+    if (this._loading || this._error) return "";
+    const inThemeCount = this._rows.filter((r) => r.inTheme).length;
+    const tabs: Array<{ id: string; label: string; count: number }> = [
+      { id: IN_THEME_TAB, label: "Im Theme", count: inThemeCount },
+    ];
+    for (const p of getPlugins()) {
+      tabs.push({
+        id: p.manifest.id,
+        label: p.manifest.name,
+        count: p.schema.variables.length,
+      });
+    }
+    return html`
+      <div class="tabs" role="tablist">
+        ${tabs.map(
+          (t) => html`
+            <button
+              class="tab ${this._activeTab === t.id ? "active" : ""}"
+              role="tab"
+              aria-selected=${this._activeTab === t.id}
+              @click=${() => this._onTabSelect(t.id)}
+            >
+              ${t.label}
+              <span class="tab-count">${t.count}</span>
+            </button>
+          `,
+        )}
+      </div>
     `;
   }
 
@@ -565,16 +752,23 @@ export class TsEditorView extends LitElement {
       `;
     }
     return html`
-      <div class="status-banner error">✗ Speichern fehlgeschlagen: ${s.msg}</div>
+      <div class="status-banner error">
+        ✗ Speichern fehlgeschlagen: ${s.msg}
+      </div>
     `;
   }
 
   private _renderDirtyBadge() {
     const n = this._dirtyCount();
     if (n === 0) return "";
-    return html`<span class="dirty-badge"
-      >${n} Änderung${n === 1 ? "" : "en"}</span
-    >`;
+    const adding = this._rows.filter(
+      (r) => !r.inTheme && r.current !== r.original,
+    ).length;
+    const text =
+      adding > 0
+        ? `${n} Änderung${n === 1 ? "" : "en"} (${adding} neu)`
+        : `${n} Änderung${n === 1 ? "" : "en"}`;
+    return html`<span class="dirty-badge">${text}</span>`;
   }
 
   private _renderBody() {
@@ -584,24 +778,37 @@ export class TsEditorView extends LitElement {
     if (this._error) {
       return html`<div class="error">Fehler: ${this._error}</div>`;
     }
-    if (this._rows.length === 0) {
+    const rows = this._visibleRows();
+    if (rows.length === 0) {
       return html`<div class="empty">
-        Keine editierbaren Variablen in diesem Theme.
+        ${this._activeTab === IN_THEME_TAB
+          ? "Keine editierbaren Variablen in diesem Theme."
+          : "Keine Variablen in diesem Plugin-Tab."}
       </div>`;
     }
+    const categories = this._groupByCategory(rows);
     return html`
-      ${this._skippedKeys.length > 0
+      ${this._activeTab === IN_THEME_TAB && this._skippedKeys.length > 0
         ? html`<div class="notice">
             Diese Theme-Datei enthält komplexe Werte unter
             ${this._skippedKeys.map(
-              (k, i) =>
-                html`${i > 0 ? ", " : ""}<code>${k}</code>`,
+              (k, i) => html`${i > 0 ? ", " : ""}<code>${k}</code>`,
             )},
-            die der Variablen-Editor in v0.1 nicht abbildet (z.B. light/dark
-            modes oder verschachtelte Strukturen).
+            die der Variablen-Editor nicht abbildet (z.B. light/dark modes
+            oder verschachtelte Strukturen).
           </div>`
         : ""}
-      ${this._categories.map((c) => this._renderCategory(c))}
+      ${this._activeTab !== IN_THEME_TAB
+        ? html`<div class="notice">
+            <strong>Plugin-Tab:</strong> alle ${rows.length} Schema-Variablen
+            werden gezeigt, auch wenn sie noch nicht in deinem Theme stehen.
+            Variablen mit dem <span class="row-tag default">default</span>-Tag
+            kommen aus dem Schema-Default. Sobald du einen Wert änderst,
+            wird die Variable beim nächsten Speichern als neuer Eintrag ins
+            Theme aufgenommen.
+          </div>`
+        : ""}
+      ${categories.map((c) => this._renderCategory(c))}
     `;
   }
 
@@ -619,6 +826,8 @@ export class TsEditorView extends LitElement {
 
   private _renderRow(row: EditorRow) {
     const isDirty = row.current !== row.original;
+    const showDefaultTag = !row.inTheme && !isDirty;
+    const showAddingTag = !row.inTheme && isDirty;
     return html`
       <div class="row ${isDirty ? "dirty" : ""}">
         <div class="meta-cell">
@@ -626,9 +835,13 @@ export class TsEditorView extends LitElement {
             ${isDirty ? html`<span class="dirty-dot">●</span>` : ""}
             ${row.varName}
             ${row.meta.source === "heuristic"
-              ? html`<span class="heuristic-tag"
-                  >${row.meta.type}</span
-                >`
+              ? html`<span class="row-tag heuristic">${row.meta.type}</span>`
+              : ""}
+            ${showDefaultTag
+              ? html`<span class="row-tag default">default</span>`
+              : ""}
+            ${showAddingTag
+              ? html`<span class="row-tag adding">+ wird ergänzt</span>`
               : ""}
           </code>
           ${row.meta.description
@@ -670,7 +883,6 @@ export class TsEditorView extends LitElement {
           ></ts-length-slider>
         `;
       default:
-        // shadow, font-family, enum, var-ref, raw → raw-input
         return html`
           <ts-raw-input
             .value=${row.current}
