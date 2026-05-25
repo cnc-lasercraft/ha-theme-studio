@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import logging
 import os
-import re
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -35,13 +34,28 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-# Filename: nur ASCII, Bindestrich/Unterstrich, .yaml-Endung. Kein "/", kein "..".
-_FILENAME_RE = re.compile(r"^[A-Za-z0-9_\-]+\.yaml$")
 
+def _validate_path(name: str) -> str:
+    """Pfad-Validator: erlaubt subdirs + Leerzeichen, lehnt Traversal & Hidden ab.
 
-def _validate_filename(name: str) -> str:
-    if not isinstance(name, str) or not _FILENAME_RE.match(name):
-        raise vol.Invalid(f"invalid filename: {name!r}")
+    Akzeptiert z.B. `visionos/visionos.yaml`, `Liquid Glass.yaml`,
+    `dir/sub/file.yaml`. Lehnt ab: absolute Pfade, `..`, leere Segmente,
+    `.`-prefixed Segmente (würde u.a. den Zugriff auf `.backups/` verhindern),
+    Backslashes, alles ohne `.yaml`-Endung.
+    """
+    if not isinstance(name, str) or not name:
+        raise vol.Invalid("path must be non-empty string")
+    if "\\" in name:
+        raise vol.Invalid(f"backslashes not allowed: {name!r}")
+    if name.startswith("/"):
+        raise vol.Invalid(f"path must be relative: {name!r}")
+    if not name.endswith(".yaml"):
+        raise vol.Invalid(f"path must end in .yaml: {name!r}")
+    for segment in name.split("/"):
+        if not segment or segment in (".", ".."):
+            raise vol.Invalid(f"invalid segment {segment!r} in {name!r}")
+        if segment.startswith("."):
+            raise vol.Invalid(f"hidden segment {segment!r} not allowed in {name!r}")
     return name
 
 
@@ -124,18 +138,22 @@ def _dump_file(path: Path, data: dict[str, Any]) -> None:
 
 
 def _backup(root: Path, filename: str) -> str | None:
-    """Kopiert die Datei nach .backups/<filename>.<ts>.yaml. None wenn Quelle fehlt."""
+    """Kopiert die Datei nach .backups/<flat>.<ts>.yaml. None wenn Quelle fehlt.
+
+    Subdir-Trenner werden zu `__` flattened, damit das Backup-Verzeichnis flach
+    bleibt (z.B. `visionos/visionos.yaml` → `visionos__visionos.yaml.<ts>.yaml`).
+    """
     src = root / filename
     if not src.exists():
         return None
     backup_dir = root / BACKUPS_DIR
     backup_dir.mkdir(parents=True, exist_ok=True)
+    flat = filename.replace("/", "__")
     ts = datetime.now().strftime("%Y%m%d-%H%M%S")
-    dst = backup_dir / f"{filename}.{ts}.yaml"
+    dst = backup_dir / f"{flat}.{ts}.yaml"
     counter = 1
-    # Bei mehreren Saves in derselben Sekunde: Counter anhängen.
     while dst.exists():
-        dst = backup_dir / f"{filename}.{ts}-{counter}.yaml"
+        dst = backup_dir / f"{flat}.{ts}-{counter}.yaml"
         counter += 1
     shutil.copy2(src, dst)
     return str(dst.relative_to(root))
@@ -155,7 +173,7 @@ async def ws_list_themes(
 @websocket_api.websocket_command(
     {
         vol.Required("type"): WS_GET_THEME,
-        vol.Required("file"): vol.All(str, _validate_filename),
+        vol.Required("file"): vol.All(str, _validate_path),
         vol.Required("theme_name"): str,
     }
 )
@@ -194,7 +212,7 @@ async def ws_get_theme(
 @websocket_api.websocket_command(
     {
         vol.Required("type"): WS_SAVE_THEME,
-        vol.Required("file"): vol.All(str, _validate_filename),
+        vol.Required("file"): vol.All(str, _validate_path),
         vol.Required("theme_name"): str,
         # Variablen-Werte sind frei (string, dict für modes:, etc.) — Validierung
         # ist Aufgabe des Frontends/Plugins.
