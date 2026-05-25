@@ -3,6 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { getRegistryStats } from "../core/schema-registry";
 import type { HomeAssistant, PanelRoute } from "../types";
 import "./theme-picker";
+import "./editor-view";
 import "./controls/_demo";
 
 @customElement("theme-studio-panel")
@@ -100,14 +101,13 @@ export class ThemeStudioPanel extends LitElement {
         ></theme-picker>
       `;
     }
-    // Editor-Stub — wird in Schritt 7 ersetzt.
     return html`
-      <button class="back-btn" @click=${this._back}>← Zurück</button>
-      <h2>${this._selected.theme_name}</h2>
-      <p style="color: var(--secondary-text-color)">
-        <code>${this._selected.file}</code>
-      </p>
-      <p>Editor folgt in ROADMAP Schritt 7.</p>
+      <ts-editor-view
+        .hass=${this.hass}
+        .file=${this._selected.file}
+        .themeName=${this._selected.theme_name}
+        @back-to-picker=${this._back}
+      ></ts-editor-view>
     `;
   }
 
