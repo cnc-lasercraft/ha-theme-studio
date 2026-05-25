@@ -1,14 +1,20 @@
 {
   "id": "ha-core",
   "categories": [
-    { "id": "branding",   "label": "Marke",      "icon": "mdi:palette-outline" },
-    { "id": "background", "label": "Hintergrund", "icon": "mdi:format-color-fill" },
-    { "id": "text",       "label": "Text",       "icon": "mdi:format-color-text" },
-    { "id": "state",      "label": "Zustände",   "icon": "mdi:lightbulb-on-outline" },
-    { "id": "card",       "label": "Cards",      "icon": "mdi:card-outline" },
-    { "id": "sidebar",    "label": "Sidebar",    "icon": "mdi:dock-left" },
-    { "id": "header",     "label": "App-Header", "icon": "mdi:page-layout-header" },
-    { "id": "controls",   "label": "Bedienelemente", "icon": "mdi:tune" }
+    { "id": "branding",        "label": "Marke",                       "icon": "mdi:palette-outline" },
+    { "id": "background",      "label": "Hintergrund",                 "icon": "mdi:format-color-fill" },
+    { "id": "text",            "label": "Text",                        "icon": "mdi:format-color-text" },
+    { "id": "state",           "label": "Zustände (semantisch)",       "icon": "mdi:lightbulb-on-outline" },
+    { "id": "state-colors",    "label": "State-Farben (Material)",     "icon": "mdi:palette-swatch" },
+    { "id": "card",            "label": "Cards",                       "icon": "mdi:card-outline" },
+    { "id": "sidebar",         "label": "Sidebar",                     "icon": "mdi:dock-left" },
+    { "id": "header",          "label": "App-Header",                  "icon": "mdi:page-layout-header" },
+    { "id": "controls",        "label": "Bedienelemente",              "icon": "mdi:tune" },
+    { "id": "switches",        "label": "Switches",                    "icon": "mdi:toggle-switch" },
+    { "id": "tables",          "label": "Tabellen",                    "icon": "mdi:table" },
+    { "id": "polymer-legacy",  "label": "Polymer/Paper (legacy)",      "icon": "mdi:history" },
+    { "id": "mdc",             "label": "Material Design Components",  "icon": "mdi:material-design" },
+    { "id": "rgb",             "label": "RGB-Trippel",                 "icon": "mdi:format-list-numbered" }
   ],
   "variables": [
     {
@@ -61,6 +67,13 @@
       "default": "#ffffff",
       "description": "Default-Hintergrund für ha-card-Elemente. Wird von --ha-card-background überschrieben, wenn das spezifisch gesetzt ist. Tipp: in Light-Themes meist weiss, in Dark-Themes ein dunkles Grau."
     },
+    {
+      "name": "--background-image",
+      "type": "raw",
+      "category": "background",
+      "default": "none",
+      "description": "Hintergrund-Bild des HA-Frontends. Wert ist eine CSS-`url(...)`-Funktion (z.B. `url(/local/bg.png)`) oder ein Gradient. Häufig in Glas-/Vision-Themes, um eine Tapete hinter den semi-transparenten Cards zu legen. Setze `none` für keinen Bild-Hintergrund."
+    },
 
     {
       "name": "--primary-text-color",
@@ -112,6 +125,91 @@
       "default": "#ffa600",
       "description": "Farbe für Warnungen, nicht-kritische Hinweise. Wirkt auf: Warning-Notifications, Repair-Hinweise mit niedrigerer Severity, Update-Available-Badges."
     },
+    {
+      "name": "--info-color",
+      "type": "color",
+      "category": "state",
+      "default": "#039be5",
+      "description": "Farbe für informative Hinweise und neutrale Benachrichtigungen. Wirkt auf: Info-Notifications, Hinweis-Banner, manche neutrale State-Badges."
+    },
+    {
+      "name": "--success-color",
+      "type": "color",
+      "category": "state",
+      "default": "#43a047",
+      "description": "Farbe für Erfolgs-Bestätigungen, OK-States. Wirkt auf: 'Saved'-Notifications, OK-Buttons, manche positive State-Badges."
+    },
+
+    {
+      "name": "--red-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#f44336",
+      "description": "Material-Palette Rot. Häufig genutzt für state-spezifische Farben (z.B. Climate-Cool-Heat, Sensor-Werte oberhalb Schwellwert) und in Templates via `color: var(--red-color)`."
+    },
+    {
+      "name": "--orange-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#ff9800",
+      "description": "Material-Palette Orange. Nützlich für Status-Badges, Aufmerksamkeit-Highlights, oder als Akzent in Custom-Lovelace-Templates."
+    },
+    {
+      "name": "--yellow-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#ffeb3b",
+      "description": "Material-Palette Gelb. Oft für Warning-Light-States, Sonne-Icons, oder leuchtende Akzente in custom-Stylings."
+    },
+    {
+      "name": "--green-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#4caf50",
+      "description": "Material-Palette Grün. Standard für 'OK'/'Aktiv'/'Verbunden'-States, Solar-Production-Indikatoren, positive Sensor-Werte."
+    },
+    {
+      "name": "--cyan-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#00bcd4",
+      "description": "Material-Palette Cyan. Häufig für Wasser-/Kühlung-/Climate-Cool-Indikatoren."
+    },
+    {
+      "name": "--blue-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#2196f3",
+      "description": "Material-Palette Blau. Standard-Color in vielen HA-Defaults, oft als neutraler 'Active'-Indikator."
+    },
+    {
+      "name": "--purple-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#9c27b0",
+      "description": "Material-Palette Violett. Eher selten verwendet — gelegentlich für 'Premium'-Akzente oder besondere Sensor-Kategorien."
+    },
+    {
+      "name": "--pink-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#e91e63",
+      "description": "Material-Palette Pink. Eher selten — gelegentlich für Akzente in Kinder-/Spass-Dashboards."
+    },
+    {
+      "name": "--grey-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#9e9e9e",
+      "description": "Material-Palette Grau. Standard für neutrale/inaktive Akzente, ungültige States, Placeholder."
+    },
+    {
+      "name": "--amber-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#ffc107",
+      "description": "Material-Palette Amber. Klassische 'Aktiv-Licht'-Farbe (siehe --state-icon-active-color), oft für warme Lichter und Aufmerksamkeits-States."
+    },
 
     {
       "name": "--ha-card-background",
@@ -154,6 +252,13 @@
       "default": "0 2px 4px rgba(0, 0, 0, 0.12)",
       "description": "Schatten unter Cards. Default ist ein dezenter Drop-Shadow für Material-Design-Optik. Setze 'none' für ein komplett flaches Design (z.B. iOS-Stil)."
     },
+    {
+      "name": "--ha-card-backdrop-filter",
+      "type": "raw",
+      "category": "card",
+      "default": "none",
+      "description": "CSS-`backdrop-filter` für Cards — wirkt auf den Bereich *hinter* der Card (nicht auf die Card selbst). Mit `blur(10px)` und einem semi-transparenten --ha-card-background bekommen Cards einen Glas-/Frosted-Effekt (typisch für visionOS-/iOS-Themes). Setze `none` zum Deaktivieren."
+    },
 
     {
       "name": "--sidebar-background-color",
@@ -170,6 +275,13 @@
       "description": "Default-Textfarbe der Sidebar-Einträge (für die **nicht** ausgewählten Views). Default referenziert --primary-text-color."
     },
     {
+      "name": "--sidebar-icon-color",
+      "type": "color",
+      "category": "sidebar",
+      "default": "var(--state-icon-color)",
+      "description": "Icon-Farbe der Sidebar-Einträge (nicht-ausgewählte Views). Default referenziert --state-icon-color, deshalb folgen Sidebar-Icons standardmässig der State-Icon-Farbe."
+    },
+    {
       "name": "--sidebar-selected-background-color",
       "type": "color",
       "category": "sidebar",
@@ -182,6 +294,13 @@
       "category": "sidebar",
       "default": "var(--primary-color)",
       "description": "Textfarbe des aktiven Sidebar-Eintrags. Default referenziert --primary-color für visuelle Konsistenz mit dem Branding."
+    },
+    {
+      "name": "--sidebar-selected-icon-color",
+      "type": "color",
+      "category": "sidebar",
+      "default": "var(--primary-color)",
+      "description": "Icon-Farbe des aktiven Sidebar-Eintrags. Default referenziert --primary-color — der ausgewählte View-Eintrag bekommt damit eine ganzheitlich gefärbte Optik (Icon + Text in Brandfarbe)."
     },
 
     {
@@ -207,20 +326,6 @@
       "description": "Trennlinien zwischen Listen-Items, Card-Sections, Tabs, Form-Feldern. Wirkt auf viele subtile Linien im HA-Frontend. Default leichtes Schwarz mit 12% Alpha — passt sich automatisch an Light/Dark an."
     },
     {
-      "name": "--switch-checked-color",
-      "type": "color",
-      "category": "controls",
-      "default": "var(--primary-color)",
-      "description": "Farbe eingeschalteter Switches (Toggle-Track wenn 'On'). Default referenziert --primary-color, damit Toggles dem Branding folgen."
-    },
-    {
-      "name": "--switch-unchecked-color",
-      "type": "color",
-      "category": "controls",
-      "default": "#bdbdbd",
-      "description": "Farbe ausgeschalteter Switches (Toggle-Track wenn 'Off'). Default Grau für klares 'inaktiv'-Signal."
-    },
-    {
       "name": "--paper-slider-active-color",
       "type": "color",
       "category": "controls",
@@ -233,6 +338,179 @@
       "category": "controls",
       "default": "var(--primary-color)",
       "description": "Farbe des Slider-Knopfs (Thumb). Default referenziert --primary-color für visuelle Konsistenz mit der aktiven Track-Farbe."
+    },
+
+    {
+      "name": "--switch-checked-color",
+      "type": "color",
+      "category": "switches",
+      "default": "var(--primary-color)",
+      "description": "Generische Farbe eingeschalteter Switches (modern HA). Wird oft von den spezifischeren --switch-checked-button-color und --switch-checked-track-color überschrieben."
+    },
+    {
+      "name": "--switch-unchecked-color",
+      "type": "color",
+      "category": "switches",
+      "default": "#bdbdbd",
+      "description": "Generische Farbe ausgeschalteter Switches (modern HA). Wird oft von den spezifischeren --switch-unchecked-button-color und --switch-unchecked-track-color überschrieben."
+    },
+    {
+      "name": "--switch-checked-button-color",
+      "type": "color",
+      "category": "switches",
+      "default": "var(--switch-checked-color, var(--primary-color))",
+      "description": "Farbe des Switch-Knopfs (Thumb) im 'On'-Zustand. Spezifischer als --switch-checked-color — überschreibt den Knopf separat vom Track."
+    },
+    {
+      "name": "--switch-checked-track-color",
+      "type": "color",
+      "category": "switches",
+      "default": "var(--switch-checked-color, var(--primary-color))",
+      "description": "Farbe der Switch-Schiene (Track) im 'On'-Zustand. Oft transluzent gegenüber dem Button gemacht, für Material-Look."
+    },
+    {
+      "name": "--switch-unchecked-button-color",
+      "type": "color",
+      "category": "switches",
+      "default": "var(--switch-unchecked-color, #bdbdbd)",
+      "description": "Farbe des Switch-Knopfs (Thumb) im 'Off'-Zustand. Spezifischer als --switch-unchecked-color."
+    },
+    {
+      "name": "--switch-unchecked-track-color",
+      "type": "color",
+      "category": "switches",
+      "default": "var(--switch-unchecked-color, #bdbdbd)",
+      "description": "Farbe der Switch-Schiene (Track) im 'Off'-Zustand. Oft heller als der Button für Material-Look."
+    },
+
+    {
+      "name": "--table-row-background-color",
+      "type": "color",
+      "category": "tables",
+      "default": "var(--card-background-color)",
+      "description": "Hintergrund von Tabellen-Zeilen (z.B. Logbook, Verlauf, History-Panel). Default referenziert --card-background-color."
+    },
+    {
+      "name": "--table-row-alternative-background-color",
+      "type": "color",
+      "category": "tables",
+      "default": "var(--secondary-background-color)",
+      "description": "Hintergrund jeder zweiten Tabellen-Zeile (Zebra-Pattern). Bietet visuelle Trennung in langen Listen. Default referenziert --secondary-background-color."
+    },
+
+    {
+      "name": "--paper-item-icon-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--state-icon-color)",
+      "description": "Icon-Farbe in Polymer-basierten Listen-Items (Legacy HA-Komponenten, z.B. alte Sidebar-Renditionen, einige Dialog-Listen). Default referenziert --state-icon-color."
+    },
+    {
+      "name": "--paper-item-icon-active-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--state-icon-active-color)",
+      "description": "Aktive Variante von --paper-item-icon-color. Wirkt auf 'On'-States in Legacy-Listen-Komponenten."
+    },
+    {
+      "name": "--paper-toggle-button-checked-button-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--primary-color)",
+      "description": "Knopf-Farbe alter Polymer-Toggle-Buttons im 'On'-Zustand. Trotz neuer --switch-*-Vars werden viele Custom-Cards und Legacy-Dialoge weiterhin von dieser bestimmt."
+    },
+    {
+      "name": "--paper-toggle-button-checked-bar-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--primary-color)",
+      "description": "Bar/Track-Farbe alter Polymer-Toggle-Buttons im 'On'-Zustand."
+    },
+    {
+      "name": "--paper-toggle-button-unchecked-button-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--disabled-text-color)",
+      "description": "Knopf-Farbe alter Polymer-Toggle-Buttons im 'Off'-Zustand."
+    },
+    {
+      "name": "--paper-toggle-button-unchecked-bar-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--disabled-text-color)",
+      "description": "Bar/Track-Farbe alter Polymer-Toggle-Buttons im 'Off'-Zustand."
+    },
+
+    {
+      "name": "--mdc-select-fill-color",
+      "type": "color",
+      "category": "mdc",
+      "default": "rgba(245, 245, 245, 1)",
+      "description": "Hintergrund-Füllfarbe von Material-Design-Select-Dropdowns (in HA-Settings, Config-Flows, Forms). Beeinflusst die Felder unter dem Label."
+    },
+    {
+      "name": "--mdc-select-ink-color",
+      "type": "color",
+      "category": "mdc",
+      "default": "var(--primary-text-color)",
+      "description": "Textfarbe ('Tinte') des ausgewählten Wertes in Material-Design-Selects. Default referenziert --primary-text-color."
+    },
+    {
+      "name": "--mdc-select-label-ink-color",
+      "type": "color",
+      "category": "mdc",
+      "default": "var(--secondary-text-color)",
+      "description": "Farbe des Labels über dem Select-Feld. Default referenziert --secondary-text-color (dezenter als der Wert selbst)."
+    },
+    {
+      "name": "--mdc-select-dropdown-icon-color",
+      "type": "color",
+      "category": "mdc",
+      "default": "var(--secondary-text-color)",
+      "description": "Farbe des Dropdown-Pfeil-Icons im Select. Default referenziert --secondary-text-color."
+    },
+
+    {
+      "name": "--rgb-primary-color",
+      "type": "raw",
+      "category": "rgb",
+      "default": "3, 169, 244",
+      "description": "RGB-Trippel-Form von --primary-color als 'R, G, B' (Komma-getrennt, ohne `rgb()`-Wrapper). HA nutzt das für `rgba(var(--rgb-primary-color), 0.5)` Konstruktionen, um die Farbe mit variabler Transparenz zu kombinieren. Beim Anpassen von --primary-color sollte auch das hier mitgepflegt werden (es leitet sich nicht automatisch ab)."
+    },
+    {
+      "name": "--rgb-accent-color",
+      "type": "raw",
+      "category": "rgb",
+      "default": "255, 152, 0",
+      "description": "RGB-Trippel-Form von --accent-color als 'R, G, B'. Siehe --rgb-primary-color für Verwendungsmuster (Transparenz-Konstruktionen via rgba(var(--rgb-accent-color), alpha))."
+    },
+    {
+      "name": "--rgb-state-icon-color",
+      "type": "raw",
+      "category": "rgb",
+      "default": "68, 115, 158",
+      "description": "RGB-Trippel-Form von --state-icon-color. Für Transparenz-Berechnungen via rgba()."
+    },
+    {
+      "name": "--rgb-primary-text-color",
+      "type": "raw",
+      "category": "rgb",
+      "default": "33, 33, 33",
+      "description": "RGB-Trippel-Form von --primary-text-color. Für Transparenz-Berechnungen via rgba()."
+    },
+    {
+      "name": "--rgb-secondary-text-color",
+      "type": "raw",
+      "category": "rgb",
+      "default": "114, 114, 114",
+      "description": "RGB-Trippel-Form von --secondary-text-color. Für Transparenz-Berechnungen via rgba()."
+    },
+    {
+      "name": "--rgb-card-background-color",
+      "type": "raw",
+      "category": "rgb",
+      "default": "255, 255, 255",
+      "description": "RGB-Trippel-Form von --card-background-color. Wird oft für semi-transparente Card-Backgrounds genutzt: `background: rgba(var(--rgb-card-background-color), 0.7)`."
     }
   ]
 }
