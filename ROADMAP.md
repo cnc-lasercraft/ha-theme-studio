@@ -8,7 +8,7 @@
 | **v0.2** | Bubble-Card-Plugin + Mushroom-Plugin + Plugin-Tabs + HACS-Detection | ~3 Tage | ✓ **fertig** (2026-05-25) |
 | **v0.3** | iframe-Dashboard-Preview + Modes (light/dark) + Background-Picker + Variable-Remove + Tag v0.3.0 | ~3 Tage | ✓ **fertig** (2026-05-25, Tag `v0.3.0`) |
 | **v0.4** | Bubble-Card-Module-Editor + Theme-Switcher (side-by-side Diff mit Copy-Pfeilen) | ~4 Tage | ✓ **fertig** (2026-05-25, Tag `v0.4.0`) |
-| **v1.0** | Polishing, Doku, HACS-Release | ~3 Tage | offen |
+| **v1.0** | HACS-Packaging (Bundle ins custom_components, hacs.json, LICENSE), Doku-Pass, manifest version-bump | ~3 Tage | ✓ **fertig** (2026-05-25, Tag `v1.0.0`) |
 
 ## v0.1 – Schritte im Detail
 
@@ -63,10 +63,21 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 
 **Verschoben aus v0.4:** Variable-Extraction im Module-Editor (Sidebar mit erkannten `var(--xxx)`) — Polish für v0.5 / v1.0.
 
-## v1.0 – Release-tauglich
+## v1.0 – Release-tauglich (✓ abgeschlossen)
 
-- README, Installationsanleitung, Screenshots
-- `hacs.json` für HACS-Repository
-- Sauberes Error-Handling
-- i18n vorbereiten (DE/EN)
-- Versions-Tag, Release-Notes
+| Feature | Status | Commit |
+|---|---|---|
+| Vite-Build-Output wandert nach `custom_components/theme_studio/dist/`, Backend-Pfad-Lookup vereinfacht, single-tree Deploy | ✓ | `b30a711` |
+| `.gitignore`-Exception für das Bundle (HACS-User brauchen kein npm) | ✓ | `b30a711` |
+| `hacs.json` (content_in_root: false, render_readme, min HA 2024.1) | ✓ | `0ff0a50` |
+| `LICENSE` (MIT, 2026 Urs Landis) | ✓ | `0ff0a50` |
+| `manifest.json` version bump `0.1.0` → `1.0.0` | ✓ | `0ff0a50` |
+| README für HACS-Audience: Install via Custom Repository + manuelle Variante, Feature-Tabelle, Nutzungs-Guide, Plugin-Erweiterungs-Hinweis | ✓ | dieser Commit |
+| CLAUDE.md Deployment-Cheatsheet auf single-tree umgestellt | ✓ | dieser Commit |
+
+**Verschoben auf v1.0.x / v1.1+:**
+- Variable-Extraction im Module-Editor (Sidebar mit erkannten `var(--xxx)`)
+- Modes-Vergleich im Theme-Switcher
+- Sauberes Error-Handling-Audit
+- i18n (DE/EN) vorbereiten
+- Aufnahme in HACS-Default-Katalog (PR an HACS-Repo)
