@@ -33,7 +33,11 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { getPlugins, getVariableMeta } from "../core/schema-registry";
+import {
+  getActivePlugins,
+  onActivePluginsChanged,
+  getVariableMeta,
+} from "../core/schema-registry";
 import type { Category, VariableMeta } from "../core/types";
 import type { HomeAssistant } from "../types";
 
@@ -131,6 +135,7 @@ export class TsEditorView extends LitElement {
 
   private _appliedVars = new Set<string>();
   private _originalFullTheme: Record<string, unknown> = {};
+  private _unsubRegistry?: () => void;
 
   static override styles = css`
     :host {
@@ -509,11 +514,16 @@ export class TsEditorView extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
+    // Tabs zeigen ggf. unterschiedliche Plugins nachdem HACS-Detection
+    // durchgelaufen ist → re-rendern, wenn das passiert.
+    this._unsubRegistry = onActivePluginsChanged(() => this.requestUpdate());
     this._load();
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
+    this._unsubRegistry?.();
+    this._unsubRegistry = undefined;
     this._revertAll();
   }
 
@@ -632,7 +642,7 @@ export class TsEditorView extends LitElement {
    * geschrieben.
    */
   private _ensurePluginRows(pluginId: string, mode: string) {
-    const plugin = getPlugins().find((p) => p.manifest.id === pluginId);
+    const plugin = getActivePlugins().find((p) => p.manifest.id === pluginId);
     if (!plugin) return;
     const existing = new Set(
       this._rows.filter((r) => r.mode === mode).map((r) => r.varName),
@@ -844,7 +854,7 @@ export class TsEditorView extends LitElement {
 
   private _groupByCategory(rows: EditorRow[]): CategoryGroup[] {
     const known = new Map<string, Category>();
-    for (const p of getPlugins()) {
+    for (const p of getActivePlugins()) {
       for (const c of p.schema.categories) {
         if (!known.has(c.id)) known.set(c.id, c);
       }
@@ -1129,7 +1139,7 @@ export class TsEditorView extends LitElement {
     const tabs: Array<{ id: string; label: string; count: number }> = [
       { id: IN_THEME_TAB, label: "Im Theme", count: inThemeCount },
     ];
-    for (const p of getPlugins()) {
+    for (const p of getActivePlugins()) {
       tabs.push({
         id: p.manifest.id,
         label: p.manifest.name,

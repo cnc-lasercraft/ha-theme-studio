@@ -10,6 +10,7 @@ v0.1 Schritt 2: `list_themes`, `get_theme`, `save_theme`.
 """
 from __future__ import annotations
 
+import json
 import logging
 import os
 import shutil
@@ -26,8 +27,10 @@ from homeassistant.core import HomeAssistant, callback
 
 from .const import (
     BACKUPS_DIR,
+    HACS_STORAGE_PATH,
     THEMES_DIR,
     WS_GET_THEME,
+    WS_LIST_HACS_REPOS,
     WS_LIST_THEMES,
     WS_SAVE_THEME,
 )
@@ -277,9 +280,57 @@ async def ws_save_theme(
     )
 
 
+def _scan_hacs_repos(path: Path) -> list[str]:
+    """Liest die HACS-Storage-Datei, gibt full_names der installierten Repos zurück.
+
+    HACS-Format: `{ "data": { "<id>": { "full_name": "...", "installed": true, ... } } }`.
+    Returns [] wenn Datei fehlt oder unlesbar (kein HACS oder defektes Format) —
+    Frontend interpretiert das als "kein Filter anwenden".
+    """
+    if not path.exists():
+        return []
+    try:
+        with path.open("r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, json.JSONDecodeError):
+        return []
+    repos_dict = data.get("data", {})
+    if not isinstance(repos_dict, dict):
+        return []
+    out: list[str] = []
+    for v in repos_dict.values():
+        if not isinstance(v, dict):
+            continue
+        if v.get("installed") is True:
+            fn = v.get("full_name")
+            if isinstance(fn, str) and fn:
+                out.append(fn)
+    return out
+
+
+@websocket_api.websocket_command({vol.Required("type"): WS_LIST_HACS_REPOS})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_list_hacs_repos(
+    hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]
+) -> None:
+    path = Path(hass.config.path(HACS_STORAGE_PATH))
+    try:
+        repos = await hass.async_add_executor_job(_scan_hacs_repos, path)
+    except Exception as exc:  # noqa: BLE001 — robust gegen unerwartete Errors
+        _LOGGER.exception("list_hacs_repos failed")
+        connection.send_error(msg["id"], "hacs_read_failed", str(exc))
+        return
+    connection.send_result(
+        msg["id"],
+        {"repos": repos, "found": path.exists()},
+    )
+
+
 @callback
 def async_register_websocket_api(hass: HomeAssistant) -> None:
     """Registriert alle Theme-Studio-WS-Commands."""
     websocket_api.async_register_command(hass, ws_list_themes)
     websocket_api.async_register_command(hass, ws_get_theme)
     websocket_api.async_register_command(hass, ws_save_theme)
+    websocket_api.async_register_command(hass, ws_list_hacs_repos)

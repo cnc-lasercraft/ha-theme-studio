@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "version_supported": ">=3.0.0",
   "detect": {
-    "method": "always"
+    "method": "hacs-repo",
+    "value": "piitaya/lovelace-mushroom"
   },
-  "description": "CSS-Variablen für Mushroom Cards (piitaya/lovelace-mushroom). Vars wurden aus dem HACS-Build extrahiert — Typografie (Title/Subtitle/Card-Primary/Card-Secondary), Icons, Chips, Controls, plus eine grosse Material-RGB-Palette und State-spezifische RGB-Farben für Climate/Cover/Lock/Person/etc. Detection via HACS-Repo-Check folgt in v0.3.x — aktuell wird das Plugin immer geladen."
+  "description": "CSS-Variablen für Mushroom Cards (piitaya/lovelace-mushroom). Typografie (Title/Subtitle/Card-Primary/Card-Secondary), Icons, Chips, Controls, Material-RGB-Palette und State-spezifische RGB-Farben für Climate/Cover/Lock/Person/etc. Plugin wird nur geladen wenn HACS piitaya/lovelace-mushroom als installiert meldet."
 }

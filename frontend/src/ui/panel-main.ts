@@ -1,6 +1,9 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { getRegistryStats } from "../core/schema-registry";
+import {
+  getRegistryStats,
+  setInstalledHacsRepos,
+} from "../core/schema-registry";
 import type { HomeAssistant, PanelRoute } from "../types";
 import "./theme-picker";
 import "./editor-view";
@@ -24,11 +27,37 @@ export class ThemeStudioPanel extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    // Step-4-Diagnose: einmaliger Log auf der Browser-Console.
-    // Wird in Step 7 (Editor) durch echte Nutzung der Registry ersetzt.
-    console.info("[theme-studio] registry:", getRegistryStats());
+    console.info("[theme-studio] registry (initial):", getRegistryStats());
     this._demoMode = window.location.hash === "#demo";
     window.addEventListener("hashchange", this._onHashChange);
+    void this._loadHacsRepos();
+  }
+
+  private async _loadHacsRepos() {
+    try {
+      const result = await this.hass.connection.sendMessagePromise<{
+        repos: string[];
+        found: boolean;
+      }>({ type: "theme_studio/list_hacs_repos" });
+      if (result.found) {
+        setInstalledHacsRepos(result.repos);
+        console.info(
+          "[theme-studio] HACS-Filter aktiv:",
+          result.repos.length,
+          "installierte Repos →",
+          getRegistryStats(),
+        );
+      } else {
+        console.info(
+          "[theme-studio] keine HACS-Storage gefunden — alle Plugins geladen",
+        );
+      }
+    } catch (err) {
+      console.warn(
+        "[theme-studio] HACS-Detection fehlgeschlagen, alle Plugins geladen:",
+        err,
+      );
+    }
   }
 
   override disconnectedCallback() {

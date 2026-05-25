@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "version_supported": ">=2.0.0",
   "detect": {
-    "method": "always"
+    "method": "hacs-repo",
+    "value": "Clooos/Bubble-Card"
   },
-  "description": "CSS-Variablen für Bubble Card (Clooos/Bubble-Card). Vars wurden aus dem HACS-Build extrahiert — 100+ Variablen über Global, Pop-Up, Button, Climate, Media-Player, Select, Slider und weitere Card-Types. Detection via HACS-Repo-Check folgt in v0.2.x — aktuell wird das Plugin immer geladen."
+  "description": "CSS-Variablen für Bubble Card (Clooos/Bubble-Card). 100+ Variablen über Global, Pop-Up, Button, Climate, Media-Player, Select, Slider und weitere Card-Types. Plugin wird nur geladen wenn HACS Clooos/Bubble-Card als installiert meldet."
 }
