@@ -8,13 +8,19 @@ HA hat kein UI um Theme-Variablen grafisch zu pflegen. Stattdessen: YAML editier
 
 ## Status
 
-**v0.3 live** (Tag `v0.3.0`, 2026-05-25).
+**v0.4 live** (Tag `v0.4.0`, 2026-05-25).
+
+Drei Top-Level-Tabs: **Themes** / **Bubble Card Module** (wenn bubble-card aktiv) / **Vergleichen**.
 
 Drei Plugins (HACS-gefiltert): **ha-core** (116 Vars / 17 Kategorien), **bubble-card** (107 Vars / 15 Kategorien), **mushroom** (~109 Vars / 12 Kategorien). Plus Namens-/Wert-Heuristik für unbekannte Vars.
 
-Editor mit Plugin-Tabs, **Modes (light/dark)**, **iframe-Dashboard-Preview** (Live-Override im echten Dashboard), Spezial-Controls für Farben/Längen/Backgrounds, Variable-Hinzufügen-und-Entfernen, Auto-Backup bei jedem Save.
+Theme-Editor mit Plugin-Tabs, **Modes (light/dark)**, **iframe-Dashboard-Preview** (Live-Override im echten Dashboard), Spezial-Controls für Farben/Längen/Backgrounds, Variable-Hinzufügen + -Entfernen, Auto-Backup bei jedem Save.
 
-Nächste Phase: **v0.4** (Bubble-Card-Module-Editor + Theme-Switcher).
+Bubble-Card-Module-Editor: Liste aller Module aus `bubble_card/modules/`, Metadaten + grosse CSS-Textarea, Backup inklusive.
+
+Theme-Switcher: side-by-side Diff zwischen 2 Themes mit Color-Swatches, "Nur Unterschiede"-Filter, Copy-Pfeile ← / →.
+
+Nächste Phase: **v1.0** (Polishing, finale Doku, HACS-Release).
 
 ## Architektur in einem Satz
 

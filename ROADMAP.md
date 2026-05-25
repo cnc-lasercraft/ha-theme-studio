@@ -7,7 +7,7 @@
 | **v0.1** | Core + ha-core-Plugin + Backend + Live-Preview lokal | ~1 Woche | ✓ **fertig** (2026-05-25, Tag `v0.1.0`) |
 | **v0.2** | Bubble-Card-Plugin + Mushroom-Plugin + Plugin-Tabs + HACS-Detection | ~3 Tage | ✓ **fertig** (2026-05-25) |
 | **v0.3** | iframe-Dashboard-Preview + Modes (light/dark) + Background-Picker + Variable-Remove + Tag v0.3.0 | ~3 Tage | ✓ **fertig** (2026-05-25, Tag `v0.3.0`) |
-| **v0.4** | Bubble-Card-Module-Verwaltung (CRUD auf YAML-Module), Theme-Switcher | ~4 Tage | offen |
+| **v0.4** | Bubble-Card-Module-Editor + Theme-Switcher (side-by-side Diff mit Copy-Pfeilen) | ~4 Tage | ✓ **fertig** (2026-05-25, Tag `v0.4.0`) |
 | **v1.0** | Polishing, Doku, HACS-Release | ~3 Tage | offen |
 
 ## v0.1 – Schritte im Detail
@@ -51,18 +51,17 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 
 **Verschoben aus v0.3:** Theme-Switcher (mehrere Themes parallel) — kommt in v0.4.
 
-## v0.4 – Bubble-Card-Module + Theme-Switcher (offen)
+## v0.4 – Bubble-Card-Module + Theme-Switcher (✓ abgeschlossen)
 
-Bubble-Card-Module sind YAML-Snippets mit `code:`-CSS-Blöcken in Lovelace-Storage. Studio bekommt einen Modul-Verwaltungs-Layer:
+| Feature | Status | Commit |
+|---|---|---|
+| Backend: 3 WS-Commands für Module (`list_modules`, `get_module`, `save_module`). Pfad `<config>/bubble_card/modules/*.yaml`, Backup nach `bubble_card/.backups/` | ✓ | `19d141e` |
+| Frontend: Top-Level-Tab "Bubble Card Module" (sichtbar wenn bubble-card-Plugin aktiv) | ✓ | `19d141e` |
+| `<ts-module-picker>`: Listet Module mit Metadaten (Name, Description, Supported-Chips, Global/no-code Badges) | ✓ | `19d141e` |
+| `<ts-module-editor>`: Metadaten-Fields (name, description, version, supported, is_global) + grosse Monospace-CSS-Textarea. Unbekannte YAML-Felder werden 1:1 erhalten | ✓ | `19d141e` |
+| `<ts-compare-view>` — Theme-Switcher als 3. Top-Tab: 2 Dropdowns, tabularer Diff mit Color-Swatches, "Nur Unterschiede"-Filter, Copy-Pfeile ← / → mit Direct-Write-Save inkl. Backup | ✓ | `a95148c` |
 
-- Liste vorhandener Module (lesen aus Bubble-Card-Storage)
-- Editor mit Syntax-Highlighting für das CSS
-- Variablen-Extraktion: Im Modul-CSS erkannte `var(--xxx)` werden zur Plugin-Variablen-Liste hinzugefügt
-- Speichern zurück über Backend
-
-Damit sind die 3 visionOS-Module (Default/Title/Separator) im Studio integriert.
-
-Zusätzlich: **Theme-Switcher** — Picker erlaubt 2 Themes gleichzeitig zu öffnen, Werte side-by-side vergleichen und kopieren.
+**Verschoben aus v0.4:** Variable-Extraction im Module-Editor (Sidebar mit erkannten `var(--xxx)`) — Polish für v0.5 / v1.0.
 
 ## v1.0 – Release-tauglich
 
