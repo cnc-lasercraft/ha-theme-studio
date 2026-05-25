@@ -17,12 +17,13 @@
 | 1 | Repo-Skelett | Verzeichnisstruktur, `frontend/package.json`, Vite-Config, `custom_components/theme_studio/manifest.json` | nein |
 | 2 | Backend-Integration | `custom_components/theme_studio/` mit WS-Commands `list_themes`, `get_theme`, `save_theme` | ja, via Browser DevTools / `ha_call_service` |
 | 3 | ha-core schema.json | ~30 wichtigste HA-Variablen (nicht alle 150 sofort), typisiert | ja, JSON-Validierung |
-| 4 | Plugin-Loader | Core lädt Schemas dynamisch aus `plugins/` | ja, im Browser |
-| 5 | Erste UI-Controls | Color-Picker + Length-Slider als Lit-Komponenten | ja, isoliert |
-| 6 | Editor-Panel (minimal) | Variablen-Liste, Werte ändern, lokale Live-Preview auf `:root` | **erstes echtes Erfolgserlebnis** |
-| 7 | Save-Flow | Editor → Backend → `themes/xxx.yaml` → `frontend.reload_themes` | ja, mit visionos-Theme |
+| 4 | Plugin-Loader + Heuristik | Core lädt Schemas dynamisch aus `plugins/` + Type-Detection für unbekannte Variablen (siehe ARCHITECTURE) | ja, im Browser |
+| 5 | Erste UI-Controls | Color-Picker + Length-Slider + Raw-Input als Lit-Komponenten | ja, isoliert |
+| 6 | Theme-Picker (Start-Screen) | Liste aller `themes/*.yaml`, Auswahl, "Neu von Vorlage" / "Leer" | ja, mit existierenden Themes |
+| 7 | Editor-Panel (minimal) | Variablen-Liste des gewählten Themes, Werte ändern, lokale Live-Preview auf `:root` | **erstes echtes Erfolgserlebnis** |
+| 8 | Save-Flow | Editor → Backend → `themes/xxx.yaml` → `frontend.reload_themes` | ja, mit visionos-Theme |
 
-**Nach Schritt 7:** Funktionsfähiger Minimal-Editor für HA-Core-Variablen, ohne Bubble Card, ohne iframe-Preview. visionOS-Theme über das UI editierbar und persistierbar.
+**Nach Schritt 8:** Funktionsfähiger Minimal-Editor für **jedes** Theme im Verzeichnis. Plugin-Schemas decken bekannte Variablen ab, Heuristik fängt unbekannte ab. Noch ohne Bubble-Card-Plugin und ohne iframe-Preview, aber Theme-agnostisch.
 
 ## v0.2 – Plugins ausbauen
 

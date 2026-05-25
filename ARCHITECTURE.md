@@ -114,6 +114,42 @@ Das Herzstück der Modularität. Jedes Plugin liefert eine `schema.json`:
 
 **Var-Refs sind wichtig:** Theme-Variablen leben von Vererbung. Der Editor muss das visualisieren *und* editierbar machen.
 
+## Heuristische Type-Detection (für unbekannte Variablen)
+
+Damit Studio auch Themes editieren kann, deren Variablen in **keinem** Plugin-Schema stehen, fällt der Variablen-Loader auf eine Namens-Heuristik zurück:
+
+| Suffix-Pattern | Typ-Annahme |
+|---|---|
+| `-color`, `-bg`, `-background` | `color` |
+| `-radius`, `-size`, `-width`, `-height`, `-padding`, `-margin`, `-gap` | `length` |
+| `-shadow` | `shadow` |
+| `-family` | `font-family` |
+| `var(...)` als Wert | `var-ref` |
+| sonst | `raw` |
+
+So bekommt **jede** Variable einen funktionierenden Editor – im schlechtesten Fall ein Text-Input, im besten ein passender grafischer Control. Plugin-Schemas haben immer Vorrang vor der Heuristik.
+
+## Initial-Flow: Theme-Picker als Start-Screen
+
+Studio öffnet nicht in einem leeren Editor. Erster Screen ist ein Theme-Picker, der `themes/`-Verzeichnis scannt:
+
+```
+┌─────────────────────────────────────┐
+│  Theme Studio                       │
+│                                     │
+│  Welches Theme möchtest du tunen?   │
+│                                     │
+│  📁 themes/visionos.yaml      [→]   │
+│  📁 themes/graphite.yaml      [→]   │
+│  📁 themes/ios-dark.yaml      [→]   │
+│                                     │
+│  + Neues Theme von Vorlage          │
+│  + Leeres Theme erstellen           │
+└─────────────────────────────────────┘
+```
+
+Konsequenz: Studio funktioniert ab v0.1 für **jedes** HA-Theme, nicht nur visionOS. Damit ist es sofort Community-tauglich, wenn HACS-Release kommt.
+
 ## Backend (Custom Integration)
 
 Bietet WebSocket-Commands und einen Service:

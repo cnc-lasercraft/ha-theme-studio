@@ -32,3 +32,6 @@ Lit + TypeScript (Frontend), Python (Backend), Vite (Build). HA-Standard-Stack, 
 
 ## D9 – Plugin-System ist Pflicht
 Modularität ab v0.1 eingebaut, nicht nachgerüstet. Der Core kennt nur Schemas, nie konkrete Card-Sammlungen.
+
+## D10 – Theme-Picker als Start-Flow + Heuristik-Fallback
+Studio öffnet auf einer Theme-Auswahl, nicht einem leeren Editor. Editor funktioniert ab v0.1 für **jedes** Theme im `themes/`-Verzeichnis. Variablen ohne Plugin-Schema bekommen über Namens-Heuristik (`-color`, `-radius`, `-family`, `-shadow`, …) den passenden Control, im Notfall einen Raw-Text-Input. So ist Studio nicht auf visionOS oder bekannte Themes beschränkt.
