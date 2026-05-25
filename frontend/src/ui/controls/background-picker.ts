@@ -58,6 +58,21 @@ function compose(modifiers: string, url: string): string {
   return m ? `${m} ${urlPart}` : urlPart;
 }
 
+/**
+ * Normalisiert User-Eingaben für die URL:
+ * - Filesystem-Pfade `/homeassistant/www/foo.jpg` → `/local/foo.jpg`
+ *   (HA serviert /homeassistant/www/ unter dem URL-Prefix /local/).
+ * - `/config/www/foo.jpg` → `/local/foo.jpg` (alternativer Pfad bei
+ *   manchen HA-Installationen).
+ */
+function normalizeUrl(url: string): string {
+  const u = url.trim();
+  if (!u) return "";
+  const fsMatch = /^\/(homeassistant|config)\/www\/(.+)$/.exec(u);
+  if (fsMatch) return `/local/${fsMatch[2]}`;
+  return u;
+}
+
 @customElement("ts-background-picker")
 export class TsBackgroundPicker extends LitElement {
   @property({ type: String }) value = "";
@@ -162,7 +177,7 @@ export class TsBackgroundPicker extends LitElement {
           type="url"
           .value=${parsed.url}
           @change=${this._onUrlChange}
-          placeholder="https://… oder /local/wallpaper.jpg"
+          placeholder="https://… oder /local/wallpaper.jpg (= /homeassistant/www/wallpaper.jpg)"
           spellcheck="false"
           autocomplete="off"
         />
@@ -203,7 +218,8 @@ export class TsBackgroundPicker extends LitElement {
   }
 
   private _onUrlChange(e: Event) {
-    const url = (e.target as HTMLInputElement).value;
+    const raw = (e.target as HTMLInputElement).value;
+    const url = normalizeUrl(raw);
     const { modifiers } = parse(this.value);
     this._emit(compose(modifiers, url));
   }
