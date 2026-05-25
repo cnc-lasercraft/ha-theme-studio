@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { getRegistryStats } from "../core/schema-registry";
 import type { HomeAssistant, PanelRoute } from "../types";
 import "./theme-picker";
 
@@ -13,6 +14,13 @@ export class ThemeStudioPanel extends LitElement {
   // angezeigt. Der echte Editor kommt in Schritt 7.
   @state() private _selected: { file: string; theme_name: string } | null =
     null;
+
+  override connectedCallback() {
+    super.connectedCallback();
+    // Step-4-Diagnose: einmaliger Log auf der Browser-Console.
+    // Wird in Step 7 (Editor) durch echte Nutzung der Registry ersetzt.
+    console.info("[theme-studio] registry:", getRegistryStats());
+  }
 
   static override styles = css`
     :host {
