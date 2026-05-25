@@ -75,6 +75,13 @@ interface EditorRow {
    * eigenständige Einträge (Top-Level-Wert vs. Override).
    */
   mode: string;
+  /**
+   * User hat den Trash-Button geklickt — die Variable wird beim
+   * nächsten Save aus dem Theme-YAML entfernt. Bis dahin bleibt die
+   * Row sichtbar (durchgestrichen) damit der User per Reset undo'en
+   * kann.
+   */
+  markedForRemoval?: boolean;
 }
 
 interface CategoryGroup extends Category {
@@ -339,7 +346,7 @@ export class TsEditorView extends LitElement {
     }
     .row {
       display: grid;
-      grid-template-columns: minmax(220px, 320px) 1fr auto;
+      grid-template-columns: minmax(220px, 320px) 1fr auto auto;
       gap: 12px;
       align-items: center;
       padding: 10px 0;
@@ -401,6 +408,48 @@ export class TsEditorView extends LitElement {
       background: rgba(67, 160, 71, 0.15);
       color: var(--success-color, #43a047);
       font-weight: 500;
+    }
+    .row-tag.removing {
+      background: rgba(219, 68, 55, 0.15);
+      color: var(--error-color, #db4437);
+      font-weight: 500;
+    }
+    .row.removed {
+      background: linear-gradient(
+        to right,
+        rgba(219, 68, 55, 0.06) 0%,
+        transparent 30%
+      );
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .row.removed .var-name,
+    .row.removed .description {
+      text-decoration: line-through;
+      opacity: 0.55;
+    }
+    .row.removed .control-cell {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--secondary-text-color);
+      font-size: 1rem;
+      padding: 6px 8px;
+      border-radius: 4px;
+      line-height: 1;
+    }
+    .remove-btn:hover:not([disabled]) {
+      background: rgba(219, 68, 55, 0.1);
+      color: var(--error-color);
+    }
+    .remove-btn[disabled] {
+      opacity: 0.2;
+      cursor: not-allowed;
     }
     .reset-btn {
       background: none;
@@ -614,17 +663,25 @@ export class TsEditorView extends LitElement {
     if (dirty === 0 || this._saveStatus.state === "saving") return;
 
     const adding = this._rows.filter(
-      (r) => !r.inTheme && r.current !== r.original && r.current !== "",
+      (r) =>
+        !r.inTheme &&
+        !r.markedForRemoval &&
+        r.current !== r.original &&
+        r.current !== "",
     ).length;
     const modifying = this._rows.filter(
-      (r) => r.inTheme && r.current !== r.original,
+      (r) =>
+        r.inTheme && !r.markedForRemoval && r.current !== r.original,
     ).length;
+    const removing = this._removingCount();
 
     const parts: string[] = [];
     if (modifying > 0)
       parts.push(`${modifying} bestehende Änderung${modifying === 1 ? "" : "en"}`);
     if (adding > 0)
       parts.push(`${adding} neue Variable${adding === 1 ? "" : "n"}`);
+    if (removing > 0)
+      parts.push(`${removing} Entfernung${removing === 1 ? "" : "en"}`);
     const what = parts.join(" + ");
 
     const confirmMsg =
@@ -646,17 +703,26 @@ export class TsEditorView extends LitElement {
         });
 
       this._originalFullTheme = merged;
-      // Promote: jede non-inTheme-Row mit echtem Wert wird zu inTheme,
-      // jede in-theme-Row übernimmt current als neuen Original-Stand.
-      this._rows = this._rows.map((r) => {
-        if (r.inTheme) {
-          return { ...r, original: r.current };
-        }
-        if (r.current !== r.original && r.current !== "") {
-          return { ...r, original: r.current, inTheme: true };
-        }
-        return r;
-      });
+      // Post-save row state:
+      //  - markedForRemoval-Rows komplett raus (sind nicht mehr im YAML).
+      //  - inTheme-Rows: original = current (clean state).
+      //  - non-inTheme-Rows mit echtem Wert: promote to inTheme.
+      this._rows = this._rows
+        .filter((r) => !r.markedForRemoval)
+        .map((r) => {
+          if (r.inTheme) {
+            return { ...r, original: r.current };
+          }
+          if (r.current !== r.original && r.current !== "") {
+            return { ...r, original: r.current, inTheme: true };
+          }
+          return r;
+        });
+      // Plugin-Tab: gerade entfernte Vars wieder als not-in-theme nachladen,
+      // damit sie als "default"-Eintrag sofort wieder erscheinen.
+      if (this._activeTab !== IN_THEME_TAB) {
+        this._ensurePluginRows(this._activeTab, this._activeMode);
+      }
       this._saveStatus = { state: "success", backup: result.backup };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -694,6 +760,11 @@ export class TsEditorView extends LitElement {
           r.mode === DEFAULT_MODE && r.inTheme && r.yamlKey === normalized,
       );
       if (row) {
+        if (row.markedForRemoval) {
+          // Variable wird beim Save entfernt — Key aus merged auslassen.
+          consumedDefault.add(row.varName);
+          continue;
+        }
         merged[origKey] = row.current;
         consumedDefault.add(row.varName);
       } else {
@@ -704,6 +775,7 @@ export class TsEditorView extends LitElement {
     for (const row of this._rows) {
       if (row.mode !== DEFAULT_MODE) continue;
       if (row.inTheme) continue;
+      if (row.markedForRemoval) continue;
       if (row.current === row.original) continue;
       if (row.current === "") continue;
       if (consumedDefault.has(row.varName)) continue;
@@ -735,6 +807,10 @@ export class TsEditorView extends LitElement {
               r.mode === modeName && r.inTheme && r.yamlKey === normalized,
           );
           if (row) {
+            if (row.markedForRemoval) {
+              consumed.add(row.varName);
+              continue;
+            }
             newModeDict[k] = row.current;
             consumed.add(row.varName);
           } else {
@@ -745,6 +821,7 @@ export class TsEditorView extends LitElement {
         for (const row of this._rows) {
           if (row.mode !== modeName) continue;
           if (row.inTheme) continue;
+          if (row.markedForRemoval) continue;
           if (row.current === row.original) continue;
           if (row.current === "") continue;
           if (consumed.has(row.varName)) continue;
@@ -840,7 +917,18 @@ export class TsEditorView extends LitElement {
     this._revertCssVar(row.varName);
     this._rows = this._rows.map((r) =>
       r.varName === row.varName && r.mode === row.mode
-        ? { ...r, current: r.original }
+        ? { ...r, current: r.original, markedForRemoval: false }
+        : r,
+    );
+  }
+
+  private _removeRow(row: EditorRow) {
+    if (!row.inTheme) return;
+    // Live-Preview-Override entfernen (User soll sehen wie's nach Save aussieht)
+    this._revertCssVar(row.varName);
+    this._rows = this._rows.map((r) =>
+      r.varName === row.varName && r.mode === row.mode
+        ? { ...r, markedForRemoval: true }
         : r,
     );
   }
@@ -856,19 +944,34 @@ export class TsEditorView extends LitElement {
       return;
     }
     this._revertAll();
-    this._rows = this._rows.map((r) => ({ ...r, current: r.original }));
+    this._rows = this._rows.map((r) => ({
+      ...r,
+      current: r.original,
+      markedForRemoval: false,
+    }));
+  }
+
+  private _isRowDirty(r: EditorRow): boolean {
+    return r.current !== r.original || r.markedForRemoval === true;
   }
 
   private _dirtyCount(): number {
     return this._rows.reduce(
-      (sum, r) => sum + (r.current !== r.original ? 1 : 0),
+      (sum, r) => sum + (this._isRowDirty(r) ? 1 : 0),
       0,
     );
   }
 
   private _modeDirtyCount(mode: string): number {
     return this._rows.reduce(
-      (sum, r) => sum + (r.mode === mode && r.current !== r.original ? 1 : 0),
+      (sum, r) => sum + (r.mode === mode && this._isRowDirty(r) ? 1 : 0),
+      0,
+    );
+  }
+
+  private _removingCount(): number {
+    return this._rows.reduce(
+      (sum, r) => sum + (r.markedForRemoval ? 1 : 0),
       0,
     );
   }
@@ -1075,13 +1178,20 @@ export class TsEditorView extends LitElement {
     const n = this._dirtyCount();
     if (n === 0) return "";
     const adding = this._rows.filter(
-      (r) => !r.inTheme && r.current !== r.original && r.current !== "",
+      (r) =>
+        !r.inTheme &&
+        !r.markedForRemoval &&
+        r.current !== r.original &&
+        r.current !== "",
     ).length;
-    const text =
-      adding > 0
-        ? `${n} Änderung${n === 1 ? "" : "en"} (${adding} neu)`
-        : `${n} Änderung${n === 1 ? "" : "en"}`;
-    return html`<span class="dirty-badge">${text}</span>`;
+    const removing = this._removingCount();
+    const parts: string[] = [];
+    if (adding > 0) parts.push(`${adding} neu`);
+    if (removing > 0) parts.push(`${removing} ×`);
+    const suffix = parts.length > 0 ? ` (${parts.join(", ")})` : "";
+    return html`<span class="dirty-badge"
+      >${n} Änderung${n === 1 ? "" : "en"}${suffix}</span
+    >`;
   }
 
   private _renderBody() {
@@ -1154,11 +1264,17 @@ export class TsEditorView extends LitElement {
   }
 
   private _renderRow(row: EditorRow) {
-    const isDirty = row.current !== row.original;
-    const showDefaultTag = !row.inTheme && !isDirty;
-    const showAddingTag = !row.inTheme && isDirty && row.current !== "";
+    const valueDirty = row.current !== row.original;
+    const isMarkedForRemoval = row.markedForRemoval === true;
+    const isDirty = valueDirty || isMarkedForRemoval;
+    const showDefaultTag = !row.inTheme && !valueDirty && !isMarkedForRemoval;
+    const showAddingTag =
+      !row.inTheme && valueDirty && row.current !== "" && !isMarkedForRemoval;
+    const rowClasses = ["row"];
+    if (valueDirty && !isMarkedForRemoval) rowClasses.push("dirty");
+    if (isMarkedForRemoval) rowClasses.push("removed");
     return html`
-      <div class="row ${isDirty ? "dirty" : ""}">
+      <div class=${rowClasses.join(" ")}>
         <div class="meta-cell">
           <code class="var-name">
             ${isDirty ? html`<span class="dirty-dot">●</span>` : ""}
@@ -1172,6 +1288,9 @@ export class TsEditorView extends LitElement {
             ${showAddingTag
               ? html`<span class="row-tag adding">+ wird ergänzt</span>`
               : ""}
+            ${isMarkedForRemoval
+              ? html`<span class="row-tag removing">× wird entfernt</span>`
+              : ""}
           </code>
           ${row.meta.description
             ? html`<span class="description">${row.meta.description}</span>`
@@ -1182,9 +1301,19 @@ export class TsEditorView extends LitElement {
           class="reset-btn"
           ?disabled=${!isDirty}
           @click=${() => this._resetRow(row)}
-          title="Auf Original zurücksetzen"
+          title="Auf Original zurücksetzen (verwirft auch eine Entfernen-Markierung)"
         >
           ↺
+        </button>
+        <button
+          class="remove-btn"
+          ?disabled=${!row.inTheme || isMarkedForRemoval}
+          @click=${() => this._removeRow(row)}
+          title=${row.inTheme
+            ? "Variable beim nächsten Speichern aus dem Theme entfernen"
+            : "Nicht im Theme — nichts zu entfernen"}
+        >
+          🗑
         </button>
       </div>
     `;
