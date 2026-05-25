@@ -68,12 +68,12 @@ export function getPlugins(): readonly LoadedPlugin[] {
  * (mit `source: "schema"`). Sonst wird der Typ über die Heuristik bestimmt
  * (`source: "heuristic"`).
  */
-export function getVariableMeta(name: string): VariableMeta {
+export function getVariableMeta(name: string, value?: string): VariableMeta {
   const hit = VAR_INDEX.get(name);
   if (hit) {
     return { ...hit.def, source: "schema", plugin: hit.pluginId };
   }
-  const type = inferType(name);
+  const type = inferType(name, value);
   return {
     name,
     type,

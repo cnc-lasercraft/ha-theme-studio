@@ -394,7 +394,9 @@ export class TsEditorView extends LitElement {
       const sval = String(val);
       const varName = key.startsWith("--") ? key : `--${key}`;
       const yamlKey = varName.slice(2);
-      const meta = getVariableMeta(varName);
+      // Wert mitgeben — die Heuristik fällt darauf zurück, wenn der Name
+      // nichts verrät (z.B. `--label-badge-red: rgba(...)` → color).
+      const meta = getVariableMeta(varName, sval);
       rows.push({ varName, yamlKey, meta, original: sval, current: sval });
     }
     this._skippedKeys = skipped;
