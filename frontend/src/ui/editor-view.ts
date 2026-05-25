@@ -7,15 +7,24 @@
 // in den Live-Preview.
 //
 // Tabs (v0.2):
-//   - "Im Theme"  — zeigt nur Variablen, die im YAML schon gesetzt sind
-//                   (Default-View beim Öffnen).
-//   - "<Plugin>"  — pro registriertem Plugin ein Tab, zeigt ALLE Vars
-//                   aus dessen schema.json, auch wenn sie im aktuellen
-//                   Theme nicht vorkommen. Default-Wert aus Schema =
-//                   "Original", User kann frei editieren. Beim Save
-//                   wird nur dann geschrieben, wenn `current !==
-//                   original`. So lassen sich neue Variablen einfach
-//                   ins Theme aufnehmen.
+//   - "Im Theme"  — zeigt nur Variablen, die im YAML schon gesetzt sind.
+//   - "<Plugin>"  — alle Vars aus dessen schema.json, auch wenn nicht
+//                   im aktuellen Theme. Default-Wert aus Schema =
+//                   "Original". Edit → wird beim Save neu in YAML
+//                   geschrieben.
+//
+// Modes (v0.2.x):
+//   HA-Themes können `modes: { light: {…}, dark: {…} }` als Overrides
+//   definieren. Der Editor zeigt einen Mode-Selector in der Toolbar.
+//   - "Default"  bearbeitet die Top-Level-Vars (Basis-Werte).
+//   - "Light"    bearbeitet Overrides die HA nur im Light-Mode anwendet.
+//   - "Dark"     analog für Dark-Mode.
+//   Im non-default-Mode startet eine nicht-im-Theme-stehende Plugin-Var
+//   mit leerem Wert (= kein Override). Sobald der User einen Wert setzt,
+//   landet er beim Save als Eintrag in `modes.<mode>.<var>`.
+//   Live-Preview greift via :root unabhängig vom aktiven HA-Mode —
+//   um den richtigen Kontext zu sehen, muss man HA selbst auf
+//   Light/Dark umschalten.
 //
 // `disconnectedCallback` revertet sämtliche CSS-Overrides, damit man
 // das Theme-Studio sauber verlassen kann ohne Phantom-Styles auf dem
@@ -56,12 +65,14 @@ interface EditorRow {
   meta: VariableMeta;
   original: string;
   current: string;
-  /**
-   * True, wenn diese Variable schon im geladenen Theme stand.
-   * False für Schema-Vars, die nur sichtbar werden, weil der User auf
-   * einem Plugin-Tab ist und die Variable ggf. neu aufnehmen will.
-   */
   inTheme: boolean;
+  /**
+   * Welcher Mode-Bucket diese Row angehört: `"default"` für Top-Level,
+   * oder ein Mode-Name aus `theme.modes` (z.B. `"light"`, `"dark"`).
+   * Rows mit demselben varName aber unterschiedlichen modes sind
+   * eigenständige Einträge (Top-Level-Wert vs. Override).
+   */
+  mode: string;
 }
 
 interface CategoryGroup extends Category {
@@ -80,6 +91,17 @@ const OTHER_CAT: Category = {
 };
 
 const IN_THEME_TAB = "in-theme";
+const DEFAULT_MODE = "default";
+
+const MODE_LABELS: Record<string, string> = {
+  default: "Default",
+  light: "Light",
+  dark: "Dark",
+};
+
+function modeLabel(mode: string): string {
+  return MODE_LABELS[mode] ?? mode;
+}
 
 @customElement("ts-editor-view")
 export class TsEditorView extends LitElement {
@@ -93,14 +115,10 @@ export class TsEditorView extends LitElement {
   @state() private _skippedKeys: string[] = [];
   @state() private _saveStatus: SaveStatus = { state: "idle" };
   @state() private _activeTab: string = IN_THEME_TAB;
+  @state() private _activeMode: string = DEFAULT_MODE;
+  @state() private _modes: string[] = [DEFAULT_MODE];
 
-  // Set aller CSS-Variablen, die wir auf :root überschrieben haben — für
-  // sauberen Cleanup beim Verlassen oder beim "Alles verwerfen".
   private _appliedVars = new Set<string>();
-
-  // Vollständiger Theme-Object vom get_theme-Result, inklusive Dict-Keys
-  // wie `modes:`, die der Editor nicht abbildet aber beim Save bewahren
-  // muss.
   private _originalFullTheme: Record<string, unknown> = {};
 
   static override styles = css`
@@ -165,6 +183,45 @@ export class TsEditorView extends LitElement {
       color: #000;
       font-size: 0.8rem;
       font-weight: 600;
+    }
+
+    .mode-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 12px;
+      flex-wrap: wrap;
+    }
+    .mode-bar .label {
+      color: var(--secondary-text-color);
+      font-size: 0.9rem;
+      margin-right: 4px;
+    }
+    .mode-btn {
+      padding: 5px 12px;
+      background: none;
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--secondary-text-color);
+      font: inherit;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mode-btn:hover {
+      color: var(--primary-text-color);
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.03));
+    }
+    .mode-btn.active {
+      color: #fff;
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    .mode-btn .mode-count {
+      font-size: 0.75rem;
+      opacity: 0.8;
     }
 
     .tabs {
@@ -381,6 +438,8 @@ export class TsEditorView extends LitElement {
       this._revertAll();
       this._rows = [];
       this._activeTab = IN_THEME_TAB;
+      this._activeMode = DEFAULT_MODE;
+      this._modes = [DEFAULT_MODE];
       this._load();
     }
   }
@@ -405,15 +464,56 @@ export class TsEditorView extends LitElement {
     }
   }
 
+  /**
+   * Baut Rows aus dem geladenen Theme. Top-Level-Vars werden Rows mit
+   * `mode: "default"`. Wenn das Theme einen `modes:`-Block hat, werden
+   * dessen verschachtelte Vars ebenfalls als Rows angelegt, mit der
+   * jeweiligen Mode-Bezeichnung. Andere Dict-Keys (selten) werden
+   * weiterhin in `_skippedKeys` registriert und beim Save 1:1 erhalten.
+   */
   private _buildRows(vars: Record<string, unknown>) {
     const rows: EditorRow[] = [];
     const skipped: string[] = [];
+    const detectedModes: string[] = [DEFAULT_MODE];
+
     for (const [key, val] of Object.entries(vars)) {
       if (val === null || val === undefined) continue;
+
+      if (key === "modes" && typeof val === "object") {
+        // modes: { light: {...}, dark: {...} }
+        for (const [modeName, modeVars] of Object.entries(
+          val as Record<string, unknown>,
+        )) {
+          if (typeof modeVars !== "object" || modeVars === null) continue;
+          if (!detectedModes.includes(modeName)) detectedModes.push(modeName);
+          for (const [mKey, mVal] of Object.entries(
+            modeVars as Record<string, unknown>,
+          )) {
+            if (mVal === null || mVal === undefined) continue;
+            if (typeof mVal === "object") continue;
+            const mSval = String(mVal);
+            const varName = mKey.startsWith("--") ? mKey : `--${mKey}`;
+            const yamlKey = varName.slice(2);
+            const meta = getVariableMeta(varName, mSval);
+            rows.push({
+              varName,
+              yamlKey,
+              meta,
+              original: mSval,
+              current: mSval,
+              inTheme: true,
+              mode: modeName,
+            });
+          }
+        }
+        continue;
+      }
+
       if (typeof val === "object") {
         skipped.push(key);
         continue;
       }
+
       const sval = String(val);
       const varName = key.startsWith("--") ? key : `--${key}`;
       const yamlKey = varName.slice(2);
@@ -425,25 +525,34 @@ export class TsEditorView extends LitElement {
         original: sval,
         current: sval,
         inTheme: true,
+        mode: DEFAULT_MODE,
       });
     }
+
     this._skippedKeys = skipped;
     this._rows = rows;
+    this._modes = detectedModes;
   }
 
   /**
-   * Beim Wechsel auf einen Plugin-Tab: alle Vars dieses Plugins, die
-   * noch nicht in `_rows` sind, mit Default-Wert anhängen
-   * (`inTheme: false`).
+   * Beim Wechsel auf einen Plugin-Tab: alle Vars dieses Plugins, die für
+   * den aktuellen Mode noch nicht in `_rows` sind, anhängen.
+   *
+   * In `default`-Mode bekommen sie den Schema-Default als Initial-Wert.
+   * In nicht-default-Modes bekommen sie leeren String — das signalisiert
+   * "kein Override im jeweiligen Mode" und wird beim Save nicht
+   * geschrieben.
    */
-  private _ensurePluginRows(pluginId: string) {
+  private _ensurePluginRows(pluginId: string, mode: string) {
     const plugin = getPlugins().find((p) => p.manifest.id === pluginId);
     if (!plugin) return;
-    const existing = new Set(this._rows.map((r) => r.varName));
+    const existing = new Set(
+      this._rows.filter((r) => r.mode === mode).map((r) => r.varName),
+    );
     const newRows: EditorRow[] = [];
     for (const v of plugin.schema.variables) {
       if (existing.has(v.name)) continue;
-      const def = v.default ?? "";
+      const def = mode === DEFAULT_MODE ? v.default ?? "" : "";
       newRows.push({
         varName: v.name,
         yamlKey: v.name.startsWith("--") ? v.name.slice(2) : v.name,
@@ -451,6 +560,7 @@ export class TsEditorView extends LitElement {
         original: def,
         current: def,
         inTheme: false,
+        mode,
       });
     }
     if (newRows.length > 0) {
@@ -465,9 +575,11 @@ export class TsEditorView extends LitElement {
     if (dirty === 0 || this._saveStatus.state === "saving") return;
 
     const adding = this._rows.filter(
-      (r) => !r.inTheme && r.current !== r.original,
+      (r) => !r.inTheme && r.current !== r.original && r.current !== "",
     ).length;
-    const modifying = dirty - adding;
+    const modifying = this._rows.filter(
+      (r) => r.inTheme && r.current !== r.original,
+    ).length;
 
     const parts: string[] = [];
     if (modifying > 0)
@@ -483,37 +595,7 @@ export class TsEditorView extends LitElement {
 
     this._saveStatus = { state: "saving" };
 
-    // Build merged YAML object.
-    const merged: Record<string, unknown> = {};
-    const consumedKeys = new Set<string>();
-
-    // 1. Iterate original theme keys (preserves key form + dict-keys).
-    for (const [origKey, origVal] of Object.entries(this._originalFullTheme)) {
-      if (typeof origVal === "object" && origVal !== null) {
-        // modes, etc. — keep untouched
-        merged[origKey] = origVal;
-        continue;
-      }
-      const normalized = origKey.startsWith("--") ? origKey.slice(2) : origKey;
-      const row = this._rows.find(
-        (r) => r.inTheme && r.yamlKey === normalized,
-      );
-      if (row) {
-        merged[origKey] = row.current;
-        consumedKeys.add(row.varName);
-      } else {
-        // No row covers this key (shouldn't happen for scalars) — keep.
-        merged[origKey] = origVal;
-      }
-    }
-
-    // 2. Add non-inTheme rows that were edited (becomes new YAML entries).
-    for (const row of this._rows) {
-      if (row.inTheme) continue;
-      if (row.current === row.original) continue;
-      if (consumedKeys.has(row.varName)) continue;
-      merged[row.yamlKey] = row.current;
-    }
+    const merged = this._buildSaveMerge();
 
     try {
       const result =
@@ -525,13 +607,13 @@ export class TsEditorView extends LitElement {
         });
 
       this._originalFullTheme = merged;
-      // Post-save: dirty rows have their original synced to current.
-      // Non-inTheme rows that were edited are promoted to inTheme=true.
+      // Promote: jede non-inTheme-Row mit echtem Wert wird zu inTheme,
+      // jede in-theme-Row übernimmt current als neuen Original-Stand.
       this._rows = this._rows.map((r) => {
         if (r.inTheme) {
           return { ...r, original: r.current };
         }
-        if (r.current !== r.original) {
+        if (r.current !== r.original && r.current !== "") {
           return { ...r, original: r.current, inTheme: true };
         }
         return r;
@@ -541,6 +623,105 @@ export class TsEditorView extends LitElement {
       const msg = err instanceof Error ? err.message : String(err);
       this._saveStatus = { state: "error", msg };
     }
+  }
+
+  /**
+   * Konstruiert das vollständige Theme-Object aus dem Original-YAML +
+   * Editor-Zustand. Bewahrt Key-Form (mit/ohne `--`) und Dict-Strukturen.
+   */
+  private _buildSaveMerge(): Record<string, unknown> {
+    const merged: Record<string, unknown> = {};
+    const origModes =
+      this._originalFullTheme["modes"] &&
+      typeof this._originalFullTheme["modes"] === "object"
+        ? (this._originalFullTheme["modes"] as Record<
+            string,
+            Record<string, unknown>
+          >)
+        : {};
+
+    // 1. Top-Level (Default-Mode + andere Top-Level-Dict-Keys)
+    const consumedDefault = new Set<string>();
+    for (const [origKey, origVal] of Object.entries(this._originalFullTheme)) {
+      if (origKey === "modes") continue; // separat behandelt
+      if (typeof origVal === "object" && origVal !== null) {
+        // andere Dict-Strukturen (selten) — 1:1 erhalten
+        merged[origKey] = origVal;
+        continue;
+      }
+      const normalized = origKey.startsWith("--") ? origKey.slice(2) : origKey;
+      const row = this._rows.find(
+        (r) =>
+          r.mode === DEFAULT_MODE && r.inTheme && r.yamlKey === normalized,
+      );
+      if (row) {
+        merged[origKey] = row.current;
+        consumedDefault.add(row.varName);
+      } else {
+        merged[origKey] = origVal;
+      }
+    }
+    // Neue Default-Mode-Vars die der User über Plugin-Tab hinzugefügt hat
+    for (const row of this._rows) {
+      if (row.mode !== DEFAULT_MODE) continue;
+      if (row.inTheme) continue;
+      if (row.current === row.original) continue;
+      if (row.current === "") continue;
+      if (consumedDefault.has(row.varName)) continue;
+      merged[row.yamlKey] = row.current;
+    }
+
+    // 2. Modes-Dict rekonstruieren
+    const nonDefaultModes = this._modes.filter((m) => m !== DEFAULT_MODE);
+    if (nonDefaultModes.length > 0 || Object.keys(origModes).length > 0) {
+      const newModes: Record<string, Record<string, unknown>> = {};
+      const allModeNames = new Set([
+        ...Object.keys(origModes),
+        ...nonDefaultModes,
+      ]);
+      for (const modeName of allModeNames) {
+        const origModeDict = origModes[modeName] || {};
+        const newModeDict: Record<string, unknown> = {};
+        const consumed = new Set<string>();
+
+        for (const [k, v] of Object.entries(origModeDict)) {
+          if (typeof v === "object" && v !== null) {
+            // nested dict in mode — erhalten
+            newModeDict[k] = v;
+            continue;
+          }
+          const normalized = k.startsWith("--") ? k.slice(2) : k;
+          const row = this._rows.find(
+            (r) =>
+              r.mode === modeName && r.inTheme && r.yamlKey === normalized,
+          );
+          if (row) {
+            newModeDict[k] = row.current;
+            consumed.add(row.varName);
+          } else {
+            newModeDict[k] = v;
+          }
+        }
+        // Neue Vars für diesen Mode
+        for (const row of this._rows) {
+          if (row.mode !== modeName) continue;
+          if (row.inTheme) continue;
+          if (row.current === row.original) continue;
+          if (row.current === "") continue;
+          if (consumed.has(row.varName)) continue;
+          newModeDict[row.yamlKey] = row.current;
+        }
+
+        if (Object.keys(newModeDict).length > 0) {
+          newModes[modeName] = newModeDict;
+        }
+      }
+      if (Object.keys(newModes).length > 0) {
+        merged["modes"] = newModes;
+      }
+    }
+
+    return merged;
   }
 
   // ─── Kategorien-Gruppierung ─────────────────────────────────────────
@@ -606,16 +787,22 @@ export class TsEditorView extends LitElement {
   // ─── Row-Mutationen ─────────────────────────────────────────────────
 
   private _changeRow(row: EditorRow, value: string) {
+    // Live-Preview unabhängig vom Mode applizieren — User muss HA selbst
+    // auf passenden Mode schalten um den richtigen Kontext zu sehen.
     this._setCssVar(row.varName, value);
     this._rows = this._rows.map((r) =>
-      r.varName === row.varName ? { ...r, current: value } : r,
+      r.varName === row.varName && r.mode === row.mode
+        ? { ...r, current: value }
+        : r,
     );
   }
 
   private _resetRow(row: EditorRow) {
     this._revertCssVar(row.varName);
     this._rows = this._rows.map((r) =>
-      r.varName === row.varName ? { ...r, current: r.original } : r,
+      r.varName === row.varName && r.mode === row.mode
+        ? { ...r, current: r.original }
+        : r,
     );
   }
 
@@ -624,7 +811,7 @@ export class TsEditorView extends LitElement {
     if (dirtyCount === 0) return;
     if (
       !confirm(
-        `${dirtyCount} ungespeicherte Änderung(en) werden verworfen. Fortfahren?`,
+        `${dirtyCount} ungespeicherte Änderung(en) werden verworfen (über alle Modes und Tabs). Fortfahren?`,
       )
     ) {
       return;
@@ -636,6 +823,13 @@ export class TsEditorView extends LitElement {
   private _dirtyCount(): number {
     return this._rows.reduce(
       (sum, r) => sum + (r.current !== r.original ? 1 : 0),
+      0,
+    );
+  }
+
+  private _modeDirtyCount(mode: string): number {
+    return this._rows.reduce(
+      (sum, r) => sum + (r.mode === mode && r.current !== r.original ? 1 : 0),
       0,
     );
   }
@@ -657,21 +851,30 @@ export class TsEditorView extends LitElement {
     );
   }
 
-  // ─── Tab-Handling ───────────────────────────────────────────────────
+  // ─── Tab/Mode-Handling ──────────────────────────────────────────────
 
   private _onTabSelect(tabId: string) {
     if (tabId === this._activeTab) return;
     if (tabId !== IN_THEME_TAB) {
-      this._ensurePluginRows(tabId);
+      this._ensurePluginRows(tabId, this._activeMode);
     }
     this._activeTab = tabId;
   }
 
-  private _visibleRows(): EditorRow[] {
-    if (this._activeTab === IN_THEME_TAB) {
-      return this._rows.filter((r) => r.inTheme);
+  private _onModeSelect(mode: string) {
+    if (mode === this._activeMode) return;
+    if (this._activeTab !== IN_THEME_TAB) {
+      this._ensurePluginRows(this._activeTab, mode);
     }
-    return this._rows.filter((r) => r.meta.plugin === this._activeTab);
+    this._activeMode = mode;
+  }
+
+  private _visibleRows(): EditorRow[] {
+    const byMode = this._rows.filter((r) => r.mode === this._activeMode);
+    if (this._activeTab === IN_THEME_TAB) {
+      return byMode.filter((r) => r.inTheme);
+    }
+    return byMode.filter((r) => r.meta.plugin === this._activeTab);
   }
 
   // ─── Rendering ──────────────────────────────────────────────────────
@@ -702,14 +905,43 @@ export class TsEditorView extends LitElement {
           ${this._saveStatus.state === "saving" ? "Speichere…" : "Speichern"}
         </button>
       </div>
-      ${this._renderTabs()} ${this._renderSaveStatus()}
-      ${this._renderBody()}
+      ${this._renderModeBar()} ${this._renderTabs()}
+      ${this._renderSaveStatus()} ${this._renderBody()}
+    `;
+  }
+
+  private _renderModeBar() {
+    if (this._loading || this._error) return "";
+    // Wenn nur Default-Mode existiert UND der User nicht aktiv Modes
+    // hinzufügen kann (kein Add-Mode-Button in v0.2.x), den Mode-Bar
+    // ausblenden — kein Mehrwert.
+    if (this._modes.length === 1) return "";
+    return html`
+      <div class="mode-bar">
+        <span class="label">Mode:</span>
+        ${this._modes.map((mode) => {
+          const n = this._modeDirtyCount(mode);
+          return html`
+            <button
+              class="mode-btn ${this._activeMode === mode ? "active" : ""}"
+              @click=${() => this._onModeSelect(mode)}
+            >
+              ${modeLabel(mode)}
+              ${n > 0
+                ? html`<span class="mode-count">${n} ●</span>`
+                : ""}
+            </button>
+          `;
+        })}
+      </div>
     `;
   }
 
   private _renderTabs() {
     if (this._loading || this._error) return "";
-    const inThemeCount = this._rows.filter((r) => r.inTheme).length;
+    const inThemeCount = this._rows.filter(
+      (r) => r.inTheme && r.mode === this._activeMode,
+    ).length;
     const tabs: Array<{ id: string; label: string; count: number }> = [
       { id: IN_THEME_TAB, label: "Im Theme", count: inThemeCount },
     ];
@@ -762,7 +994,7 @@ export class TsEditorView extends LitElement {
     const n = this._dirtyCount();
     if (n === 0) return "";
     const adding = this._rows.filter(
-      (r) => !r.inTheme && r.current !== r.original,
+      (r) => !r.inTheme && r.current !== r.original && r.current !== "",
     ).length;
     const text =
       adding > 0
@@ -780,32 +1012,48 @@ export class TsEditorView extends LitElement {
     }
     const rows = this._visibleRows();
     if (rows.length === 0) {
-      return html`<div class="empty">
-        ${this._activeTab === IN_THEME_TAB
-          ? "Keine editierbaren Variablen in diesem Theme."
-          : "Keine Variablen in diesem Plugin-Tab."}
-      </div>`;
+      const msg =
+        this._activeTab === IN_THEME_TAB
+          ? this._activeMode === DEFAULT_MODE
+            ? "Keine editierbaren Variablen in diesem Theme."
+            : `Keine Override-Variablen für Mode '${modeLabel(this._activeMode)}' im Theme. Wechsle auf einen Plugin-Tab um welche hinzuzufügen.`
+          : "Keine Variablen in diesem Plugin-Tab.";
+      return html`<div class="empty">${msg}</div>`;
     }
     const categories = this._groupByCategory(rows);
     return html`
-      ${this._activeTab === IN_THEME_TAB && this._skippedKeys.length > 0
+      ${this._activeTab === IN_THEME_TAB &&
+      this._activeMode === DEFAULT_MODE &&
+      this._skippedKeys.length > 0
         ? html`<div class="notice">
             Diese Theme-Datei enthält komplexe Werte unter
             ${this._skippedKeys.map(
               (k, i) => html`${i > 0 ? ", " : ""}<code>${k}</code>`,
             )},
-            die der Variablen-Editor nicht abbildet (z.B. light/dark modes
-            oder verschachtelte Strukturen).
+            die der Variablen-Editor nicht abbildet (verschachtelte
+            Strukturen).
+          </div>`
+        : ""}
+      ${this._activeMode !== DEFAULT_MODE
+        ? html`<div class="notice">
+            <strong>${modeLabel(this._activeMode)}-Mode:</strong> Edits hier
+            landen unter <code>modes.${this._activeMode}</code> im YAML und
+            wirken in HA nur wenn dieser Mode aktiv ist.
+            Live-Preview greift dennoch unabhängig vom HA-Mode — schalte HA
+            ggf. selbst um, um den richtigen Render-Kontext zu sehen.
           </div>`
         : ""}
       ${this._activeTab !== IN_THEME_TAB
         ? html`<div class="notice">
             <strong>Plugin-Tab:</strong> alle ${rows.length} Schema-Variablen
-            werden gezeigt, auch wenn sie noch nicht in deinem Theme stehen.
-            Variablen mit dem <span class="row-tag default">default</span>-Tag
-            kommen aus dem Schema-Default. Sobald du einen Wert änderst,
-            wird die Variable beim nächsten Speichern als neuer Eintrag ins
-            Theme aufgenommen.
+            werden gezeigt. Variablen mit
+            <span class="row-tag default">default</span>-Tag stehen
+            (noch) nicht im Theme. Sobald du einen Wert änderst, wird die
+            Variable beim Speichern als
+            ${this._activeMode === DEFAULT_MODE
+              ? "Top-Level-Eintrag"
+              : html`Override unter <code>modes.${this._activeMode}</code>`}
+            ins Theme aufgenommen.
           </div>`
         : ""}
       ${categories.map((c) => this._renderCategory(c))}
@@ -827,7 +1075,7 @@ export class TsEditorView extends LitElement {
   private _renderRow(row: EditorRow) {
     const isDirty = row.current !== row.original;
     const showDefaultTag = !row.inTheme && !isDirty;
-    const showAddingTag = !row.inTheme && isDirty;
+    const showAddingTag = !row.inTheme && isDirty && row.current !== "";
     return html`
       <div class="row ${isDirty ? "dirty" : ""}">
         <div class="meta-cell">
