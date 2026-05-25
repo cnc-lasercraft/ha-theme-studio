@@ -4,7 +4,7 @@
 
 | Version | Inhalt | Aufwand | Status |
 |---|---|---|---|
-| **v0.1** | Core + ha-core-Plugin + Backend + Live-Preview lokal | ~1 Woche | offen |
+| **v0.1** | Core + ha-core-Plugin + Backend + Live-Preview lokal | ~1 Woche | ✓ **fertig** (2026-05-25, Tag `v0.1.0`) |
 | **v0.2** | Bubble-Card-Plugin (Variablen) + Mushroom-Plugin | ~3 Tage | offen |
 | **v0.3** | Iframe-Dashboard-Preview + Theme-Switcher | ~3 Tage | offen |
 | **v0.4** | Bubble-Card-Module-Verwaltung (CRUD auf YAML-Module) | ~4 Tage | offen |
@@ -12,18 +12,20 @@
 
 ## v0.1 – Schritte im Detail
 
-| # | Schritt | Was entsteht | Testbar? |
-|---|---|---|---|
-| 1 | Repo-Skelett | Verzeichnisstruktur, `frontend/package.json`, Vite-Config, `custom_components/theme_studio/manifest.json` | nein |
-| 2 | Backend-Integration | `custom_components/theme_studio/` mit WS-Commands `list_themes`, `get_theme`, `save_theme` | ja, via Browser DevTools / `ha_call_service` |
-| 3 | ha-core schema.json | ~30 wichtigste HA-Variablen (nicht alle 150 sofort), typisiert | ja, JSON-Validierung |
-| 4 | Plugin-Loader + Heuristik | Core lädt Schemas dynamisch aus `plugins/` + Type-Detection für unbekannte Variablen (siehe ARCHITECTURE) | ja, im Browser |
-| 5 | Erste UI-Controls | Color-Picker + Length-Slider + Raw-Input als Lit-Komponenten | ja, isoliert |
-| 6 | Theme-Picker (Start-Screen) | Liste aller `themes/*.yaml`, Auswahl, "Neu von Vorlage" / "Leer" | ja, mit existierenden Themes |
-| 7 | Editor-Panel (minimal) | Variablen-Liste des gewählten Themes, Werte ändern, lokale Live-Preview auf `:root` | **erstes echtes Erfolgserlebnis** |
-| 8 | Save-Flow | Editor → Backend → `themes/xxx.yaml` → `frontend.reload_themes` | ja, mit visionos-Theme |
+Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) → 4 → 5 → 7 → 8. Step 6 wurde nach D10 ([`DECISIONS.md`](./DECISIONS.md)) vor 4/5 gezogen, um früh ein sichtbares Erfolgserlebnis zu haben.
 
-**Nach Schritt 8:** Funktionsfähiger Minimal-Editor für **jedes** Theme im Verzeichnis. Plugin-Schemas decken bekannte Variablen ab, Heuristik fängt unbekannte ab. Noch ohne Bubble-Card-Plugin und ohne iframe-Preview, aber Theme-agnostisch.
+| # | Schritt | Status | Commit |
+|---|---|---|---|
+| 1 | Repo-Skelett | ✓ | `197a038` |
+| 2 | Backend-Integration (WS-Commands `list_themes`, `get_theme`, `save_theme`) | ✓ | `61a8aba` |
+| 3 | ha-core `schema.json` (30 Variablen, 8 Kategorien, typisiert) | ✓ | `b21a5fa` |
+| 4 | Plugin-Loader + Namens-Heuristik für unbekannte Variablen | ✓ | `27b05e7` |
+| 5 | UI-Controls (`ts-color-picker`, `ts-length-slider`, `ts-raw-input`) + Demo unter `#demo` | ✓ | `9d58dd7` |
+| 6 | Theme-Picker (Start-Screen) — Liste aller `themes/*.yaml` mit Subdir-/Spaces-Support | ✓ | `a216db3` (+ Fix `3b2b74f`) |
+| 7 | Editor-Panel mit Live-Preview auf `:root`, Kategorien-Gruppierung, Reset pro Variable | ✓ | `c4a9f96` |
+| 8 | Save-Flow mit Timestamp-Backup + `frontend.reload_themes` | ✓ | `8318621` |
+
+**Nach Schritt 8:** Funktionsfähiger Minimal-Editor für **jedes** Theme im Verzeichnis. Plugin-Schemas decken bekannte Variablen ab, Heuristik fängt unbekannte ab. Live-Preview auf `:root`, persistenter Save mit Auto-Backup, sauberes Cleanup beim Verlassen. Noch ohne Bubble-Card-Plugin und ohne iframe-Preview, aber Theme-agnostisch.
 
 ## v0.2 – Plugins ausbauen
 

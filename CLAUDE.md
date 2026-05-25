@@ -28,22 +28,36 @@ Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – 
 
 ## Aktueller Stand (Stand: 2026-05-25)
 
-**Pre-v0.1.** Architektur ist festgelegt, Code noch nicht geschrieben. Nächster Schritt: ROADMAP Schritt 1 (Repo-Skelett).
+**v0.1 live.** Tag `v0.1.0`, alle 8 ROADMAP-Schritte abgeschlossen. Läuft auf der Produktiv-HA des Users:
+- Custom-Panel "Theme Studio" in der Sidebar (`/theme-studio`)
+- Picker listet alle Themes aus `<config>/themes/`
+- Editor mit Live-Preview auf `:root`, Save mit Timestamp-Backup unter `themes/.backups/`
+- Plugin-Schema `ha-core` (30 Variablen) + Namens-Heuristik für unbekannte Variablen
 
-## Nächster konkreter Auftrag (wenn User "los geht" sagt)
+Nächste Phase: **v0.2** — `bubble-card`-Plugin + `mushroom`-Plugin + Plugin-Tabs-Navigation. Siehe [`ROADMAP.md`](./ROADMAP.md).
 
-1. Verzeichnisstruktur anlegen gemäß `ARCHITECTURE.md`:
-   - `frontend/src/{core,plugins,ui}/`
-   - `custom_components/theme_studio/`
-2. `frontend/package.json` mit Lit + TypeScript + Vite
-3. `frontend/vite.config.ts` mit Custom-Element-Build
-4. `frontend/tsconfig.json`
-5. `custom_components/theme_studio/manifest.json` (HA-Integration-Manifest)
-6. `custom_components/theme_studio/__init__.py` (minimaler Setup, noch keine Logik)
-7. `.gitignore` (node_modules, dist, .DS_Store, __pycache__)
-8. Commit: "scaffold: v0.1 step 1 — repo skeleton"
+## Deployment auf den HA-Host
 
-Erst **danach** mit Schritt 2 (Backend-WS-Commands) beginnen, und auch das erst nach Bestätigung des Users.
+Repo-Layout auf dem Host: `/homeassistant/custom_components/theme_studio/` (Backend) + `/homeassistant/frontend/dist/` (Built Frontend). Der Backend-Pfad-Trick (`Path(__file__).parent.parent.parent / "frontend" / "dist"`) braucht beide Pfade als Geschwister unter `/homeassistant/`.
+
+**Files-Push** via tar+ssh (SSH-Multiplexing-Problem ⇒ kein scp):
+```bash
+COPYFILE_DISABLE=1 tar -cz -C <local> --exclude='__pycache__' --exclude='._*' --exclude='.DS_Store' . \
+  | ssh has 'sudo tar -xz -C <remote> && sudo chown -R root:root <remote> && sudo chmod 644 <remote>/*'
+```
+
+**Re-Deploy Frontend-only** (TypeScript/Lit-Änderungen):
+1. `cd frontend && npm run build`
+2. tar+ssh push nach `/homeassistant/frontend/dist/`
+3. Browser **Cmd+Shift+R** (Hard-Refresh) — kein HA-Restart nötig
+
+**Re-Deploy Backend** (Python-Änderungen):
+1. tar+ssh push nach `/homeassistant/custom_components/theme_studio/`
+2. `__pycache__` löschen (ha_quirks Pflicht)
+3. `ha_check_config` ⇒ `valid`
+4. `ha_restart(confirm=True)` — Config-Entry-Reload reicht NICHT (Python-Module bleiben in `sys.modules`)
+
+**Konfiguration:** `theme_studio:` muss in `configuration.yaml` stehen (YAML-Trigger, kein config_flow in v0.1). Backup-Datei auf dem Host: `configuration.yaml.bak.pre-theme-studio.<ts>`.
 
 ## Was NICHT tun
 
