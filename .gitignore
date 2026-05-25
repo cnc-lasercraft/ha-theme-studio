@@ -1,6 +1,9 @@
 node_modules/
 dist/
 build/
+# Exception: HACS braucht das gebaute Bundle im Repo (HACS-User haben
+# keine npm-Toolchain). Bundle wird also bewusst NICHT ignoriert.
+!/custom_components/theme_studio/dist/
 .DS_Store
 *.log
 .env

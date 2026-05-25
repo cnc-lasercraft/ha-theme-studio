@@ -22,10 +22,10 @@ from .websocket_api import async_register_websocket_api
 
 _LOGGER = logging.getLogger(__name__)
 
-# Repo-Layout: <root>/custom_components/theme_studio/ + <root>/frontend/dist/.
-# Beim Deploy auf den HA-Host muss das ganze Repo (oder mindestens diese
-# beiden Pfade) erhalten bleiben, sonst findet das Static-Hosting nichts.
-_DIST_DIR = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+# HACS-Layout: Bundle liegt INSIDE der Integration unter
+# custom_components/theme_studio/dist/. So funktioniert HACS-Install
+# ohne separaten npm-Build beim User.
+_DIST_DIR = Path(__file__).resolve().parent / "dist"
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:

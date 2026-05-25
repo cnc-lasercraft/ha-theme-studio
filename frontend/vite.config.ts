@@ -15,7 +15,11 @@ export default defineConfig({
         inlineDynamicImports: true,
       },
     },
-    outDir: 'dist',
+    // HACS-Layout: Bundle landet INSIDE der custom_components, damit
+    // HACS-User mit einem einzigen Repo-Clone sowohl Python-Backend
+    // als auch Frontend-Bundle bekommen — kein separater npm-Build
+    // im User-Install.
+    outDir: '../custom_components/theme_studio/dist',
     emptyOutDir: true,
     target: 'es2020',
     sourcemap: true,
