@@ -28,10 +28,15 @@ from homeassistant.core import HomeAssistant, callback
 from .const import (
     BACKUPS_DIR,
     HACS_STORAGE_PATH,
+    MODULES_BACKUPS_DIR,
+    MODULES_DIR,
     THEMES_DIR,
+    WS_GET_MODULE,
     WS_GET_THEME,
     WS_LIST_HACS_REPOS,
+    WS_LIST_MODULES,
     WS_LIST_THEMES,
+    WS_SAVE_MODULE,
     WS_SAVE_THEME,
 )
 
@@ -280,6 +285,194 @@ async def ws_save_theme(
     )
 
 
+# ─── Bubble-Card-Modules ───────────────────────────────────────────────
+
+
+def _modules_root(hass: HomeAssistant) -> Path:
+    return Path(hass.config.path(MODULES_DIR))
+
+
+def _modules_backup_root(hass: HomeAssistant) -> Path:
+    return Path(hass.config.path(MODULES_BACKUPS_DIR))
+
+
+def _scan_modules(
+    root: Path,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Walk modules-dir, liefert (modules, errors). Backups-Dir wird übersprungen."""
+    found: list[dict[str, Any]] = []
+    errors: list[dict[str, Any]] = []
+    if not root.exists():
+        return found, errors
+    for path in sorted(root.glob("*.yaml")):
+        try:
+            with path.open("r", encoding="utf-8") as fh:
+                data = yaml.safe_load(fh) or {}
+        except (OSError, yaml.YAMLError) as exc:
+            errors.append({"file": path.name, "error": str(exc)})
+            continue
+        if not isinstance(data, dict):
+            errors.append(
+                {"file": path.name, "error": "top-level is not a mapping"}
+            )
+            continue
+        for module_id, module_data in data.items():
+            if not isinstance(module_data, dict):
+                continue
+            supported = module_data.get("supported", [])
+            if not isinstance(supported, list):
+                supported = []
+            found.append(
+                {
+                    "file": path.name,
+                    "module_id": module_id,
+                    "name": module_data.get("name", module_id),
+                    "version": module_data.get("version", ""),
+                    "description": module_data.get("description", ""),
+                    "supported": supported,
+                    "is_global": bool(module_data.get("is_global", False)),
+                    "has_code": bool(module_data.get("code")),
+                }
+            )
+    return found, errors
+
+
+def _module_backup(
+    root: Path, backups_root: Path, filename: str
+) -> str | None:
+    """Backup nach <config>/bubble_card/.backups/<filename>.<ts>.yaml."""
+    src = root / filename
+    if not src.exists():
+        return None
+    backups_root.mkdir(parents=True, exist_ok=True)
+    ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+    dst = backups_root / f"{filename}.{ts}.yaml"
+    counter = 1
+    while dst.exists():
+        dst = backups_root / f"{filename}.{ts}-{counter}.yaml"
+        counter += 1
+    shutil.copy2(src, dst)
+    # Display path relative to config dir (.../bubble_card/.backups/...).
+    try:
+        return str(dst.relative_to(src.parent.parent.parent))
+    except ValueError:
+        return str(dst)
+
+
+@websocket_api.websocket_command({vol.Required("type"): WS_LIST_MODULES})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_list_modules(
+    hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]
+) -> None:
+    root = _modules_root(hass)
+    modules, errors = await hass.async_add_executor_job(_scan_modules, root)
+    connection.send_result(
+        msg["id"],
+        {"modules": modules, "errors": errors, "root_exists": root.exists()},
+    )
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_GET_MODULE,
+        vol.Required("file"): vol.All(str, _validate_path),
+        vol.Required("module_id"): str,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_get_module(
+    hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]
+) -> None:
+    root = _modules_root(hass)
+    try:
+        path = _safe_join(root, msg["file"])
+        data = await hass.async_add_executor_job(_load_file, path)
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        connection.send_error(msg["id"], "load_failed", str(exc))
+        return
+
+    module = data.get(msg["module_id"])
+    if not isinstance(module, dict):
+        connection.send_error(
+            msg["id"],
+            "not_found",
+            f"module {msg['module_id']!r} not in {msg['file']!r}",
+        )
+        return
+
+    connection.send_result(
+        msg["id"],
+        {
+            "file": msg["file"],
+            "module_id": msg["module_id"],
+            "content": module,
+        },
+    )
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_SAVE_MODULE,
+        vol.Required("file"): vol.All(str, _validate_path),
+        vol.Required("module_id"): str,
+        vol.Required("content"): dict,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_save_module(
+    hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]
+) -> None:
+    root = _modules_root(hass)
+    backups_root = _modules_backup_root(hass)
+    try:
+        path = _safe_join(root, msg["file"])
+    except ValueError as exc:
+        connection.send_error(msg["id"], "invalid_path", str(exc))
+        return
+
+    filename: str = msg["file"]
+    module_id: str = msg["module_id"]
+    content: dict[str, Any] = msg["content"]
+
+    def _do_save() -> str | None:
+        if not path.exists():
+            raise FileNotFoundError(f"{filename!r} does not exist")
+        root.mkdir(parents=True, exist_ok=True)
+        backup_rel = _module_backup(root, backups_root, filename)
+        data = _load_file(path)
+        data[module_id] = dict(content)
+        _dump_file(path, data)
+        return backup_rel
+
+    try:
+        backup_rel = await hass.async_add_executor_job(_do_save)
+    except FileNotFoundError as exc:
+        connection.send_error(msg["id"], "not_found", str(exc))
+        return
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        _LOGGER.exception("save_module failed for %s / %s", filename, module_id)
+        connection.send_error(msg["id"], "save_failed", str(exc))
+        return
+
+    # Bubble-Card-Module werden von Bubble Card selbst beim Card-Render
+    # geladen — wir können keine pauschale "reload"-API rufen. Der User
+    # muss seine Dashboards neu laden um die Änderung zu sehen.
+    connection.send_result(
+        msg["id"],
+        {
+            "file": filename,
+            "module_id": module_id,
+            "backup": backup_rel,
+        },
+    )
+
+
+# ─── HACS-Detection ────────────────────────────────────────────────────
+
+
 def _scan_hacs_repos(path: Path) -> list[str]:
     """Liest die HACS-Storage-Datei, gibt full_names der installierten Repos zurück.
 
@@ -334,3 +527,6 @@ def async_register_websocket_api(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_get_theme)
     websocket_api.async_register_command(hass, ws_save_theme)
     websocket_api.async_register_command(hass, ws_list_hacs_repos)
+    websocket_api.async_register_command(hass, ws_list_modules)
+    websocket_api.async_register_command(hass, ws_get_module)
+    websocket_api.async_register_command(hass, ws_save_module)

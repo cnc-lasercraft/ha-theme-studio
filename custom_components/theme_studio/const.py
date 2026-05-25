@@ -12,9 +12,16 @@ WS_LIST_THEMES: Final = "theme_studio/list_themes"
 WS_GET_THEME: Final = "theme_studio/get_theme"
 WS_SAVE_THEME: Final = "theme_studio/save_theme"
 WS_LIST_HACS_REPOS: Final = "theme_studio/list_hacs_repos"
+WS_LIST_MODULES: Final = "theme_studio/list_modules"
+WS_GET_MODULE: Final = "theme_studio/get_module"
+WS_SAVE_MODULE: Final = "theme_studio/save_module"
 
 # Pfad zur HACS-Storage-Datei (relativ zu hass.config.path()).
 HACS_STORAGE_PATH: Final = ".storage/hacs.repositories"
+
+# Bubble-Card-Module-Verzeichnis (relativ zu hass.config.path()).
+MODULES_DIR: Final = "bubble_card/modules"
+MODULES_BACKUPS_DIR: Final = "bubble_card/.backups"
 
 # Panel-Registrierung
 PANEL_URL_PATH: Final = "theme-studio"
