@@ -1,0 +1,10 @@
+{
+  "id": "ha-core",
+  "name": "Home Assistant Core",
+  "version": "0.1.0",
+  "version_supported": ">=2024.1.0",
+  "detect": {
+    "method": "always"
+  },
+  "description": "Grundlegende CSS-Variablen des HA-Frontends. Immer aktiv, keine Erkennung nötig."
+}

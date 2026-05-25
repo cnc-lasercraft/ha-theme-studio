@@ -1,0 +1,238 @@
+{
+  "id": "ha-core",
+  "categories": [
+    { "id": "branding",   "label": "Marke",      "icon": "mdi:palette-outline" },
+    { "id": "background", "label": "Hintergrund", "icon": "mdi:format-color-fill" },
+    { "id": "text",       "label": "Text",       "icon": "mdi:format-color-text" },
+    { "id": "state",      "label": "Zustände",   "icon": "mdi:lightbulb-on-outline" },
+    { "id": "card",       "label": "Cards",      "icon": "mdi:card-outline" },
+    { "id": "sidebar",    "label": "Sidebar",    "icon": "mdi:dock-left" },
+    { "id": "header",     "label": "App-Header", "icon": "mdi:page-layout-header" },
+    { "id": "controls",   "label": "Bedienelemente", "icon": "mdi:tune" }
+  ],
+  "variables": [
+    {
+      "name": "--primary-color",
+      "type": "color",
+      "category": "branding",
+      "default": "#03a9f4",
+      "description": "Hauptfarbe — Akzente, aktive Icons, Links."
+    },
+    {
+      "name": "--accent-color",
+      "type": "color",
+      "category": "branding",
+      "default": "#ff9800",
+      "description": "Akzentfarbe — sekundäre Highlights, FAB."
+    },
+    {
+      "name": "--dark-primary-color",
+      "type": "color",
+      "category": "branding",
+      "default": "#0288d1",
+      "description": "Dunklere Variante der Hauptfarbe (z.B. Header-Hintergrund)."
+    },
+    {
+      "name": "--light-primary-color",
+      "type": "color",
+      "category": "branding",
+      "default": "#b3e5fc",
+      "description": "Hellere Variante der Hauptfarbe (z.B. Hover-States)."
+    },
+
+    {
+      "name": "--primary-background-color",
+      "type": "color",
+      "category": "background",
+      "default": "#fafafa",
+      "description": "Haupt-Seitenhintergrund."
+    },
+    {
+      "name": "--secondary-background-color",
+      "type": "color",
+      "category": "background",
+      "default": "#e5e5e5",
+      "description": "Sekundärer Hintergrund — z.B. Sidebar-Bereiche, Dialoge."
+    },
+    {
+      "name": "--card-background-color",
+      "type": "color",
+      "category": "background",
+      "default": "#ffffff",
+      "description": "Default-Card-Hintergrund (fällt auf --ha-card-background zurück, wenn gesetzt)."
+    },
+
+    {
+      "name": "--primary-text-color",
+      "type": "color",
+      "category": "text",
+      "default": "#212121",
+      "description": "Standard-Textfarbe."
+    },
+    {
+      "name": "--secondary-text-color",
+      "type": "color",
+      "category": "text",
+      "default": "#727272",
+      "description": "Sekundär-Text (Labels, Hinweise, Untertitel)."
+    },
+    {
+      "name": "--disabled-text-color",
+      "type": "color",
+      "category": "text",
+      "default": "#bdbdbd",
+      "description": "Text für deaktivierte Zustände."
+    },
+
+    {
+      "name": "--state-icon-color",
+      "type": "color",
+      "category": "state",
+      "default": "#44739e",
+      "description": "Standard-Icon-Farbe (inaktive Entities)."
+    },
+    {
+      "name": "--state-icon-active-color",
+      "type": "color",
+      "category": "state",
+      "default": "#fdd835",
+      "description": "Icon-Farbe wenn Entity aktiv ist (Licht an, Schalter on, …)."
+    },
+    {
+      "name": "--error-color",
+      "type": "color",
+      "category": "state",
+      "default": "#db4437",
+      "description": "Fehler-/Alarm-Farbe."
+    },
+    {
+      "name": "--warning-color",
+      "type": "color",
+      "category": "state",
+      "default": "#ffa600",
+      "description": "Warnungs-Farbe."
+    },
+
+    {
+      "name": "--ha-card-background",
+      "type": "color",
+      "category": "card",
+      "default": "var(--card-background-color)",
+      "description": "Hintergrund von ha-card-Elementen. Überschreibt --card-background-color."
+    },
+    {
+      "name": "--ha-card-border-radius",
+      "type": "length",
+      "category": "card",
+      "default": "12px",
+      "unit": ["px", "rem"],
+      "min": 0,
+      "max": 40,
+      "description": "Ecken-Rundung aller ha-card-Elemente."
+    },
+    {
+      "name": "--ha-card-border-width",
+      "type": "length",
+      "category": "card",
+      "default": "0px",
+      "unit": ["px"],
+      "min": 0,
+      "max": 10,
+      "description": "Border-Breite der Cards (0 = kein Rand)."
+    },
+    {
+      "name": "--ha-card-border-color",
+      "type": "color",
+      "category": "card",
+      "default": "var(--divider-color)",
+      "description": "Border-Farbe — nur sichtbar bei --ha-card-border-width > 0."
+    },
+    {
+      "name": "--ha-card-box-shadow",
+      "type": "shadow",
+      "category": "card",
+      "default": "0 2px 4px rgba(0, 0, 0, 0.12)",
+      "description": "Schatten unter Cards. 'none' für flaches Design."
+    },
+
+    {
+      "name": "--sidebar-background-color",
+      "type": "color",
+      "category": "sidebar",
+      "default": "var(--primary-background-color)",
+      "description": "Hintergrund der Sidebar."
+    },
+    {
+      "name": "--sidebar-text-color",
+      "type": "color",
+      "category": "sidebar",
+      "default": "var(--primary-text-color)",
+      "description": "Standardfarbe der Sidebar-Einträge."
+    },
+    {
+      "name": "--sidebar-selected-background-color",
+      "type": "color",
+      "category": "sidebar",
+      "default": "#ffffff",
+      "description": "Hintergrund des aktiven Sidebar-Eintrags."
+    },
+    {
+      "name": "--sidebar-selected-text-color",
+      "type": "color",
+      "category": "sidebar",
+      "default": "var(--primary-color)",
+      "description": "Textfarbe des aktiven Sidebar-Eintrags."
+    },
+
+    {
+      "name": "--app-header-background-color",
+      "type": "color",
+      "category": "header",
+      "default": "var(--primary-color)",
+      "description": "Hintergrund der App-Header-Leiste."
+    },
+    {
+      "name": "--app-header-text-color",
+      "type": "color",
+      "category": "header",
+      "default": "#ffffff",
+      "description": "Textfarbe in der App-Header-Leiste."
+    },
+
+    {
+      "name": "--divider-color",
+      "type": "color",
+      "category": "controls",
+      "default": "rgba(0, 0, 0, 0.12)",
+      "description": "Trennlinien zwischen Listen-Items, Card-Sections, etc."
+    },
+    {
+      "name": "--switch-checked-color",
+      "type": "color",
+      "category": "controls",
+      "default": "var(--primary-color)",
+      "description": "Farbe eingeschalteter Switches."
+    },
+    {
+      "name": "--switch-unchecked-color",
+      "type": "color",
+      "category": "controls",
+      "default": "#bdbdbd",
+      "description": "Farbe ausgeschalteter Switches."
+    },
+    {
+      "name": "--paper-slider-active-color",
+      "type": "color",
+      "category": "controls",
+      "default": "var(--primary-color)",
+      "description": "Slider-Track-Farbe (gefüllter Teil)."
+    },
+    {
+      "name": "--paper-slider-knob-color",
+      "type": "color",
+      "category": "controls",
+      "default": "var(--primary-color)",
+      "description": "Farbe des Slider-Knopfs."
+    }
+  ]
+}
