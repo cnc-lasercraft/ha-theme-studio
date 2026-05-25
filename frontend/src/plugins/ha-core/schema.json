@@ -12,6 +12,9 @@
     { "id": "controls",        "label": "Bedienelemente",              "icon": "mdi:tune" },
     { "id": "switches",        "label": "Switches",                    "icon": "mdi:toggle-switch" },
     { "id": "tables",          "label": "Tabellen",                    "icon": "mdi:table" },
+    { "id": "form-inputs",     "label": "Form-Inputs",                 "icon": "mdi:form-textbox" },
+    { "id": "dialogs",         "label": "Dialoge / Modals",            "icon": "mdi:application-outline" },
+    { "id": "label-badge",     "label": "Label-Badges",                "icon": "mdi:tag-outline" },
     { "id": "polymer-legacy",  "label": "Polymer/Paper (legacy)",      "icon": "mdi:history" },
     { "id": "mdc",             "label": "Material Design Components",  "icon": "mdi:material-design" },
     { "id": "rgb",             "label": "RGB-Trippel",                 "icon": "mdi:format-list-numbered" }
@@ -74,6 +77,13 @@
       "default": "none",
       "description": "Hintergrund-Bild des HA-Frontends. Wert ist eine CSS-`url(...)`-Funktion (z.B. `url(/local/bg.png)`) oder ein Gradient. Häufig in Glas-/Vision-Themes, um eine Tapete hinter den semi-transparenten Cards zu legen. Setze `none` für keinen Bild-Hintergrund."
     },
+    {
+      "name": "--lovelace-background",
+      "type": "raw",
+      "category": "background",
+      "default": "var(--primary-background-color)",
+      "description": "Hintergrund des Lovelace-View-Containers (alles unter App-Header). Oft auf `var(--background-image)` gesetzt, um ein Bild als Tapete zu nutzen. Wert kann eine Farbe ODER ein `url(...)`/Gradient sein."
+    },
 
     {
       "name": "--primary-text-color",
@@ -96,6 +106,13 @@
       "default": "#bdbdbd",
       "description": "Text-Farbe für deaktivierte UI-Elemente — ausgegraute Buttons, Switches im Disabled-State, nicht-klickbare Menü-Einträge. Sollte sich deutlich von --primary-text-color absetzen."
     },
+    {
+      "name": "--ha-color-text-secondary",
+      "type": "color",
+      "category": "text",
+      "default": "var(--secondary-text-color)",
+      "description": "Modernes HA-Design-Token für sekundäre Textfarbe. Identisch zu --secondary-text-color, neuerer Name aus HAs internem Color-Token-System."
+    },
 
     {
       "name": "--state-icon-color",
@@ -110,6 +127,20 @@
       "category": "state",
       "default": "#fdd835",
       "description": "Icon-Farbe wenn Entity *aktiv* ist: Licht an, Schalter on, Heizung läuft, Pumpe aktiv. Standardmässig Amber/Gelb für 'leuchtet'-Optik. Eine der meistgesehenen Variablen im HA-Frontend."
+    },
+    {
+      "name": "--state-icon-unavailable-color",
+      "type": "color",
+      "category": "state",
+      "default": "var(--disabled-text-color)",
+      "description": "Icon-Farbe für Entities im 'Unavailable'-State (Offline, Kommunikationsfehler, kein Wert verfügbar). Default referenziert --disabled-text-color für gedämpfte Optik."
+    },
+    {
+      "name": "--state-inactive-color",
+      "type": "color",
+      "category": "state",
+      "default": "var(--disabled-text-color)",
+      "description": "Allgemeine Farbe für inaktive States — oft synonym zu --state-icon-color, aber breiter angewendet (z.B. von Custom Cards für 'Aus'-Texte). Default referenziert --disabled-text-color."
     },
     {
       "name": "--error-color",
@@ -183,6 +214,13 @@
       "description": "Material-Palette Blau. Standard-Color in vielen HA-Defaults, oft als neutraler 'Active'-Indikator."
     },
     {
+      "name": "--light-blue-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#03a9f4",
+      "description": "Material-Palette Hellblau. Identisch mit dem Default-Wert von --primary-color (#03a9f4) — oft als sekundärer Akzent oder für 'Cool'-States verwendet."
+    },
+    {
       "name": "--purple-color",
       "type": "color",
       "category": "state-colors",
@@ -195,6 +233,27 @@
       "category": "state-colors",
       "default": "#e91e63",
       "description": "Material-Palette Pink. Eher selten — gelegentlich für Akzente in Kinder-/Spass-Dashboards."
+    },
+    {
+      "name": "--indigo-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#3f51b5",
+      "description": "Material-Palette Indigo. Mittel-tiefes Blau, oft für 'Processing'-States oder als zweite Brand-Variante."
+    },
+    {
+      "name": "--teal-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#009688",
+      "description": "Material-Palette Teal. Beliebt für Frische-/Garten-/Wasser-Indikatoren und als bevorzugte Akzent-Alternative zu Cyan."
+    },
+    {
+      "name": "--brown-color",
+      "type": "color",
+      "category": "state-colors",
+      "default": "#795548",
+      "description": "Material-Palette Braun. Selten verwendet — gelegentlich für Erdung/Holz-Themen oder Sensor-States."
     },
     {
       "name": "--grey-color",
@@ -229,6 +288,16 @@
       "description": "Ecken-Rundung aller ha-card-Elemente (Lovelace, Bubble Card, Mushroom etc., sofern sie ha-card als Basis nutzen). 0 = scharfe Ecken, 12px = HA-Default (Material), 24px+ = sehr rund / Pill-Style."
     },
     {
+      "name": "--ha-card-features-border-radius",
+      "type": "length",
+      "category": "card",
+      "default": "var(--ha-card-border-radius)",
+      "unit": ["px", "rem"],
+      "min": 0,
+      "max": 40,
+      "description": "Ecken-Rundung der Card-Features (z.B. die Action-Buttons unter Light-/Cover-/Climate-Cards). Default referenziert --ha-card-border-radius — also folgt automatisch wenn nicht separat gesetzt."
+    },
+    {
       "name": "--ha-card-border-width",
       "type": "length",
       "category": "card",
@@ -258,6 +327,13 @@
       "category": "card",
       "default": "none",
       "description": "CSS-`backdrop-filter` für Cards — wirkt auf den Bereich *hinter* der Card (nicht auf die Card selbst). Mit `blur(10px)` und einem semi-transparenten --ha-card-background bekommen Cards einen Glas-/Frosted-Effekt (typisch für visionOS-/iOS-Themes). Setze `none` zum Deaktivieren."
+    },
+    {
+      "name": "--clear-background-color",
+      "type": "color",
+      "category": "card",
+      "default": "transparent",
+      "description": "Vollständig transparenter Hintergrund für Card-Bereiche, die durch die Card-Hintergrund-Farbe durchscheinen sollen. Wert ist meist `transparent` oder ein rgba mit Alpha=0."
     },
 
     {
@@ -317,6 +393,27 @@
       "default": "#ffffff",
       "description": "Textfarbe in der App-Header-Leiste (View-Tabs, Titel, Menü-Icons). Default Weiss für maximalen Kontrast auf farbigem Header."
     },
+    {
+      "name": "--app-header-backdrop-filter",
+      "type": "raw",
+      "category": "header",
+      "default": "none",
+      "description": "CSS-`backdrop-filter` für den App-Header. Mit `blur(10px)` bekommt der Header eine Glas-Optik, sodass das --background-image dezent durchschimmert (typisch für visionOS-/iOS-Themes)."
+    },
+    {
+      "name": "--app-header-edit-background-color",
+      "type": "color",
+      "category": "header",
+      "default": "rgba(0, 0, 0, 0.2)",
+      "description": "Header-Hintergrund während die View im Edit-Mode ist (Lovelace-UI-Editor offen). Default leicht dunkler/transparenter für visuelle Differenzierung zum normalen Modus."
+    },
+    {
+      "name": "--app-theme-color",
+      "type": "color",
+      "category": "header",
+      "default": "var(--primary-color)",
+      "description": "Wird als `meta theme-color` an Browser/Mobile-Apps weitergegeben — bestimmt die Farbe der System-Status-Bar (z.B. iOS-Notch-Bereich, Android-Top-Bar in PWA). Sollte zur Brand-/Header-Farbe passen."
+    },
 
     {
       "name": "--divider-color",
@@ -338,6 +435,13 @@
       "category": "controls",
       "default": "var(--primary-color)",
       "description": "Farbe des Slider-Knopfs (Thumb). Default referenziert --primary-color für visuelle Konsistenz mit der aktiven Track-Farbe."
+    },
+    {
+      "name": "--ha-slider-background",
+      "type": "raw",
+      "category": "controls",
+      "default": "var(--secondary-background-color)",
+      "description": "Hintergrund der neuen ha-slider-Komponente (modern, replaces paper-slider). Mit `none !important` lässt sich der Slider-Hintergrund komplett ausblenden — für Custom-Looks. Wert kann Farbe ODER `none` sein."
     },
 
     {
@@ -399,6 +503,149 @@
     },
 
     {
+      "name": "--input-fill-color",
+      "type": "color",
+      "category": "form-inputs",
+      "default": "transparent",
+      "description": "Hintergrund-Füllfarbe von Input-Feldern (Text, Number, Select etc.) im Default-State. Oft transparent für moderne flache Themes."
+    },
+    {
+      "name": "--input-disabled-fill-color",
+      "type": "color",
+      "category": "form-inputs",
+      "default": "transparent",
+      "description": "Hintergrund-Füllfarbe von deaktivierten Input-Feldern. Sollte sich subtil vom aktiven Zustand absetzen."
+    },
+    {
+      "name": "--input-ink-color",
+      "type": "color",
+      "category": "form-inputs",
+      "default": "var(--primary-text-color)",
+      "description": "Textfarbe ('Tinte') in Input-Feldern. Default referenziert --primary-text-color für Konsistenz."
+    },
+    {
+      "name": "--input-disabled-ink-color",
+      "type": "color",
+      "category": "form-inputs",
+      "default": "var(--disabled-text-color)",
+      "description": "Textfarbe in deaktivierten Input-Feldern. Default referenziert --disabled-text-color."
+    },
+    {
+      "name": "--input-label-ink-color",
+      "type": "color",
+      "category": "form-inputs",
+      "default": "var(--secondary-text-color)",
+      "description": "Farbe des Labels über dem Input-Feld (das floatende 'Placeholder'). Default referenziert --secondary-text-color."
+    },
+    {
+      "name": "--input-idle-line-color",
+      "type": "color",
+      "category": "form-inputs",
+      "default": "var(--secondary-text-color)",
+      "description": "Unterstrich-Farbe von Input-Feldern im Default-State (nicht-fokussiert, nicht-hover)."
+    },
+    {
+      "name": "--input-hover-line-color",
+      "type": "color",
+      "category": "form-inputs",
+      "default": "var(--primary-text-color)",
+      "description": "Unterstrich-Farbe von Input-Feldern beim Hover. Kräftiger als --input-idle-line-color für visuelles Feedback."
+    },
+    {
+      "name": "--input-dropdown-icon-color",
+      "type": "color",
+      "category": "form-inputs",
+      "default": "var(--secondary-text-color)",
+      "description": "Farbe des Dropdown-Pfeil-Icons in Select-Inputs."
+    },
+
+    {
+      "name": "--dialog-box-shadow",
+      "type": "shadow",
+      "category": "dialogs",
+      "default": "var(--ha-card-box-shadow)",
+      "description": "Schatten unter modalen Dialogen. Default referenziert --ha-card-box-shadow — Dialoge folgen damit dem Card-Look."
+    },
+    {
+      "name": "--ha-dialog-surface-background",
+      "type": "color",
+      "category": "dialogs",
+      "default": "var(--ha-card-background)",
+      "description": "Hintergrund der Dialog-Oberfläche (die Karte des Dialogs). Default referenziert --ha-card-background — Dialoge folgen dem Card-Background."
+    },
+    {
+      "name": "--ha-dialog-surface-backdrop-filter",
+      "type": "raw",
+      "category": "dialogs",
+      "default": "none",
+      "description": "CSS-`backdrop-filter` für die Dialog-Oberfläche selbst. Mit `blur(...)` bekommt der Dialog einen Glas-Look. Default `none`."
+    },
+    {
+      "name": "--ha-dialog-scrim-backdrop-filter",
+      "type": "raw",
+      "category": "dialogs",
+      "default": "none",
+      "description": "CSS-`backdrop-filter` für den Scrim hinter Dialogen (der Overlay-Bereich rund um den Dialog). Mit `blur(10px)` wird das Frontend hinter dem Dialog verschwommen — während ein Dialog offen ist."
+    },
+    {
+      "name": "--more-info-header-background",
+      "type": "color",
+      "category": "dialogs",
+      "default": "var(--ha-card-background)",
+      "description": "Hintergrund des Headers im More-Info-Dialog (öffnet sich bei Entity-Klick auf einer Card). Default referenziert --ha-card-background."
+    },
+
+    {
+      "name": "--label-badge-background-color",
+      "type": "color",
+      "category": "label-badge",
+      "default": "var(--card-background-color)",
+      "description": "Hintergrund von Label-Badges — kleine Status-Markierungen die in manchen Custom-Cards neben Entity-Icons erscheinen. Default referenziert --card-background-color."
+    },
+    {
+      "name": "--label-badge-text-color",
+      "type": "color",
+      "category": "label-badge",
+      "default": "var(--primary-text-color)",
+      "description": "Textfarbe in Label-Badges. Default referenziert --primary-text-color."
+    },
+    {
+      "name": "--label-badge-red",
+      "type": "color",
+      "category": "label-badge",
+      "default": "var(--error-color)",
+      "description": "Rot-Farbe für Label-Badges (Alarm/Error-State). Trotz des Namens ohne -color-Suffix ist es ein voller CSS-Color-Wert."
+    },
+    {
+      "name": "--label-badge-green",
+      "type": "color",
+      "category": "label-badge",
+      "default": "var(--success-color)",
+      "description": "Grün-Farbe für Label-Badges (OK/Aktiv-State)."
+    },
+    {
+      "name": "--label-badge-blue",
+      "type": "color",
+      "category": "label-badge",
+      "default": "var(--info-color)",
+      "description": "Blau-Farbe für Label-Badges (Info-State)."
+    },
+    {
+      "name": "--label-badge-yellow",
+      "type": "color",
+      "category": "label-badge",
+      "default": "var(--warning-color)",
+      "description": "Gelb-Farbe für Label-Badges (Warning-State)."
+    },
+    {
+      "name": "--label-badge-gray",
+      "type": "color",
+      "category": "label-badge",
+      "default": "var(--disabled-text-color)",
+      "description": "Grau-Farbe für Label-Badges (Neutral/Inaktiv-State)."
+    },
+
+    {
       "name": "--paper-item-icon-color",
       "type": "color",
       "category": "polymer-legacy",
@@ -411,6 +658,62 @@
       "category": "polymer-legacy",
       "default": "var(--state-icon-active-color)",
       "description": "Aktive Variante von --paper-item-icon-color. Wirkt auf 'On'-States in Legacy-Listen-Komponenten."
+    },
+    {
+      "name": "--paper-card-background-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--ha-card-background)",
+      "description": "Legacy-Alias für Card-Hintergrund. Wird von HA-Components verwendet, die noch nicht auf ha-card umgestellt sind."
+    },
+    {
+      "name": "--paper-dialog-background-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--ha-dialog-surface-background, var(--ha-card-background))",
+      "description": "Hintergrund alter Polymer-Dialoge. Wird zunehmend durch --ha-dialog-surface-background ersetzt, aber manche Legacy-Dialoge greifen noch hier zu."
+    },
+    {
+      "name": "--paper-listbox-background-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--primary-background-color)",
+      "description": "Hintergrund von Polymer-Listbox-Komponenten (alte Listen-Dialoge, Dropdown-Menüs)."
+    },
+    {
+      "name": "--paper-slider-container-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--disabled-text-color)",
+      "description": "Hintergrund-Track des Sliders (der ungefüllte Bereich rechts vom Knopf). Komplement zu --paper-slider-active-color."
+    },
+    {
+      "name": "--paper-slider-secondary-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--light-primary-color)",
+      "description": "Sekundäre Slider-Farbe — z.B. für Slider mit zwei Wertebereichen (Min/Max) oder Buffered-State."
+    },
+    {
+      "name": "--paper-slider-knob-start-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--paper-slider-knob-color)",
+      "description": "Knopf-Farbe in der Start-Position (bei Wert 0). Variiert sich oft von --paper-slider-knob-color für visuelle Klarheit am Anfang."
+    },
+    {
+      "name": "--paper-slider-pin-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--paper-slider-knob-color)",
+      "description": "Pin-Farbe — der kleine Tooltip der über dem Knopf erscheint wenn man zieht und den aktuellen Wert anzeigt."
+    },
+    {
+      "name": "--paper-slider-font-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "#000",
+      "description": "Textfarbe für Werte/Labels die *innerhalb* des Slider-Pins angezeigt werden (z.B. Brightness-%)."
     },
     {
       "name": "--paper-toggle-button-checked-button-color",
@@ -440,6 +743,20 @@
       "default": "var(--disabled-text-color)",
       "description": "Bar/Track-Farbe alter Polymer-Toggle-Buttons im 'Off'-Zustand."
     },
+    {
+      "name": "--text-primary-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--primary-text-color)",
+      "description": "Legacy: primäre Textfarbe — bei modernen Themes oft auf --primary-text-color verwiesen. Manche alte Komponenten greifen noch direkt hier zu."
+    },
+    {
+      "name": "--text-dark-color",
+      "type": "color",
+      "category": "polymer-legacy",
+      "default": "var(--primary-text-color)",
+      "description": "Legacy: dunkle Textfarbe für hellem Hintergrund. In Dark-Themes oft auf eine helle Farbe gesetzt — der Name ist irreführend."
+    },
 
     {
       "name": "--mdc-select-fill-color",
@@ -468,6 +785,34 @@
       "category": "mdc",
       "default": "var(--secondary-text-color)",
       "description": "Farbe des Dropdown-Pfeil-Icons im Select. Default referenziert --secondary-text-color."
+    },
+    {
+      "name": "--mdc-checkbox-unchecked-color",
+      "type": "color",
+      "category": "mdc",
+      "default": "var(--secondary-text-color)",
+      "description": "Border-Farbe von Material-Design-Checkboxen im 'Unchecked'-State."
+    },
+    {
+      "name": "--mdc-radio-unchecked-color",
+      "type": "color",
+      "category": "mdc",
+      "default": "var(--secondary-text-color)",
+      "description": "Border-Farbe von Material-Design-Radio-Buttons im 'Unchecked'-State."
+    },
+    {
+      "name": "--mdc-theme-surface",
+      "type": "color",
+      "category": "mdc",
+      "default": "var(--card-background-color)",
+      "description": "Allgemeine Surface-Hintergrund-Farbe für Material-Design-Components. Oft synonym zu --card-background-color."
+    },
+    {
+      "name": "--md-list-container-color",
+      "type": "color",
+      "category": "mdc",
+      "default": "var(--card-background-color)",
+      "description": "Hintergrund von Material-Design-3 List-Containern. Setze 'none' (als Wort, nicht als CSS) ist nicht gültig — für transparenten Hintergrund eine transparente Farbe wählen."
     },
 
     {
