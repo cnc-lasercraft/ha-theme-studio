@@ -78,7 +78,7 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 **Verschoben auf v1.0.x / v1.1+:**
 - ~~Variable-Extraction im Module-Editor (Sidebar mit erkannten `var(--xxx)`)~~ → v1.0.1
 - ~~Modes-Vergleich im Theme-Switcher~~ → v1.0.2
-- Sauberes Error-Handling-Audit
+- ~~Sauberes Error-Handling-Audit~~ → v1.0.3 (Quick-Wins; vollständiges Audit dokumentiert)
 - i18n (DE/EN) vorbereiten
 - Aufnahme in HACS-Default-Katalog (PR an HACS-Repo)
 
@@ -92,6 +92,22 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 
 | Feature | Status | Commit |
 |---|---|---|
-| Mode-Selector im Compare-View: Pill-Buttons "Default / Light / Dark / …" oberhalb der Diff-Tabelle. Verfügbare Modes = Union aus A und B. Diff-Filter wirkt pro Mode. Bei nur "default" wird der Selector ausgeblendet. | ✓ | (dieser Commit) |
-| Mode-aware Copy: `_mergeValue()` schreibt bei Default in Top-Level, bei Light/Dark in `modes.<mode>.<key>`. Fehlende `modes:`-/Sub-Mode-Struktur wird automatisch angelegt. Backup wie zuvor. | ✓ | (dieser Commit) |
-| Badge "A"/"B" am Mode-Button wenn Mode nur in einem Theme existiert, plus Hint in der Summary "Copy würde sie anlegen". | ✓ | (dieser Commit) |
+| Mode-Selector im Compare-View: Pill-Buttons "Default / Light / Dark / …" oberhalb der Diff-Tabelle. Verfügbare Modes = Union aus A und B. Diff-Filter wirkt pro Mode. Bei nur "default" wird der Selector ausgeblendet. | ✓ | `5e7daba` |
+| Mode-aware Copy: `_mergeValue()` schreibt bei Default in Top-Level, bei Light/Dark in `modes.<mode>.<key>`. Fehlende `modes:`-/Sub-Mode-Struktur wird automatisch angelegt. Backup wie zuvor. | ✓ | `5e7daba` |
+| Badge "A"/"B" am Mode-Button wenn Mode nur in einem Theme existiert, plus Hint in der Summary "Copy würde sie anlegen". | ✓ | `5e7daba` |
+
+## v1.0.3 – Error-Handling-Quick-Wins
+
+| Feature | Status | Commit |
+|---|---|---|
+| `beforeunload`-Handler in `editor-view` + `module-editor`: bei dirty state Browser-Bestätigungs-Dialog vor Tab-Close / Reload. Schutz gegen Datenverlust. | ✓ | (dieser Commit) |
+| Sichtbarer HACS-Detection-Fehler: `panel-main` zeigt Hinweis-Banner am Panel-Top wenn `list_hacs_repos` fehlschlägt (statt nur `console.warn`). Banner ist dismissable. | ✓ | (dieser Commit) |
+| Backend-Logging-Symmetrie: `ws_get_theme` + `ws_get_module` loggen jetzt auch mit `_LOGGER.exception` bei Load-Fehlern, analog zu den Save-Handlern. | ✓ | (dieser Commit) |
+| Compare-View `_copyStatus` auf typisierte `CopyStatus`-Union (idle/copying/success/error) hochgezogen, analog zu `SaveStatus` in den anderen Views. Separate success/error-Banner-Styles. | ✓ | (dieser Commit) |
+
+**Audit-Befunde, die NICHT in v1.0.3 sind** (für spätere Releases / Doku):
+- Keine YAML-/Schema-Validierung der `variables: dict` vor Schreiben — Client trust
+- Backup-Race bei concurrent Saves (Timestamp+Counter fängt, Filenames werden unsauber)
+- Race-Condition: Save → View-Wechsel → State-Update auf disconnected Component (silent, kein Crash)
+- Native `confirm()`-Dialoge statt Custom-Modal (funktional, nicht designed)
+- Kein Retry-Button bei `list_themes`-Load-Fehler (User muss Page reloaden)

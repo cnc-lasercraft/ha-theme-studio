@@ -411,8 +411,20 @@ export class TsModuleEditor extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
+    window.addEventListener("beforeunload", this._onBeforeUnload);
     this._load();
   }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("beforeunload", this._onBeforeUnload);
+  }
+
+  private _onBeforeUnload = (e: BeforeUnloadEvent) => {
+    if (!this._isDirty()) return;
+    e.preventDefault();
+    e.returnValue = "";
+  };
 
   override updated(changed: Map<string, unknown>) {
     const fileChanged =

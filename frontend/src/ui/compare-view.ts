@@ -41,6 +41,18 @@ interface SaveThemeResult {
 
 type Side = "A" | "B";
 
+type CopyStatus =
+  | { state: "idle" }
+  | { state: "copying" }
+  | {
+      state: "success";
+      yamlKey: string;
+      themeName: string;
+      modeLabel: string;
+      backup: string | null;
+    }
+  | { state: "error"; msg: string };
+
 const DEFAULT_MODE = "default";
 
 interface SideState {
@@ -74,9 +86,12 @@ export class TsCompareView extends LitElement {
   @state() private _sideB: SideState = this._freshSide();
 
   @state() private _diffOnly = true;
-  @state() private _busyCopy = false;
-  @state() private _copyStatus: string | null = null;
+  @state() private _copyStatus: CopyStatus = { state: "idle" };
   @state() private _activeMode: string = DEFAULT_MODE;
+
+  private get _busyCopy(): boolean {
+    return this._copyStatus.state === "copying";
+  }
 
   private _freshSide(): SideState {
     return {
@@ -277,8 +292,20 @@ export class TsCompareView extends LitElement {
       border-radius: 4px;
       margin-bottom: 12px;
       font-size: 0.9rem;
+    }
+    .status-banner.success {
       background: rgba(67, 160, 71, 0.12);
       border-left: 4px solid var(--success-color, #43a047);
+    }
+    .status-banner.error {
+      background: rgba(229, 57, 53, 0.12);
+      border-left: 4px solid var(--error-color, #e53935);
+    }
+    .status-banner code {
+      background: rgba(0, 0, 0, 0.06);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 0.85rem;
     }
   `;
 
@@ -453,11 +480,28 @@ export class TsCompareView extends LitElement {
           <label for="diff-only">Nur Unterschiede</label>
         </div>
       </div>
-      ${this._renderModeSelector()}
-      ${this._copyStatus
-        ? html`<div class="status-banner">${this._copyStatus}</div>`
-        : ""}
+      ${this._renderModeSelector()} ${this._renderCopyStatus()}
       ${this._renderBody()}
+    `;
+  }
+
+  private _renderCopyStatus() {
+    const s = this._copyStatus;
+    if (s.state === "idle" || s.state === "copying") return "";
+    if (s.state === "success") {
+      return html`
+        <div class="status-banner success">
+          ✓ <code>${s.yamlKey}</code> kopiert nach ${s.themeName}
+          (${s.modeLabel})${s.backup
+            ? html` &middot; Backup: <code>${s.backup}</code>`
+            : ""}
+        </div>
+      `;
+    }
+    return html`
+      <div class="status-banner error">
+        ✗ Kopieren fehlgeschlagen: ${s.msg}
+      </div>
     `;
   }
 
@@ -689,8 +733,7 @@ export class TsCompareView extends LitElement {
       `Ein Backup von ${target.selection.file} wird automatisch angelegt.`;
     if (!confirm(confirmMsg)) return;
 
-    this._busyCopy = true;
-    this._copyStatus = null;
+    this._copyStatus = { state: "copying" };
 
     const merged = this._mergeValue(target.full, mode, yamlKey, value);
 
@@ -702,17 +745,19 @@ export class TsCompareView extends LitElement {
           theme_name: target.selection.theme_name,
           variables: merged,
         });
-      const reloaded = target.selection;
-      void this._setSide(to, reloaded);
-      this._copyStatus =
-        `✓ ${yamlKey} kopiert nach ${target.selection.theme_name} (${modeLabel})` +
-        (result.backup ? ` · Backup: ${result.backup}` : "");
+      void this._setSide(to, target.selection);
+      this._copyStatus = {
+        state: "success",
+        yamlKey,
+        themeName: target.selection.theme_name,
+        modeLabel,
+        backup: result.backup,
+      };
     } catch (err) {
-      this._copyStatus = `✗ Kopieren fehlgeschlagen: ${
-        err instanceof Error ? err.message : String(err)
-      }`;
-    } finally {
-      this._busyCopy = false;
+      this._copyStatus = {
+        state: "error",
+        msg: err instanceof Error ? err.message : String(err),
+      };
     }
   }
 

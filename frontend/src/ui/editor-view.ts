@@ -517,6 +517,7 @@ export class TsEditorView extends LitElement {
     // Tabs zeigen ggf. unterschiedliche Plugins nachdem HACS-Detection
     // durchgelaufen ist → re-rendern, wenn das passiert.
     this._unsubRegistry = onActivePluginsChanged(() => this.requestUpdate());
+    window.addEventListener("beforeunload", this._onBeforeUnload);
     this._load();
   }
 
@@ -524,8 +525,18 @@ export class TsEditorView extends LitElement {
     super.disconnectedCallback();
     this._unsubRegistry?.();
     this._unsubRegistry = undefined;
+    window.removeEventListener("beforeunload", this._onBeforeUnload);
     this._revertAll();
   }
+
+  private _onBeforeUnload = (e: BeforeUnloadEvent) => {
+    if (this._dirtyCount() === 0) return;
+    // Moderne Browser zeigen einen generischen "Wirklich verlassen?"-Dialog
+    // sobald `preventDefault` + `returnValue` gesetzt ist. Der Text selbst
+    // wird seit Chrome 51 / Firefox 44 nicht mehr angezeigt.
+    e.preventDefault();
+    e.returnValue = "";
+  };
 
   override updated(changed: Map<string, unknown>) {
     const fileChanged =

@@ -195,6 +195,9 @@ async def ws_get_theme(
         path = _safe_join(root, msg["file"])
         data = await hass.async_add_executor_job(_load_file, path)
     except (OSError, ValueError, yaml.YAMLError) as exc:
+        _LOGGER.exception(
+            "get_theme failed for %s / %s", msg["file"], msg["theme_name"]
+        )
         connection.send_error(msg["id"], "load_failed", str(exc))
         return
 
@@ -390,6 +393,9 @@ async def ws_get_module(
         path = _safe_join(root, msg["file"])
         data = await hass.async_add_executor_job(_load_file, path)
     except (OSError, ValueError, yaml.YAMLError) as exc:
+        _LOGGER.exception(
+            "get_module failed for %s / %s", msg["file"], msg["module_id"]
+        )
         connection.send_error(msg["id"], "load_failed", str(exc))
         return
 

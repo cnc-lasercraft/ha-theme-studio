@@ -45,6 +45,12 @@ export class ThemeStudioPanel extends LitElement {
   // Demo-Mode via URL-Hash `#demo` — zeigt <ts-controls-demo> statt Picker.
   @state() private _demoMode = false;
 
+  // Hinweis-Banner wenn HACS-Detection fehlschlägt. Wenn null → kein Banner.
+  // Fehler ist nicht fatal (alle Plugins werden geladen), aber User soll
+  // wissen, dass der Filter inaktiv ist.
+  @state() private _hacsError: string | null = null;
+  @state() private _hacsErrorDismissed = false;
+
   private _unsubRegistry?: () => void;
 
   override connectedCallback() {
@@ -78,10 +84,12 @@ export class ThemeStudioPanel extends LitElement {
         );
       }
     } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
       console.warn(
         "[theme-studio] HACS-Detection fehlgeschlagen, alle Plugins geladen:",
         err,
       );
+      this._hacsError = msg;
     }
   }
 
@@ -163,6 +171,41 @@ export class ThemeStudioPanel extends LitElement {
     .back-btn:hover {
       background: var(--secondary-background-color);
     }
+    .hacs-warn {
+      max-width: 800px;
+      margin: 0 auto 16px;
+      padding: 10px 14px;
+      background: rgba(255, 152, 0, 0.12);
+      border-left: 4px solid var(--warning-color, #ff9800);
+      border-radius: 4px;
+      font-size: 0.88rem;
+      color: var(--primary-text-color);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .hacs-warn .hacs-warn-msg {
+      flex: 1;
+    }
+    .hacs-warn .hacs-warn-detail {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--secondary-text-color);
+      margin-top: 2px;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    }
+    .hacs-warn button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+      color: var(--secondary-text-color);
+      padding: 0 4px;
+    }
+    .hacs-warn button:hover {
+      color: var(--primary-text-color);
+    }
   `;
 
   override render() {
@@ -171,7 +214,27 @@ export class ThemeStudioPanel extends LitElement {
         <ha-icon icon="mdi:palette"></ha-icon>
         <h1>Theme Studio</h1>
       </header>
-      <main>${this._renderBody()}</main>
+      <main>${this._renderHacsWarn()} ${this._renderBody()}</main>
+    `;
+  }
+
+  private _renderHacsWarn() {
+    if (!this._hacsError || this._hacsErrorDismissed) return "";
+    return html`
+      <div class="hacs-warn">
+        <span class="hacs-warn-msg">
+          HACS-Detection fehlgeschlagen — Plugin-Filter ist inaktiv, alle
+          Plugins werden gezeigt (auch wenn das zugehörige Custom-Repo gar
+          nicht installiert ist).
+          <span class="hacs-warn-detail">${this._hacsError}</span>
+        </span>
+        <button
+          @click=${() => (this._hacsErrorDismissed = true)}
+          title="Hinweis ausblenden"
+        >
+          ×
+        </button>
+      </div>
     `;
   }
 
