@@ -76,8 +76,14 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 | CLAUDE.md Deployment-Cheatsheet auf single-tree umgestellt | ✓ | dieser Commit |
 
 **Verschoben auf v1.0.x / v1.1+:**
-- Variable-Extraction im Module-Editor (Sidebar mit erkannten `var(--xxx)`)
+- ~~Variable-Extraction im Module-Editor (Sidebar mit erkannten `var(--xxx)`)~~ → v1.0.1
 - Modes-Vergleich im Theme-Switcher
 - Sauberes Error-Handling-Audit
 - i18n (DE/EN) vorbereiten
 - Aufnahme in HACS-Default-Katalog (PR an HACS-Repo)
+
+## v1.0.1 – Post-Release-Polish
+
+| Feature | Status | Commit |
+|---|---|---|
+| Variable-Extraction im Module-Editor: Sidebar listet alle `var(--xxx)` aus dem CSS, mit Dedup + Count, Plugin-Badge (ha-core/bubble-card/mushroom/heuristik), Typ-/Kategorie-Chips, Description, Fallback-Parser für `var(--name, fallback)` inkl. nested vars, Color-Swatch bei Farben. Layout 2-Spalten (Textarea links flex, Sidebar 300px sticky rechts; <900px untereinander). Klick = nur Info, kein Cross-Tab-Spring. | ✓ | (dieser Commit) |

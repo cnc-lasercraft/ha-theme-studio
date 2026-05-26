@@ -13,12 +13,60 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import { getVariableMeta } from "../core/schema-registry";
+import type { VariableMeta } from "../core/types";
 import type { HomeAssistant } from "../types";
 
 interface GetModuleResult {
   file: string;
   module_id: string;
   content: Record<string, unknown>;
+}
+
+interface ExtractedVar {
+  name: string;
+  fallback?: string;
+  count: number;
+}
+
+// Findet alle var(--name) / var(--name, fallback) im CSS. Nested var() in
+// Fallbacks wird vom äusseren Match ignoriert, aber separat als eigener
+// Hit erfasst — beide Vars werden also gelistet.
+function extractVars(css: string): ExtractedVar[] {
+  const map = new Map<string, ExtractedVar>();
+  const re = /var\(\s*(--[\w-]+)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(css)) !== null) {
+    const name = m[1];
+    let i = m.index + m[0].length;
+    while (i < css.length && /\s/.test(css[i])) i++;
+    let fallback: string | undefined;
+    if (css[i] === ",") {
+      i++;
+      while (i < css.length && /\s/.test(css[i])) i++;
+      const fbStart = i;
+      let depth = 1;
+      while (i < css.length && depth > 0) {
+        const c = css[i];
+        if (c === "(") depth++;
+        else if (c === ")") {
+          depth--;
+          if (depth === 0) break;
+        }
+        i++;
+      }
+      const raw = css.slice(fbStart, i).trim();
+      if (raw.length > 0) fallback = raw;
+    }
+    const existing = map.get(name);
+    if (existing) {
+      existing.count++;
+      if (!existing.fallback && fallback) existing.fallback = fallback;
+    } else {
+      map.set(name, { name, fallback, count: 1 });
+    }
+  }
+  return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 interface SaveModuleResult {
@@ -172,6 +220,17 @@ export class TsModuleEditor extends LitElement {
       color: var(--secondary-text-color);
       margin-top: -6px;
     }
+    .code-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .code-layout {
+        grid-template-columns: 1fr;
+      }
+    }
     .code-editor {
       width: 100%;
       box-sizing: border-box;
@@ -192,6 +251,122 @@ export class TsModuleEditor extends LitElement {
       outline: 2px solid var(--primary-color);
       outline-offset: -1px;
       border-color: transparent;
+    }
+    .vars-sidebar {
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      border-radius: 6px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.02));
+      padding: 12px;
+      font-size: 0.82rem;
+    }
+    .vars-sidebar h4 {
+      margin: 0 0 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--secondary-text-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vars-sidebar h4 .count {
+      background: rgba(0, 0, 0, 0.08);
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .vars-empty {
+      color: var(--secondary-text-color);
+      font-style: italic;
+      padding: 8px 4px;
+    }
+    .var-item {
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+    }
+    .var-item:last-child {
+      border-bottom: none;
+    }
+    .var-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .var-name {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+      font-size: 0.82rem;
+      color: var(--primary-text-color);
+      word-break: break-all;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .var-count {
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--secondary-text-color);
+      padding: 0 6px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .var-tags {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .var-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.06);
+      font-size: 0.68rem;
+      color: var(--secondary-text-color);
+      font-family: ui-monospace, monospace;
+    }
+    .var-tag.plugin {
+      background: rgba(3, 169, 244, 0.14);
+      color: var(--primary-color);
+    }
+    .var-tag.heuristic {
+      background: rgba(255, 166, 0, 0.14);
+      color: var(--warning-color, #ffa600);
+    }
+    .var-tag.type-color {
+      background: rgba(67, 160, 71, 0.14);
+      color: var(--success-color, #43a047);
+    }
+    .var-desc {
+      color: var(--secondary-text-color);
+      font-size: 0.75rem;
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+    .var-fallback {
+      margin-top: 4px;
+      font-size: 0.72rem;
+      color: var(--secondary-text-color);
+    }
+    .var-fallback code {
+      font-family: ui-monospace, monospace;
+      background: rgba(0, 0, 0, 0.06);
+      padding: 1px 4px;
+      border-radius: 3px;
+      color: var(--primary-text-color);
+    }
+    .var-swatch {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 4px;
+      vertical-align: middle;
+      border: 1px solid rgba(0, 0, 0, 0.2);
     }
     .extra-keys {
       margin-top: 12px;
@@ -472,13 +647,71 @@ export class TsModuleEditor extends LitElement {
 
       <div class="card">
         <h3>CSS-Code</h3>
-        <textarea
-          class="code-editor"
-          spellcheck="false"
-          .value=${code}
-          @input=${(e: Event) =>
-            this._setField("code", (e.target as HTMLTextAreaElement).value)}
-        ></textarea>
+        <div class="code-layout">
+          <textarea
+            class="code-editor"
+            spellcheck="false"
+            .value=${code}
+            @input=${(e: Event) =>
+              this._setField("code", (e.target as HTMLTextAreaElement).value)}
+          ></textarea>
+          ${this._renderVarsSidebar(code)}
+        </div>
+      </div>
+    `;
+  }
+
+  private _renderVarsSidebar(code: string) {
+    const vars = extractVars(code);
+    return html`
+      <aside class="vars-sidebar">
+        <h4>
+          Verwendete Variablen
+          <span class="count">${vars.length}</span>
+        </h4>
+        ${vars.length === 0
+          ? html`<div class="vars-empty">
+              Keine <code>var(--…)</code> im Code gefunden.
+            </div>`
+          : vars.map((v) => this._renderVarItem(v))}
+      </aside>
+    `;
+  }
+
+  private _renderVarItem(v: ExtractedVar) {
+    const meta: VariableMeta = getVariableMeta(v.name, v.fallback);
+    const isSchema = meta.source === "schema";
+    const swatch =
+      meta.type === "color" && v.fallback
+        ? html`<span class="var-swatch" style=${`background:${v.fallback}`}></span>`
+        : "";
+    return html`
+      <div class="var-item">
+        <div class="var-header">
+          <span class="var-name">${swatch}${v.name}</span>
+          ${v.count > 1
+            ? html`<span class="var-count">×${v.count}</span>`
+            : ""}
+        </div>
+        <div class="var-tags">
+          ${isSchema
+            ? html`<span class="var-tag plugin">${meta.plugin}</span>`
+            : html`<span class="var-tag heuristic">heuristik</span>`}
+          <span
+            class=${`var-tag ${meta.type === "color" ? "type-color" : ""}`}
+          >${meta.type}</span>
+          ${isSchema && meta.category
+            ? html`<span class="var-tag">${meta.category}</span>`
+            : ""}
+        </div>
+        ${meta.description
+          ? html`<div class="var-desc">${meta.description}</div>`
+          : ""}
+        ${v.fallback
+          ? html`<div class="var-fallback">
+              Fallback: <code>${v.fallback}</code>
+            </div>`
+          : ""}
       </div>
     `;
   }
