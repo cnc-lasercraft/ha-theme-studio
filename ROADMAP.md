@@ -77,7 +77,7 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 
 **Verschoben auf v1.0.x / v1.1+:**
 - ~~Variable-Extraction im Module-Editor (Sidebar mit erkannten `var(--xxx)`)~~ → v1.0.1
-- Modes-Vergleich im Theme-Switcher
+- ~~Modes-Vergleich im Theme-Switcher~~ → v1.0.2
 - Sauberes Error-Handling-Audit
 - i18n (DE/EN) vorbereiten
 - Aufnahme in HACS-Default-Katalog (PR an HACS-Repo)
@@ -86,4 +86,12 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 
 | Feature | Status | Commit |
 |---|---|---|
-| Variable-Extraction im Module-Editor: Sidebar listet alle `var(--xxx)` aus dem CSS, mit Dedup + Count, Plugin-Badge (ha-core/bubble-card/mushroom/heuristik), Typ-/Kategorie-Chips, Description, Fallback-Parser für `var(--name, fallback)` inkl. nested vars, Color-Swatch bei Farben. Layout 2-Spalten (Textarea links flex, Sidebar 300px sticky rechts; <900px untereinander). Klick = nur Info, kein Cross-Tab-Spring. | ✓ | (dieser Commit) |
+| Variable-Extraction im Module-Editor: Sidebar listet alle `var(--xxx)` aus dem CSS, mit Dedup + Count, Plugin-Badge (ha-core/bubble-card/mushroom/heuristik), Typ-/Kategorie-Chips, Description, Fallback-Parser für `var(--name, fallback)` inkl. nested vars, Color-Swatch bei Farben. Layout 2-Spalten (Textarea links flex, Sidebar 300px sticky rechts; <900px untereinander). Klick = nur Info, kein Cross-Tab-Spring. | ✓ | `48b7aab` |
+
+## v1.0.2 – Modes im Theme-Switcher
+
+| Feature | Status | Commit |
+|---|---|---|
+| Mode-Selector im Compare-View: Pill-Buttons "Default / Light / Dark / …" oberhalb der Diff-Tabelle. Verfügbare Modes = Union aus A und B. Diff-Filter wirkt pro Mode. Bei nur "default" wird der Selector ausgeblendet. | ✓ | (dieser Commit) |
+| Mode-aware Copy: `_mergeValue()` schreibt bei Default in Top-Level, bei Light/Dark in `modes.<mode>.<key>`. Fehlende `modes:`-/Sub-Mode-Struktur wird automatisch angelegt. Backup wie zuvor. | ✓ | (dieser Commit) |
+| Badge "A"/"B" am Mode-Button wenn Mode nur in einem Theme existiert, plus Hint in der Summary "Copy würde sie anlegen". | ✓ | (dieser Commit) |

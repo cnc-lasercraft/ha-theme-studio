@@ -5,12 +5,10 @@
 // beiden Themes nebeneinander, hebt Unterschiede hervor, und stellt
 // Copy-Arrows bereit die direkt ins Ziel-YAML schreiben (mit Backup).
 //
-// Scope für v0.4 MVP:
-// - Nur Top-Level-Vars (Default-Mode). Modes light/dark werden ignoriert.
-// - Read-only Anzeige (keine inline-Controls) — Edit-Workflow geht weiter
-//   via Single-Theme-Editor.
-// - Copy ist eine atomare Operation: ein Klick = confirm + sofortiger
-//   `theme_studio/save_theme` mit overwrittenem Wert + Re-Load.
+// v1.0.2: Mode-Selector — neben "default" (Top-Level) lassen sich Modes
+// (light/dark/custom) separat vergleichen. Verfügbare Modes = Union der
+// Modes aus A und B. Copy schreibt in die aktive Mode (default → Top-Level,
+// sonst modes.<mode>.<key>); fehlende modes-Struktur wird automatisch angelegt.
 
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -43,10 +41,14 @@ interface SaveThemeResult {
 
 type Side = "A" | "B";
 
+const DEFAULT_MODE = "default";
+
 interface SideState {
   selection: ThemeEntry | null;
   full: Record<string, unknown>;
-  scalars: Record<string, string>;
+  /** Mode-Name → (yamlKey → string-Value). "default" = Top-Level. */
+  scalarsByMode: Record<string, Record<string, string>>;
+  modes: string[];
   loading: boolean;
   error: string | null;
 }
@@ -54,7 +56,8 @@ interface SideState {
 const EMPTY_SIDE: SideState = {
   selection: null,
   full: {},
-  scalars: {},
+  scalarsByMode: { [DEFAULT_MODE]: {} },
+  modes: [DEFAULT_MODE],
   loading: false,
   error: null,
 };
@@ -67,12 +70,21 @@ export class TsCompareView extends LitElement {
   @state() private _themesError: string | null = null;
   @state() private _themesLoading = true;
 
-  @state() private _sideA: SideState = { ...EMPTY_SIDE };
-  @state() private _sideB: SideState = { ...EMPTY_SIDE };
+  @state() private _sideA: SideState = this._freshSide();
+  @state() private _sideB: SideState = this._freshSide();
 
   @state() private _diffOnly = true;
   @state() private _busyCopy = false;
   @state() private _copyStatus: string | null = null;
+  @state() private _activeMode: string = DEFAULT_MODE;
+
+  private _freshSide(): SideState {
+    return {
+      ...EMPTY_SIDE,
+      scalarsByMode: { [DEFAULT_MODE]: {} },
+      modes: [DEFAULT_MODE],
+    };
+  }
 
   static override styles = css`
     :host {
@@ -117,6 +129,46 @@ export class TsCompareView extends LitElement {
     }
     .filter input[type="checkbox"] {
       transform: scale(1.2);
+    }
+    .mode-selector {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 2px;
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+      border-radius: 6px;
+    }
+    .mode-selector button {
+      background: none;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+      color: var(--secondary-text-color);
+      font: inherit;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .mode-selector button:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--primary-text-color);
+    }
+    .mode-selector button.active {
+      background: var(--card-background-color);
+      color: var(--primary-color);
+      font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+    .mode-selector .badge-only {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 5px;
+      font-size: 0.7rem;
+      background: rgba(3, 169, 244, 0.18);
+      color: var(--primary-color);
+      border-radius: 3px;
+      letter-spacing: 0;
+      text-transform: none;
     }
     .empty,
     .error,
@@ -263,7 +315,7 @@ export class TsCompareView extends LitElement {
     const next: SideState = { ...current, selection: entry };
     this._writeSide(side, next);
     if (!entry) {
-      this._writeSide(side, { ...EMPTY_SIDE });
+      this._writeSide(side, this._freshSide());
       return;
     }
     this._writeSide(side, { ...next, loading: true, error: null });
@@ -274,11 +326,13 @@ export class TsCompareView extends LitElement {
           file: entry.file,
           theme_name: entry.theme_name,
         });
+      const scalarsByMode = this._extractScalarsByMode(result.variables);
       this._writeSide(side, {
         ...next,
         loading: false,
         full: result.variables,
-        scalars: this._extractScalars(result.variables),
+        scalarsByMode,
+        modes: Object.keys(scalarsByMode),
       });
     } catch (err) {
       this._writeSide(side, {
@@ -294,15 +348,57 @@ export class TsCompareView extends LitElement {
     else this._sideB = value;
   }
 
-  /** Top-Level-Scalars als yamlKey → string Map (modes etc. werden übersprungen). */
-  private _extractScalars(vars: Record<string, unknown>): Record<string, string> {
-    const out: Record<string, string> = {};
+  /**
+   * Liefert pro Mode (inkl. "default") die Scalars als yamlKey → string Map.
+   * - "default" = Top-Level-Scalars (alles außer dem `modes`-Key)
+   * - "light", "dark", … = Einträge aus theme.modes.<mode>
+   *
+   * Dicts/Arrays werden in beiden Fällen übersprungen — Compare-View
+   * vergleicht nur skalare Werte.
+   */
+  private _extractScalarsByMode(
+    vars: Record<string, unknown>,
+  ): Record<string, Record<string, string>> {
+    const out: Record<string, Record<string, string>> = {
+      [DEFAULT_MODE]: {},
+    };
     for (const [k, v] of Object.entries(vars)) {
+      if (k === "modes" && v && typeof v === "object" && !Array.isArray(v)) {
+        for (const [modeName, modeVars] of Object.entries(
+          v as Record<string, unknown>,
+        )) {
+          if (!modeVars || typeof modeVars !== "object") continue;
+          const bag: Record<string, string> = {};
+          for (const [mk, mv] of Object.entries(
+            modeVars as Record<string, unknown>,
+          )) {
+            if (mv === null || mv === undefined) continue;
+            if (typeof mv === "object") continue;
+            bag[mk] = String(mv);
+          }
+          out[modeName] = bag;
+        }
+        continue;
+      }
       if (v === null || v === undefined) continue;
       if (typeof v === "object") continue;
-      out[k] = String(v);
+      out[DEFAULT_MODE][k] = String(v);
     }
     return out;
+  }
+
+  /** Union der Modes aus A und B, "default" zuerst, Rest alphabetisch. */
+  private _availableModes(): string[] {
+    const set = new Set<string>([DEFAULT_MODE]);
+    for (const m of this._sideA.modes) set.add(m);
+    for (const m of this._sideB.modes) set.add(m);
+    const rest = [...set].filter((m) => m !== DEFAULT_MODE).sort();
+    return [DEFAULT_MODE, ...rest];
+  }
+
+  private _modeLabel(mode: string): string {
+    if (mode === DEFAULT_MODE) return "Default";
+    return mode.charAt(0).toUpperCase() + mode.slice(1);
   }
 
   private _onSelect(side: Side, e: Event) {
@@ -357,10 +453,43 @@ export class TsCompareView extends LitElement {
           <label for="diff-only">Nur Unterschiede</label>
         </div>
       </div>
+      ${this._renderModeSelector()}
       ${this._copyStatus
         ? html`<div class="status-banner">${this._copyStatus}</div>`
         : ""}
       ${this._renderBody()}
+    `;
+  }
+
+  private _renderModeSelector() {
+    const modes = this._availableModes();
+    // Bei nur "default" und keinen Modes in beiden Themes — Selector ausblenden.
+    if (modes.length <= 1) return "";
+    if (!modes.includes(this._activeMode)) {
+      this._activeMode = DEFAULT_MODE;
+    }
+    return html`
+      <div class="mode-selector">
+        ${modes.map((m) => {
+          const inA = this._sideA.modes.includes(m);
+          const inB = this._sideB.modes.includes(m);
+          const onlyOne = m !== DEFAULT_MODE && (!inA || !inB);
+          const label = this._modeLabel(m);
+          return html`
+            <button
+              class=${m === this._activeMode ? "active" : ""}
+              @click=${() => (this._activeMode = m)}
+              title=${onlyOne
+                ? `Nur in ${inA ? "A" : "B"} vorhanden`
+                : ""}
+            >
+              ${label}${onlyOne
+                ? html`<span class="badge-only">${inA ? "A" : "B"}</span>`
+                : ""}
+            </button>
+          `;
+        })}
+      </div>
     `;
   }
 
@@ -400,15 +529,22 @@ export class TsCompareView extends LitElement {
       return html`<div class="empty">Wähle beide Themes oben aus.</div>`;
     }
 
+    const mode = this._activeMode;
+    const scalarsA = a.scalarsByMode[mode] ?? {};
+    const scalarsB = b.scalarsByMode[mode] ?? {};
+    const aHasMode = mode === DEFAULT_MODE || a.modes.includes(mode);
+    const bHasMode = mode === DEFAULT_MODE || b.modes.includes(mode);
+    const modeLabel = this._modeLabel(mode);
+
     const keys = Array.from(
-      new Set([...Object.keys(a.scalars), ...Object.keys(b.scalars)]),
+      new Set([...Object.keys(scalarsA), ...Object.keys(scalarsB)]),
     ).sort();
 
     const rows = keys
       .map((k) => ({
         key: k,
-        valA: a.scalars[k] ?? null,
-        valB: b.scalars[k] ?? null,
+        valA: scalarsA[k] ?? null,
+        valB: scalarsB[k] ?? null,
       }))
       .filter((r) => {
         if (!this._diffOnly) return true;
@@ -417,23 +553,33 @@ export class TsCompareView extends LitElement {
       });
 
     const totalDiffs = keys.reduce((sum, k) => {
-      const av = a.scalars[k] ?? null;
-      const bv = b.scalars[k] ?? null;
+      const av = scalarsA[k] ?? null;
+      const bv = scalarsB[k] ?? null;
       if (av === null || bv === null) return sum + 1;
       return sum + (av !== bv ? 1 : 0);
     }, 0);
 
+    const modeHint =
+      mode === DEFAULT_MODE
+        ? ""
+        : !aHasMode || !bHasMode
+          ? html` <em>
+              · ${aHasMode ? b.selection.theme_name : a.selection.theme_name}
+              hat keine ${modeLabel}-Mode (Copy würde sie anlegen).
+            </em>`
+          : "";
+
     return html`
       <div class="summary">
-        ${a.selection.theme_name} hat ${Object.keys(a.scalars).length}
-        Top-Level-Vars, ${b.selection.theme_name}
-        hat ${Object.keys(b.scalars).length}. Insgesamt
-        <strong>${totalDiffs} Unterschiede</strong> oder einseitige Einträge.
+        <strong>${modeLabel}-Mode:</strong>
+        ${a.selection.theme_name} hat ${Object.keys(scalarsA).length} Vars,
+        ${b.selection.theme_name} hat ${Object.keys(scalarsB).length}.
+        Insgesamt <strong>${totalDiffs} Unterschiede</strong> oder einseitige
+        Einträge.${modeHint}
       </div>
       ${rows.length === 0
         ? html`<div class="empty">
-            Keine Unterschiede zwischen den Themes auf Top-Level (modes nicht
-            betrachtet).
+            Keine Unterschiede zwischen den Themes in der ${modeLabel}-Mode.
           </div>`
         : html`
             <table>
@@ -527,27 +673,26 @@ export class TsCompareView extends LitElement {
     const target = to === "A" ? this._sideA : this._sideB;
     if (!source.selection || !target.selection) return;
 
+    const mode = this._activeMode;
+    const modeLabel = this._modeLabel(mode);
+    const isDefault = mode === DEFAULT_MODE;
+    const targetMissingMode = !isDefault && !target.modes.includes(mode);
+
     const confirmMsg =
       `Kopieren: '${yamlKey}' = '${value}' ` +
       `von ${source.selection.theme_name} ` +
       `nach ${target.selection.theme_name} ` +
-      `(${target.selection.file})?\n\n` +
+      `(${target.selection.file})\n` +
+      `Mode: ${modeLabel}${
+        targetMissingMode ? " — wird neu angelegt" : ""
+      }\n\n` +
       `Ein Backup von ${target.selection.file} wird automatisch angelegt.`;
     if (!confirm(confirmMsg)) return;
 
     this._busyCopy = true;
     this._copyStatus = null;
 
-    // Merge: vollständiges Target-Theme nehmen, eine Variable
-    // überschreiben. Original-Key-Form (mit/ohne `--`) bewahren wenn
-    // schon vorhanden, sonst frisch ohne `--`-Prefix anlegen.
-    const merged: Record<string, unknown> = { ...target.full };
-    const existingKey = Object.keys(target.full).find((k) => {
-      const norm = k.startsWith("--") ? k.slice(2) : k;
-      return norm === yamlKey;
-    });
-    const targetKey = existingKey ?? yamlKey;
-    merged[targetKey] = value;
+    const merged = this._mergeValue(target.full, mode, yamlKey, value);
 
     try {
       const result =
@@ -557,12 +702,10 @@ export class TsCompareView extends LitElement {
           theme_name: target.selection.theme_name,
           variables: merged,
         });
-      // Re-load target side so the view reflects the new state.
       const reloaded = target.selection;
-      this._writeSide(to, { ...target, full: merged, scalars: this._extractScalars(merged) });
       void this._setSide(to, reloaded);
       this._copyStatus =
-        `✓ ${yamlKey} kopiert nach ${target.selection.theme_name}` +
+        `✓ ${yamlKey} kopiert nach ${target.selection.theme_name} (${modeLabel})` +
         (result.backup ? ` · Backup: ${result.backup}` : "");
     } catch (err) {
       this._copyStatus = `✗ Kopieren fehlgeschlagen: ${
@@ -571,6 +714,48 @@ export class TsCompareView extends LitElement {
     } finally {
       this._busyCopy = false;
     }
+  }
+
+  /**
+   * Liefert ein neues Theme-Dict mit `yamlKey = value` in der gewählten Mode.
+   * - mode = "default" → Top-Level
+   * - sonst → modes.<mode>.<yamlKey>, modes/Submode werden bei Bedarf angelegt
+   * Original-Key-Form (mit/ohne `--`-Prefix) bleibt erhalten falls schon da.
+   */
+  private _mergeValue(
+    full: Record<string, unknown>,
+    mode: string,
+    yamlKey: string,
+    value: string,
+  ): Record<string, unknown> {
+    const merged: Record<string, unknown> = { ...full };
+    const matchKey = (bag: Record<string, unknown>) => {
+      const existing = Object.keys(bag).find((k) => {
+        const norm = k.startsWith("--") ? k.slice(2) : k;
+        return norm === yamlKey;
+      });
+      return existing ?? yamlKey;
+    };
+
+    if (mode === DEFAULT_MODE) {
+      merged[matchKey(merged)] = value;
+      return merged;
+    }
+
+    const modesRaw = merged["modes"];
+    const modes: Record<string, Record<string, unknown>> =
+      modesRaw && typeof modesRaw === "object" && !Array.isArray(modesRaw)
+        ? { ...(modesRaw as Record<string, Record<string, unknown>>) }
+        : {};
+    const subRaw = modes[mode];
+    const sub: Record<string, unknown> =
+      subRaw && typeof subRaw === "object" && !Array.isArray(subRaw)
+        ? { ...subRaw }
+        : {};
+    sub[matchKey(sub)] = value;
+    modes[mode] = sub;
+    merged["modes"] = modes;
+    return merged;
   }
 }
 
