@@ -26,19 +26,27 @@ Globale HA-Wissensbasis: `/Volumes/Daten/ClaudeCode/ha_quirks.md` – konsultier
 
 Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – konsultieren bei Automation/Helper/Dashboard-Themen.
 
-## Aktueller Stand (Stand: 2026-05-25)
+## Aktueller Stand (Stand: 2026-05-28)
 
-**v1.0 live.** Tag `v1.0.0`, HACS-tauglich. Läuft auf der Produktiv-HA des Users:
+**v1.0.4 live.** Tag `v1.0.4`, HACS-tauglich. Läuft auf der Produktiv-HA des Users.
+
+**v1.0 Basis-Featureset:**
 - Custom-Panel "Theme Studio" in der Sidebar (`/theme-studio`)
 - **Drei Top-Level-Tabs:** Themes / Bubble Card Module (wenn bubble-card aktiv) / Vergleichen
 - **Drei Plugins** (HACS-gefiltert): ha-core (116 Vars / 17 Kategorien), bubble-card (107 Vars / 15 Kategorien, nur wenn `Clooos/Bubble-Card`), mushroom (~109 Vars / 12 Kategorien, nur wenn `piitaya/lovelace-mushroom`) — plus Namens-/Wert-Heuristik
 - Picker listet alle Themes aus `<config>/themes/` (Subdirs + Spaces ok)
-- Theme-Editor mit Tab-Layout (Im Theme + pro Plugin), Mode-Selector (light/dark), Live-Preview auf `:root`, iframe-Dashboard-Preview (sticky 2-Spalten), Spezial-Controls (Color/Length/Background), Variable-Hinzufügen + -Entfernen, Save mit Timestamp-Backup
-- Module-Editor (v0.4): liest/schreibt `/homeassistant/bubble_card/modules/*.yaml`, Metadaten-Form + grosse Monospace-CSS-Textarea, Backup nach `bubble_card/.backups/`
-- Theme-Switcher (v0.4): side-by-side Diff zwischen 2 Themes mit Color-Swatches, "Nur Unterschiede"-Filter, Copy-Pfeile ← / → mit Direct-Write-Save inkl. Backup
-- HACS-Packaging (v1.0): hacs.json + LICENSE im Repo-Root, Bundle wandert von `frontend/dist/` nach `custom_components/theme_studio/dist/` (single-tree für HACS-Install ohne npm-Toolchain), manifest.json `version: 1.0.0`, README mit HACS-Install-Anleitung
+- Theme-Editor mit Tab-Layout, Mode-Selector (light/dark), Live-Preview auf `:root`, iframe-Dashboard-Preview, Spezial-Controls (Color/Length/Background), Variable-Hinzufügen + -Entfernen, Save mit Timestamp-Backup
+- Module-Editor: liest/schreibt `/homeassistant/bubble_card/modules/*.yaml`, Metadaten-Form + Monospace-CSS-Textarea, Backup nach `bubble_card/.backups/`
+- Theme-Switcher: side-by-side Diff zwischen 2 Themes mit Color-Swatches, "Nur Unterschiede"-Filter, Copy-Pfeile mit Direct-Write-Save inkl. Backup
+- HACS-Packaging: hacs.json + LICENSE im Repo-Root, single-tree Bundle in `custom_components/theme_studio/dist/`
 
-v1.0 ist der erste vollständige Release. Künftige Arbeit (v1.0.x / v1.1+): Variable-Extraction im Module-Editor, Modes-Vergleich im Theme-Switcher, Aufnahme in HACS-Default-Katalog, eventuelle UX-Polishs auf User-Feedback hin.
+**Post-v1.0-Patches (alle live):**
+- **v1.0.1** — Variable-Extraction-Sidebar im Module-Editor (listet `var(--xxx)` mit Schema-Metadaten + Fallback-Parser + Color-Swatch)
+- **v1.0.2** — Modes-Vergleich im Theme-Switcher (Mode-Selector + Mode-aware Copy in `modes.<mode>.<key>`)
+- **v1.0.3** — Error-Handling Quick-Wins (`beforeunload`-Schutz, HACS-Detection-Fehler im UI sichtbar, Backend-Logging-Symmetrie, typisierte Compare-Status-Union)
+- **v1.0.4** — i18n DE+EN: `frontend/src/core/i18n.ts` + `frontend/src/i18n/{de,en}.ts`, Locale-Detection aus `hass.language`. Alle UI-Strings + alle Plugin-Schema-Descriptions + Category-Labels über `*_en`-Felder übersetzt (44 label_en + 332 description_en). `getVariableMeta()` + neuer `getCategoryLabel()` locale-aware.
+
+**Offen für v1.0.x / v1.1+:** HACS-Default-Katalog-PR, Audit-Items (Schema-Validation, Backup-Race, Custom-Modal, Retry-Buttons), i18n-Erweiterungen (weitere Sprachen, User-Sprach-Override, Live-Switching). Siehe ROADMAP.md.
 
 ## Deployment auf den HA-Host
 
