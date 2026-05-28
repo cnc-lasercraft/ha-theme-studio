@@ -13,27 +13,32 @@
 
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { t } from "../../core/i18n";
 
 interface Parsed {
   url: string;
   modifiers: string;
 }
 
-const PRESETS: Array<{ label: string; modifiers: string; title: string }> = [
+const PRESETS: Array<{
+  label: string;
+  modifiers: string;
+  titleKey: string;
+}> = [
   {
     label: "Cover",
     modifiers: "center / cover no-repeat fixed",
-    title: "Vollbild, zentriert, fixiert (Apple-/visionOS-Style)",
+    titleKey: "bg.preset_cover_tooltip",
   },
   {
     label: "Contain",
     modifiers: "center / contain no-repeat fixed",
-    title: "Komplett sichtbar, zentriert",
+    titleKey: "bg.preset_contain_tooltip",
   },
   {
     label: "Tile",
     modifiers: "top left repeat fixed",
-    title: "Bild wiederholen (Pattern)",
+    titleKey: "bg.preset_tile_tooltip",
   },
 ];
 
@@ -167,7 +172,9 @@ export class TsBackgroundPicker extends LitElement {
         ${hasUrl
           ? ""
           : html`<div class="preview-empty">
-              (kein Bild — '${this.value || "none"}')
+              ${t("bg.no_image", undefined, {
+                value: this.value || "none",
+              })}
             </div>`}
       </div>
       <div class="field">
@@ -177,19 +184,19 @@ export class TsBackgroundPicker extends LitElement {
           type="url"
           .value=${parsed.url}
           @change=${this._onUrlChange}
-          placeholder="https://… oder /local/wallpaper.jpg (= /homeassistant/www/wallpaper.jpg)"
+          placeholder=${t("bg.url_placeholder")}
           spellcheck="false"
           autocomplete="off"
         />
       </div>
       <div class="field">
-        <label for="mods">Modifier</label>
+        <label for="mods">${t("bg.modifier")}</label>
         <input
           id="mods"
           type="text"
           .value=${parsed.modifiers}
           @change=${this._onModsChange}
-          placeholder="z.B. center / cover no-repeat fixed"
+          placeholder=${t("bg.modifier_placeholder")}
           spellcheck="false"
           autocomplete="off"
         />
@@ -199,7 +206,7 @@ export class TsBackgroundPicker extends LitElement {
           (p) => html`
             <button
               class="preset-btn"
-              title=${p.title}
+              title=${t(p.titleKey)}
               @click=${() => this._applyPreset(p.modifiers)}
             >
               ${p.label}
@@ -208,10 +215,10 @@ export class TsBackgroundPicker extends LitElement {
         )}
         <button
           class="preset-btn danger"
-          title="Auf 'none' setzen — kein Hintergrund-Bild"
+          title=${t("bg.clear_tooltip")}
           @click=${this._clear}
         >
-          Clear
+          ${t("bg.clear")}
         </button>
       </div>
     `;

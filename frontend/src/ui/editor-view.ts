@@ -33,8 +33,10 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import { t } from "../core/i18n";
 import {
   getActivePlugins,
+  getCategoryLabel,
   onActivePluginsChanged,
   getVariableMeta,
 } from "../core/schema-registry";
@@ -94,26 +96,27 @@ interface CategoryGroup extends Category {
 
 const UNKNOWN_CAT: Category = {
   id: "_unknown",
-  label: "Unbekannt (Heuristik)",
+  label: "_unknown_placeholder",
   icon: "mdi:help-circle-outline",
 };
 const OTHER_CAT: Category = {
   id: "_other",
-  label: "Sonstige",
+  label: "_other_placeholder",
   icon: "mdi:dots-horizontal",
 };
 
 const IN_THEME_TAB = "in-theme";
 const DEFAULT_MODE = "default";
 
-const MODE_LABELS: Record<string, string> = {
-  default: "Default",
-  light: "Light",
-  dark: "Dark",
-};
-
 function modeLabel(mode: string): string {
-  return MODE_LABELS[mode] ?? mode;
+  if (mode === DEFAULT_MODE) return t("editor.mode_default");
+  return mode.charAt(0).toUpperCase() + mode.slice(1);
+}
+
+function categoryLabel(cat: Category): string {
+  if (cat === UNKNOWN_CAT) return t("editor.cat_unknown");
+  if (cat === OTHER_CAT) return t("editor.cat_other");
+  return getCategoryLabel(cat);
 }
 
 @customElement("ts-editor-view")
@@ -698,16 +701,42 @@ export class TsEditorView extends LitElement {
 
     const parts: string[] = [];
     if (modifying > 0)
-      parts.push(`${modifying} bestehende Änderung${modifying === 1 ? "" : "en"}`);
+      parts.push(
+        t(
+          modifying === 1
+            ? "editor.save_part_modify_one"
+            : "editor.save_part_modify_many",
+          undefined,
+          { n: modifying },
+        ),
+      );
     if (adding > 0)
-      parts.push(`${adding} neue Variable${adding === 1 ? "" : "n"}`);
+      parts.push(
+        t(
+          adding === 1
+            ? "editor.save_part_add_one"
+            : "editor.save_part_add_many",
+          undefined,
+          { n: adding },
+        ),
+      );
     if (removing > 0)
-      parts.push(`${removing} Entfernung${removing === 1 ? "" : "en"}`);
+      parts.push(
+        t(
+          removing === 1
+            ? "editor.save_part_remove_one"
+            : "editor.save_part_remove_many",
+          undefined,
+          { n: removing },
+        ),
+      );
     const what = parts.join(" + ");
 
-    const confirmMsg =
-      `${what} in '${this.file}' > '${this.themeName}' speichern?\n\n` +
-      `Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
+    const confirmMsg = t("editor.save_confirm", undefined, {
+      what,
+      file: this.file,
+      theme: this.themeName,
+    });
     if (!confirm(confirmMsg)) return;
 
     this._saveStatus = { state: "saving" };
@@ -957,11 +986,7 @@ export class TsEditorView extends LitElement {
   private _resetAll() {
     const dirtyCount = this._dirtyCount();
     if (dirtyCount === 0) return;
-    if (
-      !confirm(
-        `${dirtyCount} ungespeicherte Änderung(en) werden verworfen (über alle Modes und Tabs). Fortfahren?`,
-      )
-    ) {
+    if (!confirm(t("editor.reset_confirm", undefined, { n: dirtyCount }))) {
       return;
     }
     this._revertAll();
@@ -1000,11 +1025,7 @@ export class TsEditorView extends LitElement {
   private _onBack() {
     const dirtyCount = this._dirtyCount();
     if (dirtyCount > 0) {
-      if (
-        !confirm(
-          `${dirtyCount} ungespeicherte Änderung(en) gehen verloren. Trotzdem zurück?`,
-        )
-      ) {
+      if (!confirm(t("editor.back_confirm", undefined, { n: dirtyCount }))) {
         return;
       }
     }
@@ -1045,7 +1066,9 @@ export class TsEditorView extends LitElement {
   override render() {
     return html`
       <div class="toolbar">
-        <button class="back-btn" @click=${this._onBack}>← Zurück</button>
+        <button class="back-btn" @click=${this._onBack}>
+          ${t("common.back")}
+        </button>
         <div class="breadcrumb">
           <div class="theme-name">${this.themeName}</div>
           <code>${this.file}</code>
@@ -1054,9 +1077,9 @@ export class TsEditorView extends LitElement {
         <button
           class="preview-toggle ${this._showPreview ? "active" : ""}"
           @click=${this._togglePreview}
-          title="Live-Preview eines Dashboards in einem iframe daneben"
+          title=${t("editor.preview_tooltip")}
         >
-          👁 Preview
+          👁 ${t("editor.preview")}
         </button>
         <button
           class="danger-btn"
@@ -1064,7 +1087,7 @@ export class TsEditorView extends LitElement {
           this._saveStatus.state === "saving"}
           @click=${this._resetAll}
         >
-          Alles verwerfen
+          ${t("editor.discard_all")}
         </button>
         <button
           class="primary-btn"
@@ -1072,7 +1095,9 @@ export class TsEditorView extends LitElement {
           this._saveStatus.state === "saving"}
           @click=${this._save}
         >
-          ${this._saveStatus.state === "saving" ? "Speichere…" : "Speichern"}
+          ${this._saveStatus.state === "saving"
+            ? t("common.saving")
+            : t("common.save")}
         </button>
       </div>
       ${this._renderModeBar()} ${this._renderTabs()}
@@ -1123,7 +1148,7 @@ export class TsEditorView extends LitElement {
     if (this._modes.length === 1) return "";
     return html`
       <div class="mode-bar">
-        <span class="label">Mode:</span>
+        <span class="label">${t("editor.mode_bar_label")}:</span>
         ${this._modes.map((mode) => {
           const n = this._modeDirtyCount(mode);
           return html`
@@ -1148,7 +1173,7 @@ export class TsEditorView extends LitElement {
       (r) => r.inTheme && r.mode === this._activeMode,
     ).length;
     const tabs: Array<{ id: string; label: string; count: number }> = [
-      { id: IN_THEME_TAB, label: "Im Theme", count: inThemeCount },
+      { id: IN_THEME_TAB, label: t("editor.tab_in_theme"), count: inThemeCount },
     ];
     for (const p of getActivePlugins()) {
       tabs.push({
@@ -1160,15 +1185,15 @@ export class TsEditorView extends LitElement {
     return html`
       <div class="tabs" role="tablist">
         ${tabs.map(
-          (t) => html`
+          (tab) => html`
             <button
-              class="tab ${this._activeTab === t.id ? "active" : ""}"
+              class="tab ${this._activeTab === tab.id ? "active" : ""}"
               role="tab"
-              aria-selected=${this._activeTab === t.id}
-              @click=${() => this._onTabSelect(t.id)}
+              aria-selected=${this._activeTab === tab.id}
+              @click=${() => this._onTabSelect(tab.id)}
             >
-              ${t.label}
-              <span class="tab-count">${t.count}</span>
+              ${tab.label}
+              <span class="tab-count">${tab.count}</span>
             </button>
           `,
         )}
@@ -1182,15 +1207,15 @@ export class TsEditorView extends LitElement {
     if (s.state === "success") {
       return html`
         <div class="status-banner success">
-          ✓ Gespeichert${s.backup
-            ? html` &middot; Backup: <code>${s.backup}</code>`
+          ✓ ${t("editor.save_success")}${s.backup
+            ? html` &middot; ${t("common.backup")}: <code>${s.backup}</code>`
             : ""}
         </div>
       `;
     }
     return html`
       <div class="status-banner error">
-        ✗ Speichern fehlgeschlagen: ${s.msg}
+        ✗ ${t("common.save_failed")}: ${s.msg}
       </div>
     `;
   }
@@ -1207,29 +1232,37 @@ export class TsEditorView extends LitElement {
     ).length;
     const removing = this._removingCount();
     const parts: string[] = [];
-    if (adding > 0) parts.push(`${adding} neu`);
-    if (removing > 0) parts.push(`${removing} ×`);
+    if (adding > 0) parts.push(t("editor.dirty_adding", undefined, { n: adding }));
+    if (removing > 0)
+      parts.push(t("editor.dirty_removing", undefined, { n: removing }));
     const suffix = parts.length > 0 ? ` (${parts.join(", ")})` : "";
-    return html`<span class="dirty-badge"
-      >${n} Änderung${n === 1 ? "" : "en"}${suffix}</span
-    >`;
+    const base = t(
+      n === 1 ? "editor.dirty_count_one" : "editor.dirty_count_many",
+      undefined,
+      { n },
+    );
+    return html`<span class="dirty-badge">${base}${suffix}</span>`;
   }
 
   private _renderBody() {
     if (this._loading) {
-      return html`<div class="loading">Lade Theme…</div>`;
+      return html`<div class="loading">${t("editor.loading")}</div>`;
     }
     if (this._error) {
-      return html`<div class="error">Fehler: ${this._error}</div>`;
+      return html`<div class="error">
+        ${t("common.error_prefix")}: ${this._error}
+      </div>`;
     }
     const rows = this._visibleRows();
     if (rows.length === 0) {
       const msg =
         this._activeTab === IN_THEME_TAB
           ? this._activeMode === DEFAULT_MODE
-            ? "Keine editierbaren Variablen in diesem Theme."
-            : `Keine Override-Variablen für Mode '${modeLabel(this._activeMode)}' im Theme. Wechsle auf einen Plugin-Tab um welche hinzuzufügen.`
-          : "Keine Variablen in diesem Plugin-Tab.";
+            ? t("editor.empty_default")
+            : t("editor.empty_mode", undefined, {
+                mode: modeLabel(this._activeMode),
+              })
+          : t("editor.empty_plugin");
       return html`<div class="empty">${msg}</div>`;
     }
     const categories = this._groupByCategory(rows);
@@ -1238,34 +1271,33 @@ export class TsEditorView extends LitElement {
       this._activeMode === DEFAULT_MODE &&
       this._skippedKeys.length > 0
         ? html`<div class="notice">
-            Diese Theme-Datei enthält komplexe Werte unter
+            ${t("editor.notice_skipped_prefix")}
             ${this._skippedKeys.map(
               (k, i) => html`${i > 0 ? ", " : ""}<code>${k}</code>`,
-            )},
-            die der Variablen-Editor nicht abbildet (verschachtelte
-            Strukturen).
+            )}${t("editor.notice_skipped_suffix")}
           </div>`
         : ""}
       ${this._activeMode !== DEFAULT_MODE
         ? html`<div class="notice">
-            <strong>${modeLabel(this._activeMode)}-Mode:</strong> Edits hier
-            landen unter <code>modes.${this._activeMode}</code> im YAML und
-            wirken in HA nur wenn dieser Mode aktiv ist.
-            Live-Preview greift dennoch unabhängig vom HA-Mode — schalte HA
-            ggf. selbst um, um den richtigen Render-Kontext zu sehen.
+            <strong>${modeLabel(this._activeMode)}-Mode:</strong>
+            ${t("editor.notice_mode_prefix")}
+            <code>modes.${this._activeMode}</code>
+            ${t("editor.notice_mode_suffix")}
           </div>`
         : ""}
       ${this._activeTab !== IN_THEME_TAB
         ? html`<div class="notice">
-            <strong>Plugin-Tab:</strong> alle ${rows.length} Schema-Variablen
-            werden gezeigt. Variablen mit
-            <span class="row-tag default">default</span>-Tag stehen
-            (noch) nicht im Theme. Sobald du einen Wert änderst, wird die
-            Variable beim Speichern als
+            <strong>${t("editor.notice_plugin_strong")}:</strong>
+            ${t("editor.notice_plugin_prefix", undefined, { n: rows.length })}
+            <span class="row-tag default">${t("editor.tag_default")}</span>${t(
+              "editor.notice_plugin_middle",
+            )}
             ${this._activeMode === DEFAULT_MODE
-              ? "Top-Level-Eintrag"
-              : html`Override unter <code>modes.${this._activeMode}</code>`}
-            ins Theme aufgenommen.
+              ? t("editor.notice_plugin_top_level")
+              : html`${t("editor.notice_plugin_override")}
+                  <code>modes.${this._activeMode}</code>`}${t(
+              "editor.notice_plugin_suffix",
+            )}
           </div>`
         : ""}
       ${categories.map((c) => this._renderCategory(c))}
@@ -1276,7 +1308,7 @@ export class TsEditorView extends LitElement {
     return html`
       <div class="category-card">
         <h3>
-          <span>${cat.label}</span>
+          <span>${categoryLabel(cat)}</span>
           <span class="count">${cat.rows.length}</span>
         </h3>
         ${cat.rows.map((r) => this._renderRow(r))}
@@ -1304,13 +1336,19 @@ export class TsEditorView extends LitElement {
               ? html`<span class="row-tag heuristic">${row.meta.type}</span>`
               : ""}
             ${showDefaultTag
-              ? html`<span class="row-tag default">default</span>`
+              ? html`<span class="row-tag default"
+                  >${t("editor.tag_default")}</span
+                >`
               : ""}
             ${showAddingTag
-              ? html`<span class="row-tag adding">+ wird ergänzt</span>`
+              ? html`<span class="row-tag adding"
+                  >${t("editor.tag_adding")}</span
+                >`
               : ""}
             ${isMarkedForRemoval
-              ? html`<span class="row-tag removing">× wird entfernt</span>`
+              ? html`<span class="row-tag removing"
+                  >${t("editor.tag_removing")}</span
+                >`
               : ""}
           </code>
           ${row.meta.description
@@ -1322,7 +1360,7 @@ export class TsEditorView extends LitElement {
           class="reset-btn"
           ?disabled=${!isDirty}
           @click=${() => this._resetRow(row)}
-          title="Auf Original zurücksetzen (verwirft auch eine Entfernen-Markierung)"
+          title=${t("editor.reset_row_tooltip")}
         >
           ↺
         </button>
@@ -1331,8 +1369,8 @@ export class TsEditorView extends LitElement {
           ?disabled=${!row.inTheme || isMarkedForRemoval}
           @click=${() => this._removeRow(row)}
           title=${row.inTheme
-            ? "Variable beim nächsten Speichern aus dem Theme entfernen"
-            : "Nicht im Theme — nichts zu entfernen"}
+            ? t("editor.remove_row_tooltip")
+            : t("editor.remove_row_disabled_tooltip")}
         >
           🗑
         </button>

@@ -79,7 +79,7 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 - ~~Variable-Extraction im Module-Editor (Sidebar mit erkannten `var(--xxx)`)~~ → v1.0.1
 - ~~Modes-Vergleich im Theme-Switcher~~ → v1.0.2
 - ~~Sauberes Error-Handling-Audit~~ → v1.0.3 (Quick-Wins; vollständiges Audit dokumentiert)
-- i18n (DE/EN) vorbereiten
+- ~~i18n (DE/EN) vorbereiten~~ → v1.0.4
 - Aufnahme in HACS-Default-Katalog (PR an HACS-Repo)
 
 ## v1.0.1 – Post-Release-Polish
@@ -111,3 +111,17 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 - Race-Condition: Save → View-Wechsel → State-Update auf disconnected Component (silent, kein Crash)
 - Native `confirm()`-Dialoge statt Custom-Modal (funktional, nicht designed)
 - Kein Retry-Button bei `list_themes`-Load-Fehler (User muss Page reloaden)
+
+## v1.0.4 – i18n (DE + EN)
+
+| Feature | Status | Commit |
+|---|---|---|
+| i18n-Infrastruktur: `frontend/src/core/i18n.ts` mit `t(key, fallback?, vars?)` und `setLocale()`. Translation-Dictionaries als TS-Module (`frontend/src/i18n/de.ts` + `en.ts`), kein Runtime-JSON-Fetch. Locale-Detection beim Mount aus `hass.language`, Region-Strip (`de-CH` → `de`), EN als Fallback. | ✓ | (dieser Commit) |
+| Alle UI-Strings in `panel-main`, `theme-picker`, `module-picker`, `editor-view`, `module-editor`, `compare-view`, `preview-pane`, `controls/background-picker` durch `t()`-Calls ersetzt. Platzhalter-Syntax `{name}` für variable Texte. Pluralisierung über separate `*_one`/`*_many`-Keys. | ✓ | (dieser Commit) |
+| Schema-i18n: `VariableDef.description_en?` + `Category.label_en?` als optionale Felder im Type. Plugin-Schemas (ha-core, bubble-card, mushroom) um englische Übersetzungen für alle Variable-Descriptions und Kategorie-Labels erweitert (~332 description_en + ~44 label_en). | ✓ | (dieser Commit) |
+| Schema-Registry `getVariableMeta()` + neuer `getCategoryLabel()` Helper sind locale-aware: bei locale=en wird `*_en` zurückgegeben, sonst Deutsch (Fallback). | ✓ | (dieser Commit) |
+
+**Nicht in v1.0.4:**
+- Weitere Sprachen (FR/IT/ES/…). Architektur ist offen — neue Sprache = neue `frontend/src/i18n/<lang>.ts` + Catalog-Eintrag in `i18n.ts`. Schema-Felder bekommen `*_<lang>`-Variante.
+- User-Sprach-Override im Panel-Header (nur `hass.language`-Auto-Detection).
+- Live-Switching der Locale ohne Reload (Locale wird beim Mount fixiert).

@@ -13,6 +13,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import { t } from "../core/i18n";
 import { getVariableMeta } from "../core/schema-registry";
 import type { VariableMeta } from "../core/types";
 import type { HomeAssistant } from "../types";
@@ -462,11 +463,7 @@ export class TsModuleEditor extends LitElement {
 
   private _onBack() {
     if (this._isDirty()) {
-      if (
-        !confirm(
-          "Ungespeicherte Änderungen am Modul gehen verloren. Trotzdem zurück?",
-        )
-      ) {
+      if (!confirm(t("module_editor.back_confirm"))) {
         return;
       }
     }
@@ -483,8 +480,10 @@ export class TsModuleEditor extends LitElement {
     if (!this._isDirty() || this._saveStatus.state === "saving") return;
     if (
       !confirm(
-        `Modul '${this.moduleId}' in '${this.file}' speichern?\n\n` +
-          `Ein Backup wird automatisch unter bubble_card/.backups/ angelegt.`,
+        t("module_editor.save_confirm", undefined, {
+          moduleId: this.moduleId,
+          file: this.file,
+        }),
       )
     ) {
       return;
@@ -508,11 +507,7 @@ export class TsModuleEditor extends LitElement {
 
   private _resetAll() {
     if (!this._isDirty()) return;
-    if (
-      !confirm(
-        "Alle Änderungen am Modul werden auf den Original-Zustand zurückgesetzt. Fortfahren?",
-      )
-    ) {
+    if (!confirm(t("module_editor.reset_confirm"))) {
       return;
     }
     this._content = JSON.parse(JSON.stringify(this._original));
@@ -520,10 +515,12 @@ export class TsModuleEditor extends LitElement {
 
   override render() {
     if (this._loading) {
-      return html`<div class="loading">Lade Modul…</div>`;
+      return html`<div class="loading">${t("module_editor.loading")}</div>`;
     }
     if (this._error) {
-      return html`<div class="error">Fehler: ${this._error}</div>`;
+      return html`<div class="error">
+        ${t("common.error_prefix")}: ${this._error}
+      </div>`;
     }
     const name = (this._content["name"] as string) || this.moduleId;
     const description = (this._content["description"] as string) || "";
@@ -551,42 +548,45 @@ export class TsModuleEditor extends LitElement {
     const dirty = this._isDirty();
     return html`
       <div class="toolbar">
-        <button class="back-btn" @click=${this._onBack}>← Zurück</button>
+        <button class="back-btn" @click=${this._onBack}>
+          ${t("common.back")}
+        </button>
         <div class="breadcrumb">
           <div class="module-name">${name}</div>
           <code>${this.file} · ${this.moduleId}</code>
         </div>
         ${dirty
-          ? html`<span class="dirty-badge">geändert</span>`
+          ? html`<span class="dirty-badge">${t("common.dirty_badge")}</span>`
           : ""}
         <button
           class="danger-btn"
           ?disabled=${!dirty || this._saveStatus.state === "saving"}
           @click=${this._resetAll}
         >
-          Verwerfen
+          ${t("common.discard")}
         </button>
         <button
           class="primary-btn"
           ?disabled=${!dirty || this._saveStatus.state === "saving"}
           @click=${this._save}
         >
-          ${this._saveStatus.state === "saving" ? "Speichere…" : "Speichern"}
+          ${this._saveStatus.state === "saving"
+            ? t("common.saving")
+            : t("common.save")}
         </button>
       </div>
 
       ${this._renderSaveStatus()}
 
       <div class="notice">
-        <strong>Hinweis:</strong> Bubble Card lädt Module beim
-        Card-Render. Nach Save musst du deine Dashboards neu laden
-        (Cmd+R), damit die Änderungen wirksam werden.
+        <strong>${t("common.notice")}:</strong>
+        ${t("module_editor.reload_notice")}
       </div>
 
       <div class="card">
-        <h3>Metadaten</h3>
+        <h3>${t("module_editor.metadata_heading")}</h3>
         <div class="field">
-          <label for="m-name">Name</label>
+          <label for="m-name">${t("module_editor.field_name")}</label>
           <input
             id="m-name"
             type="text"
@@ -596,7 +596,7 @@ export class TsModuleEditor extends LitElement {
           />
         </div>
         <div class="field">
-          <label for="m-desc">Description</label>
+          <label for="m-desc">${t("module_editor.field_description")}</label>
           <input
             id="m-desc"
             type="text"
@@ -609,7 +609,7 @@ export class TsModuleEditor extends LitElement {
           />
         </div>
         <div class="field">
-          <label for="m-version">Version</label>
+          <label for="m-version">${t("module_editor.field_version")}</label>
           <input
             id="m-version"
             type="text"
@@ -619,7 +619,7 @@ export class TsModuleEditor extends LitElement {
           />
         </div>
         <div class="field">
-          <label for="m-supported">Supported</label>
+          <label for="m-supported">${t("module_editor.field_supported")}</label>
           <input
             id="m-supported"
             type="text"
@@ -630,9 +630,7 @@ export class TsModuleEditor extends LitElement {
           />
         </div>
         <div class="field-help">
-          Komma-getrennte Card-Types (button, climate, cover,
-          horizontal-buttons-stack, media-player, pop-up, select,
-          separator, sub-buttons).
+          ${t("module_editor.supported_help")}
         </div>
         <div class="field checkbox-field">
           <label for="m-global">is_global</label>
@@ -649,7 +647,7 @@ export class TsModuleEditor extends LitElement {
         </div>
         ${extraKeys.length > 0
           ? html`<div class="extra-keys">
-              Weitere Felder im YAML (werden beim Save 1:1 erhalten):
+              ${t("module_editor.extra_keys")}:
               ${extraKeys.map(
                 (k, i) => html`${i > 0 ? ", " : ""}<code>${k}</code>`,
               )}
@@ -658,7 +656,7 @@ export class TsModuleEditor extends LitElement {
       </div>
 
       <div class="card">
-        <h3>CSS-Code</h3>
+        <h3>${t("module_editor.css_heading")}</h3>
         <div class="code-layout">
           <textarea
             class="code-editor"
@@ -678,12 +676,12 @@ export class TsModuleEditor extends LitElement {
     return html`
       <aside class="vars-sidebar">
         <h4>
-          Verwendete Variablen
+          ${t("module_editor.vars_heading")}
           <span class="count">${vars.length}</span>
         </h4>
         ${vars.length === 0
           ? html`<div class="vars-empty">
-              Keine <code>var(--…)</code> im Code gefunden.
+              ${t("module_editor.vars_empty")}
             </div>`
           : vars.map((v) => this._renderVarItem(v))}
       </aside>
@@ -708,7 +706,9 @@ export class TsModuleEditor extends LitElement {
         <div class="var-tags">
           ${isSchema
             ? html`<span class="var-tag plugin">${meta.plugin}</span>`
-            : html`<span class="var-tag heuristic">heuristik</span>`}
+            : html`<span class="var-tag heuristic"
+                >${t("common.tag_heuristic")}</span
+              >`}
           <span
             class=${`var-tag ${meta.type === "color" ? "type-color" : ""}`}
           >${meta.type}</span>
@@ -721,7 +721,7 @@ export class TsModuleEditor extends LitElement {
           : ""}
         ${v.fallback
           ? html`<div class="var-fallback">
-              Fallback: <code>${v.fallback}</code>
+              ${t("common.fallback")}: <code>${v.fallback}</code>
             </div>`
           : ""}
       </div>
@@ -734,17 +734,17 @@ export class TsModuleEditor extends LitElement {
     if (s.state === "success") {
       return html`
         <div class="status-banner success">
-          ✓ Modul gespeichert${s.backup
-            ? html` &middot; Backup: <code>${s.backup}</code>`
+          ✓ ${t("module_editor.save_success")}${s.backup
+            ? html` &middot; ${t("common.backup")}:
+                <code>${s.backup}</code>`
             : ""}.
-          Lade jetzt das Dashboard neu (Cmd+R), damit die Änderung
-          wirksam wird.
+          ${t("module_editor.save_success_reload")}
         </div>
       `;
     }
     return html`
       <div class="status-banner error">
-        ✗ Speichern fehlgeschlagen: ${s.msg}
+        ✗ ${t("common.save_failed")}: ${s.msg}
       </div>
     `;
   }

@@ -15,7 +15,9 @@ export interface VariableDef {
   type: VariableType;
   category?: string;
   default?: string;
+  /** Deutsche Description (Quelle). Wird bei locale=en durch description_en überschrieben falls vorhanden. */
   description?: string;
+  description_en?: string;
   unit?: string[];
   min?: number;
   max?: number;
@@ -26,6 +28,7 @@ export interface VariableDef {
 export interface Category {
   id: string;
   label: string;
+  label_en?: string;
   icon?: string;
 }
 

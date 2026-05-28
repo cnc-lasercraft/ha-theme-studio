@@ -13,6 +13,7 @@
 
 import { LitElement, html, css } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
+import { t } from "../core/i18n";
 
 @customElement("ts-preview-pane")
 export class TsPreviewPane extends LitElement {
@@ -98,7 +99,7 @@ export class TsPreviewPane extends LitElement {
   override render() {
     return html`
       <div class="toolbar">
-        <span class="label">Preview:</span>
+        <span class="label">${t("preview.label")}:</span>
         <input
           type="text"
           .value=${this.src}
@@ -106,13 +107,18 @@ export class TsPreviewPane extends LitElement {
           spellcheck="false"
           autocomplete="off"
         />
-        <button @click=${this._reload} title="iframe neu laden">↻</button>
+        <button @click=${this._reload} title=${t("preview.reload_tooltip")}>
+          ↻
+        </button>
         ${this._appliedToFrame.size > 0
           ? html`<span class="badge"
-              >${this._appliedToFrame.size} override${this._appliedToFrame
-                .size === 1
-                ? ""
-                : "s"}</span
+              >${t(
+                this._appliedToFrame.size === 1
+                  ? "preview.overrides_one"
+                  : "preview.overrides_many",
+                undefined,
+                { n: this._appliedToFrame.size },
+              )}</span
             >`
           : ""}
       </div>
@@ -175,7 +181,8 @@ export class TsPreviewPane extends LitElement {
       }
     } catch (err) {
       this._loadError =
-        "iframe-CSS-Override fehlgeschlagen (möglicherweise Cross-Origin): " +
+        t("preview.override_failed") +
+        ": " +
         (err instanceof Error ? err.message : String(err));
     }
     // Re-render damit das Override-Badge die aktuelle Zahl zeigt

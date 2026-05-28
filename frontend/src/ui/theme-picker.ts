@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { t } from "../core/i18n";
 import type { HomeAssistant } from "../types";
 
 interface ThemeEntry {
@@ -142,32 +143,33 @@ export class ThemePicker extends LitElement {
 
   override render() {
     if (this._loading) {
-      return html`<div class="empty">Lade Themes…</div>`;
+      return html`<div class="empty">${t("picker.loading")}</div>`;
     }
     if (this._loadError) {
-      return html`<div class="error">Fehler: ${this._loadError}</div>`;
+      return html`<div class="error">
+        ${t("common.error_prefix")}: ${this._loadError}
+      </div>`;
     }
     return html`
-      <h2>Welches Theme möchtest du tunen?</h2>
+      <h2>${t("picker.heading")}</h2>
       ${this._themes.length === 0
-        ? html`<div class="empty">
-            Keine Themes gefunden. Lege eine YAML-Datei in
-            <code>themes/</code> an oder erstelle ein neues Theme (folgt in
-            Schritt 8).
-          </div>`
+        ? html`<div class="empty">${t("picker.empty")}</div>`
         : html`
             <div class="list">
               ${this._themes.map(
-                (t) => html`
+                (theme) => html`
                   <button
                     class="item"
-                    @click=${() => this._select(t)}
-                    title=${t.file}
+                    @click=${() => this._select(theme)}
+                    title=${theme.file}
                   >
                     <div class="info">
-                      <div class="name">${t.theme_name}</div>
+                      <div class="name">${theme.theme_name}</div>
                       <div class="meta">
-                        ${t.file} · ${t.variable_count} Variablen
+                        ${theme.file} ·
+                        ${t("picker.var_count", undefined, {
+                          n: theme.variable_count,
+                        })}
                       </div>
                     </div>
                     <div class="arrow">→</div>
@@ -179,7 +181,7 @@ export class ThemePicker extends LitElement {
       ${this._errors.length > 0
         ? html`
             <div class="errors-list">
-              <h3>YAML-Fehler in folgenden Dateien:</h3>
+              <h3>${t("picker.yaml_errors_heading")}</h3>
               <ul>
                 ${this._errors.map(
                   (e) => html`<li>${e.file}: ${e.error}</li>`,

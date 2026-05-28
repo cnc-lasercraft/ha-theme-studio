@@ -8,6 +8,7 @@
 
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { t } from "../core/i18n";
 import type { HomeAssistant } from "../types";
 
 interface ModuleEntry {
@@ -191,24 +192,19 @@ export class TsModulePicker extends LitElement {
 
   override render() {
     if (this._loading) {
-      return html`<div class="empty">Lade Module…</div>`;
+      return html`<div class="empty">${t("module_picker.loading")}</div>`;
     }
     if (this._loadError) {
-      return html`<div class="error">Fehler: ${this._loadError}</div>`;
+      return html`<div class="error">
+        ${t("common.error_prefix")}: ${this._loadError}
+      </div>`;
     }
     return html`
-      <h2>Welches Bubble-Card-Modul möchtest du anpassen?</h2>
+      <h2>${t("module_picker.heading")}</h2>
       ${!this._rootExists
-        ? html`<div class="empty">
-            Kein <code>bubble_card/modules/</code>-Verzeichnis gefunden.
-            Bubble Card legt das automatisch an, sobald du dein erstes
-            Modul speicherst — oder leg es manuell unter
-            <code>&lt;config&gt;/bubble_card/modules/</code> an.
-          </div>`
+        ? html`<div class="empty">${t("module_picker.no_root")}</div>`
         : this._modules.length === 0
-          ? html`<div class="empty">
-              Keine Module in <code>bubble_card/modules/</code> gefunden.
-            </div>`
+          ? html`<div class="empty">${t("module_picker.empty")}</div>`
           : html`
               <div class="list">
                 ${this._modules.map(
@@ -229,10 +225,14 @@ export class TsModulePicker extends LitElement {
                         <div class="meta">
                           <span class="tag">${m.file}</span>
                           ${m.is_global
-                            ? html`<span class="tag global">global</span>`
+                            ? html`<span class="tag global"
+                                >${t("module_picker.tag_global")}</span
+                              >`
                             : ""}
                           ${!m.has_code
-                            ? html`<span class="tag no-code">kein code</span>`
+                            ? html`<span class="tag no-code"
+                                >${t("module_picker.tag_no_code")}</span
+                              >`
                             : ""}
                           ${m.supported.map(
                             (s) => html`<span class="tag">${s}</span>`,
@@ -251,7 +251,7 @@ export class TsModulePicker extends LitElement {
       ${this._errors.length > 0
         ? html`
             <div class="errors-list">
-              <h3>YAML-Fehler in folgenden Dateien:</h3>
+              <h3>${t("picker.yaml_errors_heading")}</h3>
               <ul>
                 ${this._errors.map(
                   (e) => html`<li>${e.file}: ${e.error}</li>`,

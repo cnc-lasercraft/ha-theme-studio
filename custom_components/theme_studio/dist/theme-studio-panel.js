@@ -3,119 +3,119 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const se = globalThis, Me = se.ShadowRoot && (se.ShadyCSS === void 0 || se.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Be = Symbol(), Te = /* @__PURE__ */ new WeakMap();
-let Ve = class {
-  constructor(e, r, a) {
-    if (this._$cssResult$ = !0, a !== Be) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
-    this.cssText = e, this.t = r;
+const ce = globalThis, Te = ce.ShadowRoot && (ce.ShadyCSS === void 0 || ce.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Pe = Symbol(), Re = /* @__PURE__ */ new WeakMap();
+let Ze = class {
+  constructor(t, r, a) {
+    if (this._$cssResult$ = !0, a !== Pe) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
+    this.cssText = t, this.t = r;
   }
   get styleSheet() {
-    let e = this.o;
+    let t = this.o;
     const r = this.t;
-    if (Me && e === void 0) {
+    if (Te && t === void 0) {
       const a = r !== void 0 && r.length === 1;
-      a && (e = Te.get(r)), e === void 0 && ((this.o = e = new CSSStyleSheet()).replaceSync(this.cssText), a && Te.set(r, e));
+      a && (t = Re.get(r)), t === void 0 && ((this.o = t = new CSSStyleSheet()).replaceSync(this.cssText), a && Re.set(r, t));
     }
-    return e;
+    return t;
   }
   toString() {
     return this.cssText;
   }
 };
-const zt = (t) => new Ve(typeof t == "string" ? t : t + "", void 0, Be), C = (t, ...e) => {
-  const r = t.length === 1 ? t[0] : e.reduce((a, o, i) => a + ((n) => {
+const Dt = (e) => new Ze(typeof e == "string" ? e : e + "", void 0, Pe), B = (e, ...t) => {
+  const r = e.length === 1 ? e[0] : t.reduce((a, o, i) => a + ((n) => {
     if (n._$cssResult$ === !0) return n.cssText;
     if (typeof n == "number") return n;
     throw Error("Value passed to 'css' function must be a 'css' function result: " + n + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
-  })(o) + t[i + 1], t[0]);
-  return new Ve(r, t, Be);
-}, At = (t, e) => {
-  if (Me) t.adoptedStyleSheets = e.map((r) => r instanceof CSSStyleSheet ? r : r.styleSheet);
-  else for (const r of e) {
-    const a = document.createElement("style"), o = se.litNonce;
-    o !== void 0 && a.setAttribute("nonce", o), a.textContent = r.cssText, t.appendChild(a);
+  })(o) + e[i + 1], e[0]);
+  return new Ze(r, e, Pe);
+}, Rt = (e, t) => {
+  if (Te) e.adoptedStyleSheets = t.map((r) => r instanceof CSSStyleSheet ? r : r.styleSheet);
+  else for (const r of t) {
+    const a = document.createElement("style"), o = ce.litNonce;
+    o !== void 0 && a.setAttribute("nonce", o), a.textContent = r.cssText, e.appendChild(a);
   }
-}, Ee = Me ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((e) => {
+}, He = Te ? (e) => e : (e) => e instanceof CSSStyleSheet ? ((t) => {
   let r = "";
-  for (const a of e.cssRules) r += a.cssText;
-  return zt(r);
-})(t) : t;
+  for (const a of t.cssRules) r += a.cssText;
+  return Dt(r);
+})(e) : e;
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: Tt, defineProperty: Et, getOwnPropertyDescriptor: Pt, getOwnPropertyNames: Ft, getOwnPropertySymbols: Ht, getPrototypeOf: Dt } = Object, H = globalThis, Pe = H.trustedTypes, Rt = Pe ? Pe.emptyScript : "", Ot = H.reactiveElementPolyfillSupport, Y = (t, e) => t, le = { toAttribute(t, e) {
-  switch (e) {
+const { is: Ht, defineProperty: Ft, getOwnPropertyDescriptor: Ot, getOwnPropertyNames: Lt, getOwnPropertySymbols: Gt, getPrototypeOf: It } = Object, H = globalThis, Fe = H.trustedTypes, Ut = Fe ? Fe.emptyScript : "", Nt = H.reactiveElementPolyfillSupport, Q = (e, t) => e, me = { toAttribute(e, t) {
+  switch (t) {
     case Boolean:
-      t = t ? Rt : null;
+      e = e ? Ut : null;
       break;
     case Object:
     case Array:
-      t = t == null ? t : JSON.stringify(t);
+      e = e == null ? e : JSON.stringify(e);
   }
-  return t;
-}, fromAttribute(t, e) {
-  let r = t;
-  switch (e) {
+  return e;
+}, fromAttribute(e, t) {
+  let r = e;
+  switch (t) {
     case Boolean:
-      r = t !== null;
+      r = e !== null;
       break;
     case Number:
-      r = t === null ? null : Number(t);
+      r = e === null ? null : Number(e);
       break;
     case Object:
     case Array:
       try {
-        r = JSON.parse(t);
+        r = JSON.parse(e);
       } catch {
         r = null;
       }
   }
   return r;
-} }, ze = (t, e) => !Tt(t, e), Fe = { attribute: !0, type: String, converter: le, reflect: !1, useDefault: !1, hasChanged: ze };
+} }, Ee = (e, t) => !Ht(e, t), Oe = { attribute: !0, type: String, converter: me, reflect: !1, useDefault: !1, hasChanged: Ee };
 Symbol.metadata ?? (Symbol.metadata = Symbol("metadata")), H.litPropertyMetadata ?? (H.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
 let V = class extends HTMLElement {
-  static addInitializer(e) {
-    this._$Ei(), (this.l ?? (this.l = [])).push(e);
+  static addInitializer(t) {
+    this._$Ei(), (this.l ?? (this.l = [])).push(t);
   }
   static get observedAttributes() {
     return this.finalize(), this._$Eh && [...this._$Eh.keys()];
   }
-  static createProperty(e, r = Fe) {
-    if (r.state && (r.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((r = Object.create(r)).wrapped = !0), this.elementProperties.set(e, r), !r.noAccessor) {
-      const a = Symbol(), o = this.getPropertyDescriptor(e, a, r);
-      o !== void 0 && Et(this.prototype, e, o);
+  static createProperty(t, r = Oe) {
+    if (r.state && (r.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(t) && ((r = Object.create(r)).wrapped = !0), this.elementProperties.set(t, r), !r.noAccessor) {
+      const a = Symbol(), o = this.getPropertyDescriptor(t, a, r);
+      o !== void 0 && Ft(this.prototype, t, o);
     }
   }
-  static getPropertyDescriptor(e, r, a) {
-    const { get: o, set: i } = Pt(this.prototype, e) ?? { get() {
+  static getPropertyDescriptor(t, r, a) {
+    const { get: o, set: i } = Ot(this.prototype, t) ?? { get() {
       return this[r];
     }, set(n) {
       this[r] = n;
     } };
     return { get: o, set(n) {
-      const c = o?.call(this);
-      i?.call(this, n), this.requestUpdate(e, c, a);
+      const d = o?.call(this);
+      i?.call(this, n), this.requestUpdate(t, d, a);
     }, configurable: !0, enumerable: !0 };
   }
-  static getPropertyOptions(e) {
-    return this.elementProperties.get(e) ?? Fe;
+  static getPropertyOptions(t) {
+    return this.elementProperties.get(t) ?? Oe;
   }
   static _$Ei() {
-    if (this.hasOwnProperty(Y("elementProperties"))) return;
-    const e = Dt(this);
-    e.finalize(), e.l !== void 0 && (this.l = [...e.l]), this.elementProperties = new Map(e.elementProperties);
+    if (this.hasOwnProperty(Q("elementProperties"))) return;
+    const t = It(this);
+    t.finalize(), t.l !== void 0 && (this.l = [...t.l]), this.elementProperties = new Map(t.elementProperties);
   }
   static finalize() {
-    if (this.hasOwnProperty(Y("finalized"))) return;
-    if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(Y("properties"))) {
-      const r = this.properties, a = [...Ft(r), ...Ht(r)];
+    if (this.hasOwnProperty(Q("finalized"))) return;
+    if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(Q("properties"))) {
+      const r = this.properties, a = [...Lt(r), ...Gt(r)];
       for (const o of a) this.createProperty(o, r[o]);
     }
-    const e = this[Symbol.metadata];
-    if (e !== null) {
-      const r = litPropertyMetadata.get(e);
+    const t = this[Symbol.metadata];
+    if (t !== null) {
+      const r = litPropertyMetadata.get(t);
       if (r !== void 0) for (const [a, o] of r) this.elementProperties.set(a, o);
     }
     this._$Eh = /* @__PURE__ */ new Map();
@@ -125,76 +125,76 @@ let V = class extends HTMLElement {
     }
     this.elementStyles = this.finalizeStyles(this.styles);
   }
-  static finalizeStyles(e) {
+  static finalizeStyles(t) {
     const r = [];
-    if (Array.isArray(e)) {
-      const a = new Set(e.flat(1 / 0).reverse());
-      for (const o of a) r.unshift(Ee(o));
-    } else e !== void 0 && r.push(Ee(e));
+    if (Array.isArray(t)) {
+      const a = new Set(t.flat(1 / 0).reverse());
+      for (const o of a) r.unshift(He(o));
+    } else t !== void 0 && r.push(He(t));
     return r;
   }
-  static _$Eu(e, r) {
+  static _$Eu(t, r) {
     const a = r.attribute;
-    return a === !1 ? void 0 : typeof a == "string" ? a : typeof e == "string" ? e.toLowerCase() : void 0;
+    return a === !1 ? void 0 : typeof a == "string" ? a : typeof t == "string" ? t.toLowerCase() : void 0;
   }
   constructor() {
     super(), this._$Ep = void 0, this.isUpdatePending = !1, this.hasUpdated = !1, this._$Em = null, this._$Ev();
   }
   _$Ev() {
-    this._$ES = new Promise((e) => this.enableUpdating = e), this._$AL = /* @__PURE__ */ new Map(), this._$E_(), this.requestUpdate(), this.constructor.l?.forEach((e) => e(this));
+    this._$ES = new Promise((t) => this.enableUpdating = t), this._$AL = /* @__PURE__ */ new Map(), this._$E_(), this.requestUpdate(), this.constructor.l?.forEach((t) => t(this));
   }
-  addController(e) {
-    (this._$EO ?? (this._$EO = /* @__PURE__ */ new Set())).add(e), this.renderRoot !== void 0 && this.isConnected && e.hostConnected?.();
+  addController(t) {
+    (this._$EO ?? (this._$EO = /* @__PURE__ */ new Set())).add(t), this.renderRoot !== void 0 && this.isConnected && t.hostConnected?.();
   }
-  removeController(e) {
-    this._$EO?.delete(e);
+  removeController(t) {
+    this._$EO?.delete(t);
   }
   _$E_() {
-    const e = /* @__PURE__ */ new Map(), r = this.constructor.elementProperties;
-    for (const a of r.keys()) this.hasOwnProperty(a) && (e.set(a, this[a]), delete this[a]);
-    e.size > 0 && (this._$Ep = e);
+    const t = /* @__PURE__ */ new Map(), r = this.constructor.elementProperties;
+    for (const a of r.keys()) this.hasOwnProperty(a) && (t.set(a, this[a]), delete this[a]);
+    t.size > 0 && (this._$Ep = t);
   }
   createRenderRoot() {
-    const e = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
-    return At(e, this.constructor.elementStyles), e;
+    const t = this.shadowRoot ?? this.attachShadow(this.constructor.shadowRootOptions);
+    return Rt(t, this.constructor.elementStyles), t;
   }
   connectedCallback() {
-    this.renderRoot ?? (this.renderRoot = this.createRenderRoot()), this.enableUpdating(!0), this._$EO?.forEach((e) => e.hostConnected?.());
+    this.renderRoot ?? (this.renderRoot = this.createRenderRoot()), this.enableUpdating(!0), this._$EO?.forEach((t) => t.hostConnected?.());
   }
-  enableUpdating(e) {
+  enableUpdating(t) {
   }
   disconnectedCallback() {
-    this._$EO?.forEach((e) => e.hostDisconnected?.());
+    this._$EO?.forEach((t) => t.hostDisconnected?.());
   }
-  attributeChangedCallback(e, r, a) {
-    this._$AK(e, a);
+  attributeChangedCallback(t, r, a) {
+    this._$AK(t, a);
   }
-  _$ET(e, r) {
-    const a = this.constructor.elementProperties.get(e), o = this.constructor._$Eu(e, a);
+  _$ET(t, r) {
+    const a = this.constructor.elementProperties.get(t), o = this.constructor._$Eu(t, a);
     if (o !== void 0 && a.reflect === !0) {
-      const i = (a.converter?.toAttribute !== void 0 ? a.converter : le).toAttribute(r, a.type);
-      this._$Em = e, i == null ? this.removeAttribute(o) : this.setAttribute(o, i), this._$Em = null;
+      const i = (a.converter?.toAttribute !== void 0 ? a.converter : me).toAttribute(r, a.type);
+      this._$Em = t, i == null ? this.removeAttribute(o) : this.setAttribute(o, i), this._$Em = null;
     }
   }
-  _$AK(e, r) {
-    const a = this.constructor, o = a._$Eh.get(e);
+  _$AK(t, r) {
+    const a = this.constructor, o = a._$Eh.get(t);
     if (o !== void 0 && this._$Em !== o) {
-      const i = a.getPropertyOptions(o), n = typeof i.converter == "function" ? { fromAttribute: i.converter } : i.converter?.fromAttribute !== void 0 ? i.converter : le;
+      const i = a.getPropertyOptions(o), n = typeof i.converter == "function" ? { fromAttribute: i.converter } : i.converter?.fromAttribute !== void 0 ? i.converter : me;
       this._$Em = o;
-      const c = n.fromAttribute(r, i.type);
-      this[o] = c ?? this._$Ej?.get(o) ?? c, this._$Em = null;
+      const d = n.fromAttribute(r, i.type);
+      this[o] = d ?? this._$Ej?.get(o) ?? d, this._$Em = null;
     }
   }
-  requestUpdate(e, r, a, o = !1, i) {
-    if (e !== void 0) {
+  requestUpdate(t, r, a, o = !1, i) {
+    if (t !== void 0) {
       const n = this.constructor;
-      if (o === !1 && (i = this[e]), a ?? (a = n.getPropertyOptions(e)), !((a.hasChanged ?? ze)(i, r) || a.useDefault && a.reflect && i === this._$Ej?.get(e) && !this.hasAttribute(n._$Eu(e, a)))) return;
-      this.C(e, r, a);
+      if (o === !1 && (i = this[t]), a ?? (a = n.getPropertyOptions(t)), !((a.hasChanged ?? Ee)(i, r) || a.useDefault && a.reflect && i === this._$Ej?.get(t) && !this.hasAttribute(n._$Eu(t, a)))) return;
+      this.C(t, r, a);
     }
     this.isUpdatePending === !1 && (this._$ES = this._$EP());
   }
-  C(e, r, { useDefault: a, reflect: o, wrapped: i }, n) {
-    a && !(this._$Ej ?? (this._$Ej = /* @__PURE__ */ new Map())).has(e) && (this._$Ej.set(e, n ?? r ?? this[e]), i !== !0 || n !== void 0) || (this._$AL.has(e) || (this.hasUpdated || a || (r = void 0), this._$AL.set(e, r)), o === !0 && this._$Em !== e && (this._$Eq ?? (this._$Eq = /* @__PURE__ */ new Set())).add(e));
+  C(t, r, { useDefault: a, reflect: o, wrapped: i }, n) {
+    a && !(this._$Ej ?? (this._$Ej = /* @__PURE__ */ new Map())).has(t) && (this._$Ej.set(t, n ?? r ?? this[t]), i !== !0 || n !== void 0) || (this._$AL.has(t) || (this.hasUpdated || a || (r = void 0), this._$AL.set(t, r)), o === !0 && this._$Em !== t && (this._$Eq ?? (this._$Eq = /* @__PURE__ */ new Set())).add(t));
   }
   async _$EP() {
     this.isUpdatePending = !0;
@@ -203,8 +203,8 @@ let V = class extends HTMLElement {
     } catch (r) {
       Promise.reject(r);
     }
-    const e = this.scheduleUpdate();
-    return e != null && await e, !this.isUpdatePending;
+    const t = this.scheduleUpdate();
+    return t != null && await t, !this.isUpdatePending;
   }
   scheduleUpdate() {
     return this.performUpdate();
@@ -218,23 +218,23 @@ let V = class extends HTMLElement {
       }
       const a = this.constructor.elementProperties;
       if (a.size > 0) for (const [o, i] of a) {
-        const { wrapped: n } = i, c = this[o];
-        n !== !0 || this._$AL.has(o) || c === void 0 || this.C(o, void 0, i, c);
+        const { wrapped: n } = i, d = this[o];
+        n !== !0 || this._$AL.has(o) || d === void 0 || this.C(o, void 0, i, d);
       }
     }
-    let e = !1;
+    let t = !1;
     const r = this._$AL;
     try {
-      e = this.shouldUpdate(r), e ? (this.willUpdate(r), this._$EO?.forEach((a) => a.hostUpdate?.()), this.update(r)) : this._$EM();
+      t = this.shouldUpdate(r), t ? (this.willUpdate(r), this._$EO?.forEach((a) => a.hostUpdate?.()), this.update(r)) : this._$EM();
     } catch (a) {
-      throw e = !1, this._$EM(), a;
+      throw t = !1, this._$EM(), a;
     }
-    e && this._$AE(r);
+    t && this._$AE(r);
   }
-  willUpdate(e) {
+  willUpdate(t) {
   }
-  _$AE(e) {
-    this._$EO?.forEach((r) => r.hostUpdated?.()), this.hasUpdated || (this.hasUpdated = !0, this.firstUpdated(e)), this.updated(e);
+  _$AE(t) {
+    this._$EO?.forEach((r) => r.hostUpdated?.()), this.hasUpdated || (this.hasUpdated = !0, this.firstUpdated(t)), this.updated(t);
   }
   _$EM() {
     this._$AL = /* @__PURE__ */ new Map(), this.isUpdatePending = !1;
@@ -245,88 +245,88 @@ let V = class extends HTMLElement {
   getUpdateComplete() {
     return this._$ES;
   }
-  shouldUpdate(e) {
+  shouldUpdate(t) {
     return !0;
   }
-  update(e) {
+  update(t) {
     this._$Eq && (this._$Eq = this._$Eq.forEach((r) => this._$ET(r, this[r]))), this._$EM();
   }
-  updated(e) {
+  updated(t) {
   }
-  firstUpdated(e) {
+  firstUpdated(t) {
   }
 };
-V.elementStyles = [], V.shadowRootOptions = { mode: "open" }, V[Y("elementProperties")] = /* @__PURE__ */ new Map(), V[Y("finalized")] = /* @__PURE__ */ new Map(), Ot?.({ ReactiveElement: V }), (H.reactiveElementVersions ?? (H.reactiveElementVersions = [])).push("2.1.2");
+V.elementStyles = [], V.shadowRootOptions = { mode: "open" }, V[Q("elementProperties")] = /* @__PURE__ */ new Map(), V[Q("finalized")] = /* @__PURE__ */ new Map(), Nt?.({ ReactiveElement: V }), (H.reactiveElementVersions ?? (H.reactiveElementVersions = [])).push("2.1.2");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const X = globalThis, He = (t) => t, ce = X.trustedTypes, De = ce ? ce.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, Ge = "$lit$", F = `lit$${Math.random().toFixed(9).slice(2)}$`, We = "?" + F, Lt = `<${We}>`, U = document, re = () => U.createComment(""), oe = (t) => t === null || typeof t != "object" && typeof t != "function", Ae = Array.isArray, It = (t) => Ae(t) || typeof t?.[Symbol.iterator] == "function", ye = `[ 	
-\f\r]`, J = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Re = /-->/g, Oe = />/g, L = RegExp(`>|${ye}(?:([^\\s"'>=/]+)(${ye}*=${ye}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), Le = /'/g, Ie = /"/g, Ke = /^(?:script|style|textarea|title)$/i, Ut = (t) => (e, ...r) => ({ _$litType$: t, strings: e, values: r }), s = Ut(1), G = Symbol.for("lit-noChange"), y = Symbol.for("lit-nothing"), Ue = /* @__PURE__ */ new WeakMap(), I = U.createTreeWalker(U, 129);
-function Ze(t, e) {
-  if (!Ae(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
-  return De !== void 0 ? De.createHTML(e) : e;
+const ee = globalThis, Le = (e) => e, he = ee.trustedTypes, Ge = he ? he.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, Ye = "$lit$", R = `lit$${Math.random().toFixed(9).slice(2)}$`, qe = "?" + R, jt = `<${qe}>`, U = document, ae = () => U.createComment(""), ie = (e) => e === null || typeof e != "object" && typeof e != "function", De = Array.isArray, Vt = (e) => De(e) || typeof e?.[Symbol.iterator] == "function", ke = `[ 	
+\f\r]`, X = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Ie = /-->/g, Ue = />/g, G = RegExp(`>|${ke}(?:([^\\s"'>=/]+)(${ke}*=${ke}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), Ne = /'/g, je = /"/g, Je = /^(?:script|style|textarea|title)$/i, Wt = (e) => (t, ...r) => ({ _$litType$: e, strings: t, values: r }), l = Wt(1), K = Symbol.for("lit-noChange"), _ = Symbol.for("lit-nothing"), Ve = /* @__PURE__ */ new WeakMap(), I = U.createTreeWalker(U, 129);
+function Xe(e, t) {
+  if (!De(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+  return Ge !== void 0 ? Ge.createHTML(t) : t;
 }
-const Nt = (t, e) => {
-  const r = t.length - 1, a = [];
-  let o, i = e === 2 ? "<svg>" : e === 3 ? "<math>" : "", n = J;
-  for (let c = 0; c < r; c++) {
-    const l = t[c];
-    let d, u, p = -1, m = 0;
-    for (; m < l.length && (n.lastIndex = m, u = n.exec(l), u !== null); ) m = n.lastIndex, n === J ? u[1] === "!--" ? n = Re : u[1] !== void 0 ? n = Oe : u[2] !== void 0 ? (Ke.test(u[2]) && (o = RegExp("</" + u[2], "g")), n = L) : u[3] !== void 0 && (n = L) : n === L ? u[0] === ">" ? (n = o ?? J, p = -1) : u[1] === void 0 ? p = -2 : (p = n.lastIndex - u[2].length, d = u[1], n = u[3] === void 0 ? L : u[3] === '"' ? Ie : Le) : n === Ie || n === Le ? n = L : n === Re || n === Oe ? n = J : (n = L, o = void 0);
-    const b = n === L && t[c + 1].startsWith("/>") ? " " : "";
-    i += n === J ? l + Lt : p >= 0 ? (a.push(d), l.slice(0, p) + Ge + l.slice(p) + F + b) : l + F + (p === -2 ? c : b);
+const Kt = (e, t) => {
+  const r = e.length - 1, a = [];
+  let o, i = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", n = X;
+  for (let d = 0; d < r; d++) {
+    const c = e[d];
+    let u, p, m = -1, h = 0;
+    for (; h < c.length && (n.lastIndex = h, p = n.exec(c), p !== null); ) h = n.lastIndex, n === X ? p[1] === "!--" ? n = Ie : p[1] !== void 0 ? n = Ue : p[2] !== void 0 ? (Je.test(p[2]) && (o = RegExp("</" + p[2], "g")), n = G) : p[3] !== void 0 && (n = G) : n === G ? p[0] === ">" ? (n = o ?? X, m = -1) : p[1] === void 0 ? m = -2 : (m = n.lastIndex - p[2].length, u = p[1], n = p[3] === void 0 ? G : p[3] === '"' ? je : Ne) : n === je || n === Ne ? n = G : n === Ie || n === Ue ? n = X : (n = G, o = void 0);
+    const g = n === G && e[d + 1].startsWith("/>") ? " " : "";
+    i += n === X ? c + jt : m >= 0 ? (a.push(u), c.slice(0, m) + Ye + c.slice(m) + R + g) : c + R + (m === -2 ? d : g);
   }
-  return [Ze(t, i + (t[r] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), a];
+  return [Xe(e, i + (e[r] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), a];
 };
-class ae {
-  constructor({ strings: e, _$litType$: r }, a) {
+class ne {
+  constructor({ strings: t, _$litType$: r }, a) {
     let o;
     this.parts = [];
     let i = 0, n = 0;
-    const c = e.length - 1, l = this.parts, [d, u] = Nt(e, r);
-    if (this.el = ae.createElement(d, a), I.currentNode = this.el.content, r === 2 || r === 3) {
-      const p = this.el.content.firstChild;
-      p.replaceWith(...p.childNodes);
+    const d = t.length - 1, c = this.parts, [u, p] = Kt(t, r);
+    if (this.el = ne.createElement(u, a), I.currentNode = this.el.content, r === 2 || r === 3) {
+      const m = this.el.content.firstChild;
+      m.replaceWith(...m.childNodes);
     }
-    for (; (o = I.nextNode()) !== null && l.length < c; ) {
+    for (; (o = I.nextNode()) !== null && c.length < d; ) {
       if (o.nodeType === 1) {
-        if (o.hasAttributes()) for (const p of o.getAttributeNames()) if (p.endsWith(Ge)) {
-          const m = u[n++], b = o.getAttribute(p).split(F), x = /([.?@])?(.*)/.exec(m);
-          l.push({ type: 1, index: i, name: x[2], strings: b, ctor: x[1] === "." ? Vt : x[1] === "?" ? Gt : x[1] === "@" ? Wt : fe }), o.removeAttribute(p);
-        } else p.startsWith(F) && (l.push({ type: 6, index: i }), o.removeAttribute(p));
-        if (Ke.test(o.tagName)) {
-          const p = o.textContent.split(F), m = p.length - 1;
-          if (m > 0) {
-            o.textContent = ce ? ce.emptyScript : "";
-            for (let b = 0; b < m; b++) o.append(p[b], re()), I.nextNode(), l.push({ type: 2, index: ++i });
-            o.append(p[m], re());
+        if (o.hasAttributes()) for (const m of o.getAttributeNames()) if (m.endsWith(Ye)) {
+          const h = p[n++], g = o.getAttribute(m).split(R), w = /([.?@])?(.*)/.exec(h);
+          c.push({ type: 1, index: i, name: w[2], strings: g, ctor: w[1] === "." ? Yt : w[1] === "?" ? qt : w[1] === "@" ? Jt : we }), o.removeAttribute(m);
+        } else m.startsWith(R) && (c.push({ type: 6, index: i }), o.removeAttribute(m));
+        if (Je.test(o.tagName)) {
+          const m = o.textContent.split(R), h = m.length - 1;
+          if (h > 0) {
+            o.textContent = he ? he.emptyScript : "";
+            for (let g = 0; g < h; g++) o.append(m[g], ae()), I.nextNode(), c.push({ type: 2, index: ++i });
+            o.append(m[h], ae());
           }
         }
-      } else if (o.nodeType === 8) if (o.data === We) l.push({ type: 2, index: i });
+      } else if (o.nodeType === 8) if (o.data === qe) c.push({ type: 2, index: i });
       else {
-        let p = -1;
-        for (; (p = o.data.indexOf(F, p + 1)) !== -1; ) l.push({ type: 7, index: i }), p += F.length - 1;
+        let m = -1;
+        for (; (m = o.data.indexOf(R, m + 1)) !== -1; ) c.push({ type: 7, index: i }), m += R.length - 1;
       }
       i++;
     }
   }
-  static createElement(e, r) {
+  static createElement(t, r) {
     const a = U.createElement("template");
-    return a.innerHTML = e, a;
+    return a.innerHTML = t, a;
   }
 }
-function W(t, e, r = t, a) {
-  if (e === G) return e;
+function Z(e, t, r = e, a) {
+  if (t === K) return t;
   let o = a !== void 0 ? r._$Co?.[a] : r._$Cl;
-  const i = oe(e) ? void 0 : e._$litDirective$;
-  return o?.constructor !== i && (o?._$AO?.(!1), i === void 0 ? o = void 0 : (o = new i(t), o._$AT(t, r, a)), a !== void 0 ? (r._$Co ?? (r._$Co = []))[a] = o : r._$Cl = o), o !== void 0 && (e = W(t, o._$AS(t, e.values), o, a)), e;
+  const i = ie(t) ? void 0 : t._$litDirective$;
+  return o?.constructor !== i && (o?._$AO?.(!1), i === void 0 ? o = void 0 : (o = new i(e), o._$AT(e, r, a)), a !== void 0 ? (r._$Co ?? (r._$Co = []))[a] = o : r._$Cl = o), o !== void 0 && (t = Z(e, o._$AS(e, t.values), o, a)), t;
 }
-class jt {
-  constructor(e, r) {
-    this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = r;
+class Zt {
+  constructor(t, r) {
+    this._$AV = [], this._$AN = void 0, this._$AD = t, this._$AM = r;
   }
   get parentNode() {
     return this._$AM.parentNode;
@@ -334,35 +334,35 @@ class jt {
   get _$AU() {
     return this._$AM._$AU;
   }
-  u(e) {
-    const { el: { content: r }, parts: a } = this._$AD, o = (e?.creationScope ?? U).importNode(r, !0);
+  u(t) {
+    const { el: { content: r }, parts: a } = this._$AD, o = (t?.creationScope ?? U).importNode(r, !0);
     I.currentNode = o;
-    let i = I.nextNode(), n = 0, c = 0, l = a[0];
-    for (; l !== void 0; ) {
-      if (n === l.index) {
-        let d;
-        l.type === 2 ? d = new ie(i, i.nextSibling, this, e) : l.type === 1 ? d = new l.ctor(i, l.name, l.strings, this, e) : l.type === 6 && (d = new Kt(i, this, e)), this._$AV.push(d), l = a[++c];
+    let i = I.nextNode(), n = 0, d = 0, c = a[0];
+    for (; c !== void 0; ) {
+      if (n === c.index) {
+        let u;
+        c.type === 2 ? u = new se(i, i.nextSibling, this, t) : c.type === 1 ? u = new c.ctor(i, c.name, c.strings, this, t) : c.type === 6 && (u = new Xt(i, this, t)), this._$AV.push(u), c = a[++d];
       }
-      n !== l?.index && (i = I.nextNode(), n++);
+      n !== c?.index && (i = I.nextNode(), n++);
     }
     return I.currentNode = U, o;
   }
-  p(e) {
+  p(t) {
     let r = 0;
-    for (const a of this._$AV) a !== void 0 && (a.strings !== void 0 ? (a._$AI(e, a, r), r += a.strings.length - 2) : a._$AI(e[r])), r++;
+    for (const a of this._$AV) a !== void 0 && (a.strings !== void 0 ? (a._$AI(t, a, r), r += a.strings.length - 2) : a._$AI(t[r])), r++;
   }
 }
-class ie {
+class se {
   get _$AU() {
     return this._$AM?._$AU ?? this._$Cv;
   }
-  constructor(e, r, a, o) {
-    this.type = 2, this._$AH = y, this._$AN = void 0, this._$AA = e, this._$AB = r, this._$AM = a, this.options = o, this._$Cv = o?.isConnected ?? !0;
+  constructor(t, r, a, o) {
+    this.type = 2, this._$AH = _, this._$AN = void 0, this._$AA = t, this._$AB = r, this._$AM = a, this.options = o, this._$Cv = o?.isConnected ?? !0;
   }
   get parentNode() {
-    let e = this._$AA.parentNode;
+    let t = this._$AA.parentNode;
     const r = this._$AM;
-    return r !== void 0 && e?.nodeType === 11 && (e = r.parentNode), e;
+    return r !== void 0 && t?.nodeType === 11 && (t = r.parentNode), t;
   }
   get startNode() {
     return this._$AA;
@@ -370,141 +370,141 @@ class ie {
   get endNode() {
     return this._$AB;
   }
-  _$AI(e, r = this) {
-    e = W(this, e, r), oe(e) ? e === y || e == null || e === "" ? (this._$AH !== y && this._$AR(), this._$AH = y) : e !== this._$AH && e !== G && this._(e) : e._$litType$ !== void 0 ? this.$(e) : e.nodeType !== void 0 ? this.T(e) : It(e) ? this.k(e) : this._(e);
+  _$AI(t, r = this) {
+    t = Z(this, t, r), ie(t) ? t === _ || t == null || t === "" ? (this._$AH !== _ && this._$AR(), this._$AH = _) : t !== this._$AH && t !== K && this._(t) : t._$litType$ !== void 0 ? this.$(t) : t.nodeType !== void 0 ? this.T(t) : Vt(t) ? this.k(t) : this._(t);
   }
-  O(e) {
-    return this._$AA.parentNode.insertBefore(e, this._$AB);
+  O(t) {
+    return this._$AA.parentNode.insertBefore(t, this._$AB);
   }
-  T(e) {
-    this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
+  T(t) {
+    this._$AH !== t && (this._$AR(), this._$AH = this.O(t));
   }
-  _(e) {
-    this._$AH !== y && oe(this._$AH) ? this._$AA.nextSibling.data = e : this.T(U.createTextNode(e)), this._$AH = e;
+  _(t) {
+    this._$AH !== _ && ie(this._$AH) ? this._$AA.nextSibling.data = t : this.T(U.createTextNode(t)), this._$AH = t;
   }
-  $(e) {
-    const { values: r, _$litType$: a } = e, o = typeof a == "number" ? this._$AC(e) : (a.el === void 0 && (a.el = ae.createElement(Ze(a.h, a.h[0]), this.options)), a);
+  $(t) {
+    const { values: r, _$litType$: a } = t, o = typeof a == "number" ? this._$AC(t) : (a.el === void 0 && (a.el = ne.createElement(Xe(a.h, a.h[0]), this.options)), a);
     if (this._$AH?._$AD === o) this._$AH.p(r);
     else {
-      const i = new jt(o, this), n = i.u(this.options);
+      const i = new Zt(o, this), n = i.u(this.options);
       i.p(r), this.T(n), this._$AH = i;
     }
   }
-  _$AC(e) {
-    let r = Ue.get(e.strings);
-    return r === void 0 && Ue.set(e.strings, r = new ae(e)), r;
+  _$AC(t) {
+    let r = Ve.get(t.strings);
+    return r === void 0 && Ve.set(t.strings, r = new ne(t)), r;
   }
-  k(e) {
-    Ae(this._$AH) || (this._$AH = [], this._$AR());
+  k(t) {
+    De(this._$AH) || (this._$AH = [], this._$AR());
     const r = this._$AH;
     let a, o = 0;
-    for (const i of e) o === r.length ? r.push(a = new ie(this.O(re()), this.O(re()), this, this.options)) : a = r[o], a._$AI(i), o++;
+    for (const i of t) o === r.length ? r.push(a = new se(this.O(ae()), this.O(ae()), this, this.options)) : a = r[o], a._$AI(i), o++;
     o < r.length && (this._$AR(a && a._$AB.nextSibling, o), r.length = o);
   }
-  _$AR(e = this._$AA.nextSibling, r) {
-    for (this._$AP?.(!1, !0, r); e !== this._$AB; ) {
-      const a = He(e).nextSibling;
-      He(e).remove(), e = a;
+  _$AR(t = this._$AA.nextSibling, r) {
+    for (this._$AP?.(!1, !0, r); t !== this._$AB; ) {
+      const a = Le(t).nextSibling;
+      Le(t).remove(), t = a;
     }
   }
-  setConnected(e) {
-    this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
+  setConnected(t) {
+    this._$AM === void 0 && (this._$Cv = t, this._$AP?.(t));
   }
 }
-class fe {
+class we {
   get tagName() {
     return this.element.tagName;
   }
   get _$AU() {
     return this._$AM._$AU;
   }
-  constructor(e, r, a, o, i) {
-    this.type = 1, this._$AH = y, this._$AN = void 0, this.element = e, this.name = r, this._$AM = o, this.options = i, a.length > 2 || a[0] !== "" || a[1] !== "" ? (this._$AH = Array(a.length - 1).fill(new String()), this.strings = a) : this._$AH = y;
+  constructor(t, r, a, o, i) {
+    this.type = 1, this._$AH = _, this._$AN = void 0, this.element = t, this.name = r, this._$AM = o, this.options = i, a.length > 2 || a[0] !== "" || a[1] !== "" ? (this._$AH = Array(a.length - 1).fill(new String()), this.strings = a) : this._$AH = _;
   }
-  _$AI(e, r = this, a, o) {
+  _$AI(t, r = this, a, o) {
     const i = this.strings;
     let n = !1;
-    if (i === void 0) e = W(this, e, r, 0), n = !oe(e) || e !== this._$AH && e !== G, n && (this._$AH = e);
+    if (i === void 0) t = Z(this, t, r, 0), n = !ie(t) || t !== this._$AH && t !== K, n && (this._$AH = t);
     else {
-      const c = e;
-      let l, d;
-      for (e = i[0], l = 0; l < i.length - 1; l++) d = W(this, c[a + l], r, l), d === G && (d = this._$AH[l]), n || (n = !oe(d) || d !== this._$AH[l]), d === y ? e = y : e !== y && (e += (d ?? "") + i[l + 1]), this._$AH[l] = d;
+      const d = t;
+      let c, u;
+      for (t = i[0], c = 0; c < i.length - 1; c++) u = Z(this, d[a + c], r, c), u === K && (u = this._$AH[c]), n || (n = !ie(u) || u !== this._$AH[c]), u === _ ? t = _ : t !== _ && (t += (u ?? "") + i[c + 1]), this._$AH[c] = u;
     }
-    n && !o && this.j(e);
+    n && !o && this.j(t);
   }
-  j(e) {
-    e === y ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+  j(t) {
+    t === _ ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t ?? "");
   }
 }
-class Vt extends fe {
+class Yt extends we {
   constructor() {
     super(...arguments), this.type = 3;
   }
-  j(e) {
-    this.element[this.name] = e === y ? void 0 : e;
+  j(t) {
+    this.element[this.name] = t === _ ? void 0 : t;
   }
 }
-class Gt extends fe {
+class qt extends we {
   constructor() {
     super(...arguments), this.type = 4;
   }
-  j(e) {
-    this.element.toggleAttribute(this.name, !!e && e !== y);
+  j(t) {
+    this.element.toggleAttribute(this.name, !!t && t !== _);
   }
 }
-class Wt extends fe {
-  constructor(e, r, a, o, i) {
-    super(e, r, a, o, i), this.type = 5;
+class Jt extends we {
+  constructor(t, r, a, o, i) {
+    super(t, r, a, o, i), this.type = 5;
   }
-  _$AI(e, r = this) {
-    if ((e = W(this, e, r, 0) ?? y) === G) return;
-    const a = this._$AH, o = e === y && a !== y || e.capture !== a.capture || e.once !== a.once || e.passive !== a.passive, i = e !== y && (a === y || o);
-    o && this.element.removeEventListener(this.name, this, a), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
+  _$AI(t, r = this) {
+    if ((t = Z(this, t, r, 0) ?? _) === K) return;
+    const a = this._$AH, o = t === _ && a !== _ || t.capture !== a.capture || t.once !== a.once || t.passive !== a.passive, i = t !== _ && (a === _ || o);
+    o && this.element.removeEventListener(this.name, this, a), i && this.element.addEventListener(this.name, this, t), this._$AH = t;
   }
-  handleEvent(e) {
-    typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
+  handleEvent(t) {
+    typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, t) : this._$AH.handleEvent(t);
   }
 }
-class Kt {
-  constructor(e, r, a) {
-    this.element = e, this.type = 6, this._$AN = void 0, this._$AM = r, this.options = a;
+class Xt {
+  constructor(t, r, a) {
+    this.element = t, this.type = 6, this._$AN = void 0, this._$AM = r, this.options = a;
   }
   get _$AU() {
     return this._$AM._$AU;
   }
-  _$AI(e) {
-    W(this, e);
+  _$AI(t) {
+    Z(this, t);
   }
 }
-const Zt = X.litHtmlPolyfillSupport;
-Zt?.(ae, ie), (X.litHtmlVersions ?? (X.litHtmlVersions = [])).push("3.3.3");
-const qt = (t, e, r) => {
-  const a = r?.renderBefore ?? e;
+const Qt = ee.litHtmlPolyfillSupport;
+Qt?.(ne, se), (ee.litHtmlVersions ?? (ee.litHtmlVersions = [])).push("3.3.3");
+const er = (e, t, r) => {
+  const a = r?.renderBefore ?? t;
   let o = a._$litPart$;
   if (o === void 0) {
     const i = r?.renderBefore ?? null;
-    a._$litPart$ = o = new ie(e.insertBefore(re(), i), i, void 0, r ?? {});
+    a._$litPart$ = o = new se(t.insertBefore(ae(), i), i, void 0, r ?? {});
   }
-  return o._$AI(t), o;
+  return o._$AI(e), o;
 };
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Q = globalThis;
+const te = globalThis;
 class v extends V {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
   }
   createRenderRoot() {
     var r;
-    const e = super.createRenderRoot();
-    return (r = this.renderOptions).renderBefore ?? (r.renderBefore = e.firstChild), e;
+    const t = super.createRenderRoot();
+    return (r = this.renderOptions).renderBefore ?? (r.renderBefore = t.firstChild), t;
   }
-  update(e) {
+  update(t) {
     const r = this.render();
-    this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = qt(r, this.renderRoot, this.renderOptions);
+    this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(t), this._$Do = er(r, this.renderRoot, this.renderOptions);
   }
   connectedCallback() {
     super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -513,239 +513,258 @@ class v extends V {
     super.disconnectedCallback(), this._$Do?.setConnected(!1);
   }
   render() {
-    return G;
+    return K;
   }
 }
-v._$litElement$ = !0, v.finalized = !0, Q.litElementHydrateSupport?.({ LitElement: v });
-const Jt = Q.litElementPolyfillSupport;
-Jt?.({ LitElement: v });
-(Q.litElementVersions ?? (Q.litElementVersions = [])).push("4.2.2");
+v._$litElement$ = !0, v.finalized = !0, te.litElementHydrateSupport?.({ LitElement: v });
+const tr = te.litElementPolyfillSupport;
+tr?.({ LitElement: v });
+(te.litElementVersions ?? (te.litElementVersions = [])).push("4.2.2");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const M = (t) => (e, r) => {
+const M = (e) => (t, r) => {
   r !== void 0 ? r.addInitializer(() => {
-    customElements.define(t, e);
-  }) : customElements.define(t, e);
+    customElements.define(e, t);
+  }) : customElements.define(e, t);
 };
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Yt = { attribute: !0, type: String, converter: le, reflect: !1, hasChanged: ze }, Xt = (t = Yt, e, r) => {
+const rr = { attribute: !0, type: String, converter: me, reflect: !1, hasChanged: Ee }, or = (e = rr, t, r) => {
   const { kind: a, metadata: o } = r;
   let i = globalThis.litPropertyMetadata.get(o);
-  if (i === void 0 && globalThis.litPropertyMetadata.set(o, i = /* @__PURE__ */ new Map()), a === "setter" && ((t = Object.create(t)).wrapped = !0), i.set(r.name, t), a === "accessor") {
+  if (i === void 0 && globalThis.litPropertyMetadata.set(o, i = /* @__PURE__ */ new Map()), a === "setter" && ((e = Object.create(e)).wrapped = !0), i.set(r.name, e), a === "accessor") {
     const { name: n } = r;
-    return { set(c) {
-      const l = e.get.call(this);
-      e.set.call(this, c), this.requestUpdate(n, l, t, !0, c);
-    }, init(c) {
-      return c !== void 0 && this.C(n, void 0, t, c), c;
+    return { set(d) {
+      const c = t.get.call(this);
+      t.set.call(this, d), this.requestUpdate(n, c, e, !0, d);
+    }, init(d) {
+      return d !== void 0 && this.C(n, void 0, e, d), d;
     } };
   }
   if (a === "setter") {
     const { name: n } = r;
-    return function(c) {
-      const l = this[n];
-      e.call(this, c), this.requestUpdate(n, l, t, !0, c);
+    return function(d) {
+      const c = this[n];
+      t.call(this, d), this.requestUpdate(n, c, e, !0, d);
     };
   }
   throw Error("Unsupported decorator location: " + a);
 };
-function g(t) {
-  return (e, r) => typeof r == "object" ? Xt(t, e, r) : ((a, o, i) => {
+function f(e) {
+  return (t, r) => typeof r == "object" ? or(e, t, r) : ((a, o, i) => {
     const n = o.hasOwnProperty(i);
     return o.constructor.createProperty(i, a), n ? Object.getOwnPropertyDescriptor(o, i) : void 0;
-  })(t, e, r);
+  })(e, t, r);
 }
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-function h(t) {
-  return g({ ...t, state: !0, attribute: !1 });
+function b(e) {
+  return f({ ...e, state: !0, attribute: !1 });
 }
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const Qt = (t, e, r) => (r.configurable = !0, r.enumerable = !0, Reflect.decorate && typeof e != "object" && Object.defineProperty(t, e, r), r);
+const ar = (e, t, r) => (r.configurable = !0, r.enumerable = !0, Reflect.decorate && typeof t != "object" && Object.defineProperty(e, t, r), r);
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-function er(t, e) {
+function ir(e, t) {
   return (r, a, o) => {
-    const i = (n) => n.renderRoot?.querySelector(t) ?? null;
-    return Qt(r, a, { get() {
+    const i = (n) => n.renderRoot?.querySelector(e) ?? null;
+    return ar(r, a, { get() {
       return i(this);
     } });
   };
 }
-const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe = {
+const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot = {
   method: "hacs-repo",
   value: "Clooos/Bubble-Card"
-}, et = "CSS-Variablen für Bubble Card (Clooos/Bubble-Card). 100+ Variablen über Global, Pop-Up, Button, Climate, Media-Player, Select, Slider und weitere Card-Types. Plugin wird nur geladen wenn HACS Clooos/Bubble-Card als installiert meldet.", tr = {
-  id: qe,
-  name: Je,
-  version: Ye,
-  version_supported: Xe,
-  detect: Qe,
-  description: et
-}, rr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, at = "CSS-Variablen für Bubble Card (Clooos/Bubble-Card). 100+ Variablen über Global, Pop-Up, Button, Climate, Media-Player, Select, Slider und weitere Card-Types. Plugin wird nur geladen wenn HACS Clooos/Bubble-Card als installiert meldet.", nr = {
+  id: Qe,
+  name: et,
+  version: tt,
+  version_supported: rt,
+  detect: ot,
+  description: at
+}, sr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: tr,
-  description: et,
-  detect: Qe,
-  id: qe,
-  name: Je,
-  version: Ye,
-  version_supported: Xe
-}, Symbol.toStringTag, { value: "Module" })), tt = "ha-core", rt = "Home Assistant Core", ot = "0.1.0", at = ">=2024.1.0", it = {
+  default: nr,
+  description: at,
+  detect: ot,
+  id: Qe,
+  name: et,
+  version: tt,
+  version_supported: rt
+}, Symbol.toStringTag, { value: "Module" })), it = "ha-core", nt = "Home Assistant Core", st = "0.1.0", lt = ">=2024.1.0", ct = {
   method: "always"
-}, nt = "Grundlegende CSS-Variablen des HA-Frontends. Immer aktiv, keine Erkennung nötig.", or = {
-  id: tt,
-  name: rt,
-  version: ot,
-  version_supported: at,
-  detect: it,
-  description: nt
-}, ar = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, dt = "Grundlegende CSS-Variablen des HA-Frontends. Immer aktiv, keine Erkennung nötig.", lr = {
+  id: it,
+  name: nt,
+  version: st,
+  version_supported: lt,
+  detect: ct,
+  description: dt
+}, cr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: or,
-  description: nt,
-  detect: it,
-  id: tt,
-  name: rt,
-  version: ot,
-  version_supported: at
-}, Symbol.toStringTag, { value: "Module" })), st = "mushroom", lt = "Mushroom", ct = "0.1.0", dt = ">=3.0.0", ut = {
+  default: lr,
+  description: dt,
+  detect: ct,
+  id: it,
+  name: nt,
+  version: st,
+  version_supported: lt
+}, Symbol.toStringTag, { value: "Module" })), ut = "mushroom", pt = "Mushroom", mt = "0.1.0", ht = ">=3.0.0", bt = {
   method: "hacs-repo",
   value: "piitaya/lovelace-mushroom"
-}, pt = "CSS-Variablen für Mushroom Cards (piitaya/lovelace-mushroom). Typografie (Title/Subtitle/Card-Primary/Card-Secondary), Icons, Chips, Controls, Material-RGB-Palette und State-spezifische RGB-Farben für Climate/Cover/Lock/Person/etc. Plugin wird nur geladen wenn HACS piitaya/lovelace-mushroom als installiert meldet.", ir = {
-  id: st,
-  name: lt,
-  version: ct,
-  version_supported: dt,
-  detect: ut,
-  description: pt
-}, nr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, gt = "CSS-Variablen für Mushroom Cards (piitaya/lovelace-mushroom). Typografie (Title/Subtitle/Card-Primary/Card-Secondary), Icons, Chips, Controls, Material-RGB-Palette und State-spezifische RGB-Farben für Climate/Cover/Lock/Person/etc. Plugin wird nur geladen wenn HACS piitaya/lovelace-mushroom als installiert meldet.", dr = {
+  id: ut,
+  name: pt,
+  version: mt,
+  version_supported: ht,
+  detect: bt,
+  description: gt
+}, ur = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: ir,
-  description: pt,
-  detect: ut,
-  id: st,
-  name: lt,
-  version: ct,
-  version_supported: dt
-}, Symbol.toStringTag, { value: "Module" })), mt = "bubble-card", ht = [
+  default: dr,
+  description: gt,
+  detect: bt,
+  id: ut,
+  name: pt,
+  version: mt,
+  version_supported: ht
+}, Symbol.toStringTag, { value: "Module" })), ft = "bubble-card", yt = [
   {
     id: "global",
     label: "Global",
+    label_en: "Global",
     icon: "mdi:palette-outline"
   },
   {
     id: "card-type-defaults",
     label: "Card-Type-Defaults",
+    label_en: "Card type defaults",
     icon: "mdi:card-multiple-outline"
   },
   {
     id: "button",
     label: "Button-Card",
+    label_en: "Button card",
     icon: "mdi:gesture-tap-button"
   },
   {
     id: "sub-button",
     label: "Sub-Buttons",
+    label_en: "Sub-buttons",
     icon: "mdi:cursor-default-click"
   },
   {
     id: "pop-up",
     label: "Pop-Up-Card",
+    label_en: "Pop-up card",
     icon: "mdi:dock-window"
   },
   {
     id: "horizontal-buttons-stack",
     label: "Horizontal Buttons Stack",
+    label_en: "Horizontal buttons stack",
     icon: "mdi:view-carousel"
   },
   {
     id: "cover",
     label: "Cover-Card",
+    label_en: "Cover card",
     icon: "mdi:blinds"
   },
   {
     id: "climate",
     label: "Climate-Card",
+    label_en: "Climate card",
     icon: "mdi:thermostat"
   },
   {
     id: "calendar",
     label: "Calendar-Card",
+    label_en: "Calendar card",
     icon: "mdi:calendar"
   },
   {
     id: "event",
     label: "Event-Card",
+    label_en: "Event card",
     icon: "mdi:calendar-clock"
   },
   {
     id: "footer",
     label: "Footer",
+    label_en: "Footer",
     icon: "mdi:page-layout-footer"
   },
   {
     id: "media-player",
     label: "Media-Player-Card",
+    label_en: "Media player card",
     icon: "mdi:music"
   },
   {
     id: "select",
     label: "Select-Card",
+    label_en: "Select card",
     icon: "mdi:form-dropdown"
   },
   {
     id: "slider",
     label: "Slider / Sub-Slider",
+    label_en: "Slider / sub-slider",
     icon: "mdi:tune-variant"
   },
   {
     id: "color-cursor",
     label: "Color-Cursor",
+    label_en: "Color cursor",
     icon: "mdi:eyedropper-variant"
   }
-], bt = [
+], _t = [
   {
     name: "--bubble-accent-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Akzent-Farbe für Highlights und aktive Indikatoren."
+    description: "Bubble Card · Global · Akzent-Farbe für Highlights und aktive Indikatoren.",
+    description_en: "Bubble Card · Global · Accent color for highlights and active indicators."
   },
   {
     name: "--bubble-backdrop-background-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Hintergrund-Farbe für Backdrops (z.B. hinter Pop-Ups)."
+    description: "Bubble Card · Global · Hintergrund-Farbe für Backdrops (z.B. hinter Pop-Ups).",
+    description_en: "Bubble Card · Global · Background color for backdrops (e.g. behind pop-ups)."
   },
   {
     name: "--bubble-backdrop-filter",
     type: "raw",
     category: "global",
     default: "blur(10px)",
-    description: "Bubble Card · Global · CSS-`backdrop-filter` für Bubble-Card-Elemente. Mit `blur(...)` für Glas-Optik."
+    description: "Bubble Card · Global · CSS-`backdrop-filter` für Bubble-Card-Elemente. Mit `blur(...)` für Glas-Optik.",
+    description_en: "Bubble Card · Global · CSS `backdrop-filter` for Bubble Card elements. Use `blur(...)` for a glass look."
   },
   {
     name: "--bubble-border",
     type: "raw",
     category: "global",
-    description: "Bubble Card · Global · Generischer CSS-`border`-Wert (z.B. `1px solid rgba(0,0,0,0.1)`). Setze `none` zum Deaktivieren."
+    description: "Bubble Card · Global · Generischer CSS-`border`-Wert (z.B. `1px solid rgba(0,0,0,0.1)`). Setze `none` zum Deaktivieren.",
+    description_en: "Bubble Card · Global · Generic CSS `border` value (e.g. `1px solid rgba(0,0,0,0.1)`). Set `none` to disable."
   },
   {
     name: "--bubble-border-radius",
@@ -758,31 +777,36 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Global · Ecken-Rundung der Bubble-Card-Container."
+    description: "Bubble Card · Global · Ecken-Rundung der Bubble-Card-Container.",
+    description_en: "Bubble Card · Global · Corner radius of Bubble Card containers."
   },
   {
     name: "--bubble-box-shadow",
     type: "shadow",
     category: "global",
-    description: "Bubble Card · Global · Schatten unter Bubble Cards. Setze `none` für flaches Design."
+    description: "Bubble Card · Global · Schatten unter Bubble Cards. Setze `none` für flaches Design.",
+    description_en: "Bubble Card · Global · Shadow beneath Bubble Cards. Set `none` for a flat design."
   },
   {
     name: "--bubble-default-backdrop-background-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Default-Backdrop-Farbe (Fallback wenn spezifischere Variable fehlt)."
+    description: "Bubble Card · Global · Default-Backdrop-Farbe (Fallback wenn spezifischere Variable fehlt).",
+    description_en: "Bubble Card · Global · Default backdrop color (fallback when a more specific variable is missing)."
   },
   {
     name: "--bubble-default-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Default-Vorder-Farbe (Fallback)."
+    description: "Bubble Card · Global · Default-Vorder-Farbe (Fallback).",
+    description_en: "Bubble Card · Global · Default foreground color (fallback)."
   },
   {
     name: "--bubble-icon-background-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Hintergrund-Farbe von Icons in Bubble Cards (das runde Hintergrund-Element)."
+    description: "Bubble Card · Global · Hintergrund-Farbe von Icons in Bubble Cards (das runde Hintergrund-Element).",
+    description_en: "Bubble Card · Global · Background color of icons in Bubble Cards (the round background element)."
   },
   {
     name: "--bubble-icon-border-radius",
@@ -795,67 +819,78 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Global · Ecken-Rundung von Icon-Hintergründen. 50% = Kreis."
+    description: "Bubble Card · Global · Ecken-Rundung von Icon-Hintergründen. 50% = Kreis.",
+    description_en: "Bubble Card · Global · Corner radius of icon backgrounds. 50% = circle."
   },
   {
     name: "--bubble-icon-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Standard-Icon-Farbe."
+    description: "Bubble Card · Global · Standard-Icon-Farbe.",
+    description_en: "Bubble Card · Global · Default icon color."
   },
   {
     name: "--bubble-light-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Akzent-Farbe für Light-Entities (oft warmes Gelb)."
+    description: "Bubble Card · Global · Akzent-Farbe für Light-Entities (oft warmes Gelb).",
+    description_en: "Bubble Card · Global · Accent color for light entities (often warm yellow)."
   },
   {
     name: "--bubble-light-white-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Sekundäre Light-Farbe (Weisslicht)."
+    description: "Bubble Card · Global · Sekundäre Light-Farbe (Weisslicht).",
+    description_en: "Bubble Card · Global · Secondary light color (white light)."
   },
   {
     name: "--bubble-line-background-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Farbe von Trennlinien innerhalb von Cards."
+    description: "Bubble Card · Global · Farbe von Trennlinien innerhalb von Cards.",
+    description_en: "Bubble Card · Global · Color of separator lines within cards."
   },
   {
     name: "--bubble-list-item-accent-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Akzent-Farbe für ausgewählte Listen-Items."
+    description: "Bubble Card · Global · Akzent-Farbe für ausgewählte Listen-Items.",
+    description_en: "Bubble Card · Global · Accent color for selected list items."
   },
   {
     name: "--bubble-main-background-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Haupt-Hintergrund aller Bubble Cards. Wichtigste Farbe wenn du Bubble Cards thematisch anpassen willst."
+    description: "Bubble Card · Global · Haupt-Hintergrund aller Bubble Cards. Wichtigste Farbe wenn du Bubble Cards thematisch anpassen willst.",
+    description_en: "Bubble Card · Global · Main background of all Bubble Cards. The most important color when re-theming Bubble Cards."
   },
   {
     name: "--bubble-main-buttons-background-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Hintergrund der Haupt-Buttons (übergeordnet zu Button-Card-spezifischen Vars)."
+    description: "Bubble Card · Global · Hintergrund der Haupt-Buttons (übergeordnet zu Button-Card-spezifischen Vars).",
+    description_en: "Bubble Card · Global · Background of the main buttons (takes precedence over button-card-specific vars)."
   },
   {
     name: "--bubble-secondary-background-color",
     type: "color",
     category: "global",
-    description: "Bubble Card · Global · Sekundärer Hintergrund (für innere Container)."
+    description: "Bubble Card · Global · Sekundärer Hintergrund (für innere Container).",
+    description_en: "Bubble Card · Global · Secondary background (for inner containers)."
   },
   {
     name: "--bubble-separator-border",
     type: "raw",
     category: "global",
-    description: "Bubble Card · Global · CSS-`border`-Wert für Separator-Linien zwischen Card-Sections."
+    description: "Bubble Card · Global · CSS-`border`-Wert für Separator-Linien zwischen Card-Sections.",
+    description_en: "Bubble Card · Global · CSS `border` value for separator lines between card sections."
   },
   {
     name: "--bubble-card-type-border",
     type: "raw",
     category: "card-type-defaults",
-    description: "Bubble Card · Card-Defaults · Default-Border-Wert für alle Bubble-Card-Types."
+    description: "Bubble Card · Card-Defaults · Default-Border-Wert für alle Bubble-Card-Types.",
+    description_en: "Bubble Card · Card defaults · Default border value for all Bubble Card types."
   },
   {
     name: "--bubble-card-type-border-radius",
@@ -867,19 +902,22 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Card-Defaults · Default-Ecken-Rundung für alle Card-Types."
+    description: "Bubble Card · Card-Defaults · Default-Ecken-Rundung für alle Card-Types.",
+    description_en: "Bubble Card · Card defaults · Default corner radius for all card types."
   },
   {
     name: "--bubble-card-type-box-shadow",
     type: "shadow",
     category: "card-type-defaults",
-    description: "Bubble Card · Card-Defaults · Default-Schatten für alle Card-Types."
+    description: "Bubble Card · Card-Defaults · Default-Schatten für alle Card-Types.",
+    description_en: "Bubble Card · Card defaults · Default shadow for all card types."
   },
   {
     name: "--bubble-card-type-icon-background-color",
     type: "color",
     category: "card-type-defaults",
-    description: "Bubble Card · Card-Defaults · Default-Hintergrund für Icons (über alle Card-Types)."
+    description: "Bubble Card · Card-Defaults · Default-Hintergrund für Icons (über alle Card-Types).",
+    description_en: "Bubble Card · Card defaults · Default background for icons (across all card types)."
   },
   {
     name: "--bubble-card-type-icon-border-radius",
@@ -891,31 +929,36 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Card-Defaults · Default-Ecken-Rundung für Icons."
+    description: "Bubble Card · Card-Defaults · Default-Ecken-Rundung für Icons.",
+    description_en: "Bubble Card · Card defaults · Default corner radius for icons."
   },
   {
     name: "--bubble-card-type-main-background-color",
     type: "color",
     category: "card-type-defaults",
-    description: "Bubble Card · Card-Defaults · Default-Haupt-Hintergrund für alle Card-Types."
+    description: "Bubble Card · Card-Defaults · Default-Haupt-Hintergrund für alle Card-Types.",
+    description_en: "Bubble Card · Card defaults · Default main background for all card types."
   },
   {
     name: "--bubble-button-accent-color",
     type: "color",
     category: "button",
-    description: "Bubble Card · Button · Akzent-Farbe der Button-Card (z.B. Slider-Track wenn Light-Brightness-Mode)."
+    description: "Bubble Card · Button · Akzent-Farbe der Button-Card (z.B. Slider-Track wenn Light-Brightness-Mode).",
+    description_en: "Bubble Card · Button · Accent color of the button card (e.g. slider track in light brightness mode)."
   },
   {
     name: "--bubble-button-active-icon-color",
     type: "color",
     category: "button",
-    description: "Bubble Card · Button · Icon-Farbe wenn Button im Active-State (Entity an)."
+    description: "Bubble Card · Button · Icon-Farbe wenn Button im Active-State (Entity an).",
+    description_en: "Bubble Card · Button · Icon color when the button is in the active state (entity on)."
   },
   {
     name: "--bubble-button-background-color",
     type: "color",
     category: "button",
-    description: "Bubble Card · Button · Hintergrund-Farbe der Button-Card im Default-State."
+    description: "Bubble Card · Button · Hintergrund-Farbe der Button-Card im Default-State.",
+    description_en: "Bubble Card · Button · Background color of the button card in its default state."
   },
   {
     name: "--bubble-button-border-radius",
@@ -927,13 +970,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Button · Ecken-Rundung der Button-Card."
+    description: "Bubble Card · Button · Ecken-Rundung der Button-Card.",
+    description_en: "Bubble Card · Button · Corner radius of the button card."
   },
   {
     name: "--bubble-button-icon-background-color",
     type: "color",
     category: "button",
-    description: "Bubble Card · Button · Hintergrund des Icon-Containers im Button."
+    description: "Bubble Card · Button · Hintergrund des Icon-Containers im Button.",
+    description_en: "Bubble Card · Button · Background of the icon container inside the button."
   },
   {
     name: "--bubble-button-icon-border-radius",
@@ -945,19 +990,22 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Button · Ecken-Rundung des Icon-Containers."
+    description: "Bubble Card · Button · Ecken-Rundung des Icon-Containers.",
+    description_en: "Bubble Card · Button · Corner radius of the icon container."
   },
   {
     name: "--bubble-button-main-background-color",
     type: "color",
     category: "button",
-    description: "Bubble Card · Button · Haupt-Hintergrund (oft synonym zu background-color, aber separat überschreibbar)."
+    description: "Bubble Card · Button · Haupt-Hintergrund (oft synonym zu background-color, aber separat überschreibbar).",
+    description_en: "Bubble Card · Button · Main background (often synonymous with background-color, but separately overridable)."
   },
   {
     name: "--bubble-sub-button-background-color",
     type: "color",
     category: "sub-button",
-    description: "Bubble Card · Sub-Button · Hintergrund-Farbe der kleinen Sub-Buttons unter dem Haupt-Button."
+    description: "Bubble Card · Sub-Button · Hintergrund-Farbe der kleinen Sub-Buttons unter dem Haupt-Button.",
+    description_en: "Bubble Card · Sub-button · Background color of the small sub-buttons beneath the main button."
   },
   {
     name: "--bubble-sub-button-border-radius",
@@ -969,19 +1017,22 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Sub-Button · Ecken-Rundung der Sub-Buttons."
+    description: "Bubble Card · Sub-Button · Ecken-Rundung der Sub-Buttons.",
+    description_en: "Bubble Card · Sub-button · Corner radius of the sub-buttons."
   },
   {
     name: "--bubble-sub-button-dark-text-color",
     type: "color",
     category: "sub-button",
-    description: "Bubble Card · Sub-Button · Textfarbe wenn Sub-Button im Light-State (heller Background braucht dunklen Text)."
+    description: "Bubble Card · Sub-Button · Textfarbe wenn Sub-Button im Light-State (heller Background braucht dunklen Text).",
+    description_en: "Bubble Card · Sub-button · Text color when the sub-button is in the light state (a bright background needs dark text)."
   },
   {
     name: "--bubble-sub-button-group-justify-content",
     type: "raw",
     category: "sub-button",
-    description: "Bubble Card · Sub-Button · CSS-`justify-content` für die Sub-Button-Gruppe (flex-start, center, space-between, …)."
+    description: "Bubble Card · Sub-Button · CSS-`justify-content` für die Sub-Button-Gruppe (flex-start, center, space-between, …).",
+    description_en: "Bubble Card · Sub-button · CSS `justify-content` for the sub-button group (flex-start, center, space-between, …)."
   },
   {
     name: "--bubble-sub-button-height",
@@ -993,19 +1044,22 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 16,
     max: 80,
-    description: "Bubble Card · Sub-Button · Höhe der Sub-Buttons."
+    description: "Bubble Card · Sub-Button · Höhe der Sub-Buttons.",
+    description_en: "Bubble Card · Sub-button · Height of the sub-buttons."
   },
   {
     name: "--bubble-sub-button-justify-content",
     type: "raw",
     category: "sub-button",
-    description: "Bubble Card · Sub-Button · CSS-`justify-content` für den einzelnen Sub-Button (Innen-Layout)."
+    description: "Bubble Card · Sub-Button · CSS-`justify-content` für den einzelnen Sub-Button (Innen-Layout).",
+    description_en: "Bubble Card · Sub-button · CSS `justify-content` for the individual sub-button (inner layout)."
   },
   {
     name: "--bubble-sub-button-light-background-color",
     type: "color",
     category: "sub-button",
-    description: "Bubble Card · Sub-Button · Hintergrund-Farbe wenn Sub-Button im Light-State (z.B. wenn Light an)."
+    description: "Bubble Card · Sub-Button · Hintergrund-Farbe wenn Sub-Button im Light-State (z.B. wenn Light an).",
+    description_en: "Bubble Card · Sub-button · Background color when the sub-button is in the light state (e.g. when the light is on)."
   },
   {
     name: "--bubble-pop-up-available-height",
@@ -1017,19 +1071,22 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 50,
     max: 100,
-    description: "Bubble Card · Pop-Up · Verfügbare Höhe des Pop-Ups (typisch in vh)."
+    description: "Bubble Card · Pop-Up · Verfügbare Höhe des Pop-Ups (typisch in vh).",
+    description_en: "Bubble Card · Pop-up · Available height of the pop-up (typically in vh)."
   },
   {
     name: "--bubble-pop-up-background-color",
     type: "color",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · Hintergrund-Farbe des Pop-Up-Containers."
+    description: "Bubble Card · Pop-Up · Hintergrund-Farbe des Pop-Up-Containers.",
+    description_en: "Bubble Card · Pop-up · Background color of the pop-up container."
   },
   {
     name: "--bubble-pop-up-border",
     type: "raw",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · CSS-`border`-Wert des Pop-Ups."
+    description: "Bubble Card · Pop-Up · CSS-`border`-Wert des Pop-Ups.",
+    description_en: "Bubble Card · Pop-up · CSS `border` value of the pop-up."
   },
   {
     name: "--bubble-pop-up-border-radius",
@@ -1041,7 +1098,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Pop-Up · Ecken-Rundung des Pop-Up-Containers."
+    description: "Bubble Card · Pop-Up · Ecken-Rundung des Pop-Up-Containers.",
+    description_en: "Bubble Card · Pop-up · Corner radius of the pop-up container."
   },
   {
     name: "--bubble-pop-up-bottom-padding",
@@ -1053,13 +1111,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 100,
-    description: "Bubble Card · Pop-Up · Padding am unteren Rand des Pop-Ups."
+    description: "Bubble Card · Pop-Up · Padding am unteren Rand des Pop-Ups.",
+    description_en: "Bubble Card · Pop-up · Padding at the bottom edge of the pop-up."
   },
   {
     name: "--bubble-pop-up-close-button-border",
     type: "raw",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · Border des Close-Buttons (X-Icon)."
+    description: "Bubble Card · Pop-Up · Border des Close-Buttons (X-Icon).",
+    description_en: "Bubble Card · Pop-up · Border of the close button (X icon)."
   },
   {
     name: "--bubble-pop-up-content-border-radius",
@@ -1071,7 +1131,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Pop-Up · Ecken-Rundung des Inhalt-Containers innerhalb des Pop-Ups."
+    description: "Bubble Card · Pop-Up · Ecken-Rundung des Inhalt-Containers innerhalb des Pop-Ups.",
+    description_en: "Bubble Card · Pop-up · Corner radius of the content container inside the pop-up."
   },
   {
     name: "--bubble-pop-up-extra-bottom-space",
@@ -1083,13 +1144,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 200,
-    description: "Bubble Card · Pop-Up · Zusätzlicher Platz am unteren Rand (für Mobile-Safe-Area etc.)."
+    description: "Bubble Card · Pop-Up · Zusätzlicher Platz am unteren Rand (für Mobile-Safe-Area etc.).",
+    description_en: "Bubble Card · Pop-up · Extra space at the bottom edge (for mobile safe area, etc.)."
   },
   {
     name: "--bubble-pop-up-fade-color",
     type: "color",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · Farbe des Fade-/Overlay-Effekts am oberen/unteren Rand."
+    description: "Bubble Card · Pop-Up · Farbe des Fade-/Overlay-Effekts am oberen/unteren Rand.",
+    description_en: "Bubble Card · Pop-up · Color of the fade/overlay effect at the top/bottom edge."
   },
   {
     name: "--bubble-pop-up-gap",
@@ -1101,7 +1164,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Pop-Up · Abstand zwischen Pop-Up-Inhalts-Elementen."
+    description: "Bubble Card · Pop-Up · Abstand zwischen Pop-Up-Inhalts-Elementen.",
+    description_en: "Bubble Card · Pop-up · Gap between pop-up content elements."
   },
   {
     name: "--bubble-pop-up-header-gap",
@@ -1113,7 +1177,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Pop-Up · Abstand vom Header zum Inhalt."
+    description: "Bubble Card · Pop-Up · Abstand vom Header zum Inhalt.",
+    description_en: "Bubble Card · Pop-up · Gap from the header to the content."
   },
   {
     name: "--bubble-pop-up-header-gap-reserve",
@@ -1125,7 +1190,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Pop-Up · Reserve-Abstand für den Header (Layout-Buffer)."
+    description: "Bubble Card · Pop-Up · Reserve-Abstand für den Header (Layout-Buffer).",
+    description_en: "Bubble Card · Pop-up · Reserved gap for the header (layout buffer)."
   },
   {
     name: "--bubble-pop-up-header-overlap",
@@ -1137,37 +1203,43 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: -50,
     max: 50,
-    description: "Bubble Card · Pop-Up · Überlappung des Headers (negativer Wert zieht ihn nach oben)."
+    description: "Bubble Card · Pop-Up · Überlappung des Headers (negativer Wert zieht ihn nach oben).",
+    description_en: "Bubble Card · Pop-up · Overlap of the header (a negative value pulls it upward)."
   },
   {
     name: "--bubble-pop-up-main-background-color",
     type: "color",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · Haupt-Hintergrund-Farbe (Override des Default-Pop-Up-Backgrounds)."
+    description: "Bubble Card · Pop-Up · Haupt-Hintergrund-Farbe (Override des Default-Pop-Up-Backgrounds).",
+    description_en: "Bubble Card · Pop-up · Main background color (override of the default pop-up background)."
   },
   {
     name: "--bubble-pop-up-mask-bottom-alpha",
     type: "raw",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · Alpha-Wert (0..1) des Mask-Fades am unteren Rand."
+    description: "Bubble Card · Pop-Up · Alpha-Wert (0..1) des Mask-Fades am unteren Rand.",
+    description_en: "Bubble Card · Pop-up · Alpha value (0..1) of the mask fade at the bottom edge."
   },
   {
     name: "--bubble-pop-up-mask-bottom-stop",
     type: "raw",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · Stop-Position (%) für den Mask-Fade unten."
+    description: "Bubble Card · Pop-Up · Stop-Position (%) für den Mask-Fade unten.",
+    description_en: "Bubble Card · Pop-up · Stop position (%) for the bottom mask fade."
   },
   {
     name: "--bubble-pop-up-mask-top-alpha",
     type: "raw",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · Alpha-Wert (0..1) des Mask-Fades am oberen Rand."
+    description: "Bubble Card · Pop-Up · Alpha-Wert (0..1) des Mask-Fades am oberen Rand.",
+    description_en: "Bubble Card · Pop-up · Alpha value (0..1) of the mask fade at the top edge."
   },
   {
     name: "--bubble-pop-up-mask-top-stop",
     type: "raw",
     category: "pop-up",
-    description: "Bubble Card · Pop-Up · Stop-Position (%) für den Mask-Fade oben."
+    description: "Bubble Card · Pop-Up · Stop-Position (%) für den Mask-Fade oben.",
+    description_en: "Bubble Card · Pop-up · Stop position (%) for the top mask fade."
   },
   {
     name: "--bubble-pop-up-visible-bottom-padding",
@@ -1179,13 +1251,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 200,
-    description: "Bubble Card · Pop-Up · Sichtbares Padding am unteren Rand (im Gegensatz zu extra-bottom-space)."
+    description: "Bubble Card · Pop-Up · Sichtbares Padding am unteren Rand (im Gegensatz zu extra-bottom-space).",
+    description_en: "Bubble Card · Pop-up · Visible padding at the bottom edge (as opposed to extra-bottom-space)."
   },
   {
     name: "--bubble-horizontal-buttons-stack-background-color",
     type: "color",
     category: "horizontal-buttons-stack",
-    description: "Bubble Card · Horizontal Buttons Stack · Hintergrund-Farbe des Stack-Containers."
+    description: "Bubble Card · Horizontal Buttons Stack · Hintergrund-Farbe des Stack-Containers.",
+    description_en: "Bubble Card · Horizontal buttons stack · Background color of the stack container."
   },
   {
     name: "--bubble-horizontal-buttons-stack-border-radius",
@@ -1197,13 +1271,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Horizontal Buttons Stack · Ecken-Rundung des Containers."
+    description: "Bubble Card · Horizontal Buttons Stack · Ecken-Rundung des Containers.",
+    description_en: "Bubble Card · Horizontal buttons stack · Corner radius of the container."
   },
   {
     name: "--bubble-cover-button-background-color",
     type: "color",
     category: "cover",
-    description: "Bubble Card · Cover · Hintergrund-Farbe der Cover-Steuer-Buttons (Auf/Stop/Ab)."
+    description: "Bubble Card · Cover · Hintergrund-Farbe der Cover-Steuer-Buttons (Auf/Stop/Ab).",
+    description_en: "Bubble Card · Cover · Background color of the cover control buttons (up/stop/down)."
   },
   {
     name: "--bubble-cover-buttons-border-radius",
@@ -1215,61 +1291,71 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Cover · Ecken-Rundung der Cover-Buttons."
+    description: "Bubble Card · Cover · Ecken-Rundung der Cover-Buttons.",
+    description_en: "Bubble Card · Cover · Corner radius of the cover buttons."
   },
   {
     name: "--bubble-climate-accent-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · Generelle Akzent-Farbe der Climate-Card."
+    description: "Bubble Card · Climate · Generelle Akzent-Farbe der Climate-Card.",
+    description_en: "Bubble Card · Climate · General accent color of the climate card."
   },
   {
     name: "--bubble-climate-background-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · Hintergrund-Farbe der Climate-Card."
+    description: "Bubble Card · Climate · Hintergrund-Farbe der Climate-Card.",
+    description_en: "Bubble Card · Climate · Background color of the climate card."
   },
   {
     name: "--bubble-climate-button-background-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · Hintergrund-Farbe der Mode-Buttons innerhalb der Climate-Card."
+    description: "Bubble Card · Climate · Hintergrund-Farbe der Mode-Buttons innerhalb der Climate-Card.",
+    description_en: "Bubble Card · Climate · Background color of the mode buttons inside the climate card."
   },
   {
     name: "--bubble-state-climate-auto-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · State-Farbe für 'Auto'-Modus."
+    description: "Bubble Card · Climate · State-Farbe für 'Auto'-Modus.",
+    description_en: "Bubble Card · Climate · State color for 'auto' mode."
   },
   {
     name: "--bubble-state-climate-cool-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · State-Farbe für 'Cool'-Modus (typisch Blau)."
+    description: "Bubble Card · Climate · State-Farbe für 'Cool'-Modus (typisch Blau).",
+    description_en: "Bubble Card · Climate · State color for 'cool' mode (typically blue)."
   },
   {
     name: "--bubble-state-climate-dry-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · State-Farbe für 'Dry'-Modus."
+    description: "Bubble Card · Climate · State-Farbe für 'Dry'-Modus.",
+    description_en: "Bubble Card · Climate · State color for 'dry' mode."
   },
   {
     name: "--bubble-state-climate-fan-only-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · State-Farbe für 'Fan-Only'-Modus."
+    description: "Bubble Card · Climate · State-Farbe für 'Fan-Only'-Modus.",
+    description_en: "Bubble Card · Climate · State color for 'fan-only' mode."
   },
   {
     name: "--bubble-state-climate-heat-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · State-Farbe für 'Heat'-Modus (typisch Orange/Rot)."
+    description: "Bubble Card · Climate · State-Farbe für 'Heat'-Modus (typisch Orange/Rot).",
+    description_en: "Bubble Card · Climate · State color for 'heat' mode (typically orange/red)."
   },
   {
     name: "--bubble-state-climate-heat-cool-color",
     type: "color",
     category: "climate",
-    description: "Bubble Card · Climate · State-Farbe für 'Heat-Cool'-Modus (Hybrid)."
+    description: "Bubble Card · Climate · State-Farbe für 'Heat-Cool'-Modus (Hybrid).",
+    description_en: "Bubble Card · Climate · State color for 'heat-cool' mode (hybrid)."
   },
   {
     name: "--bubble-calendar-border-radius",
@@ -1281,7 +1367,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Calendar · Ecken-Rundung der Calendar-Card."
+    description: "Bubble Card · Calendar · Ecken-Rundung der Calendar-Card.",
+    description_en: "Bubble Card · Calendar · Corner radius of the calendar card."
   },
   {
     name: "--bubble-calendar-height",
@@ -1294,7 +1381,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 100,
     max: 1e3,
-    description: "Bubble Card · Calendar · Höhe der Calendar-Card."
+    description: "Bubble Card · Calendar · Höhe der Calendar-Card.",
+    description_en: "Bubble Card · Calendar · Height of the calendar card."
   },
   {
     name: "--bubble-calendar-mask-size",
@@ -1306,25 +1394,29 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 100,
-    description: "Bubble Card · Calendar · Größe des Fade-Mask-Effekts am Rand der Calendar-Card."
+    description: "Bubble Card · Calendar · Größe des Fade-Mask-Effekts am Rand der Calendar-Card.",
+    description_en: "Bubble Card · Calendar · Size of the fade mask effect at the edge of the calendar card."
   },
   {
     name: "--bubble-event-accent-color",
     type: "color",
     category: "event",
-    description: "Bubble Card · Event · Akzent-Farbe für Event-Card-Highlights."
+    description: "Bubble Card · Event · Akzent-Farbe für Event-Card-Highlights.",
+    description_en: "Bubble Card · Event · Accent color for event card highlights."
   },
   {
     name: "--bubble-event-background-color",
     type: "color",
     category: "event",
-    description: "Bubble Card · Event · Hintergrund-Farbe der Event-Card."
+    description: "Bubble Card · Event · Hintergrund-Farbe der Event-Card.",
+    description_en: "Bubble Card · Event · Background color of the event card."
   },
   {
     name: "--bubble-event-background-image",
     type: "background",
     category: "event",
-    description: "Bubble Card · Event · Hintergrund-Bild der Event-Card (CSS-`url(...)`)."
+    description: "Bubble Card · Event · Hintergrund-Bild der Event-Card (CSS-`url(...)`).",
+    description_en: "Bubble Card · Event · Background image of the event card (CSS `url(...)`)."
   },
   {
     name: "--bubble-footer-bottom",
@@ -1336,13 +1428,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 200,
-    description: "Bubble Card · Footer · Abstand des Footers vom unteren Rand."
+    description: "Bubble Card · Footer · Abstand des Footers vom unteren Rand.",
+    description_en: "Bubble Card · Footer · Distance of the footer from the bottom edge."
   },
   {
     name: "--bubble-footer-box-shadow",
     type: "shadow",
     category: "footer",
-    description: "Bubble Card · Footer · Schatten unter dem Footer-Container."
+    description: "Bubble Card · Footer · Schatten unter dem Footer-Container.",
+    description_en: "Bubble Card · Footer · Shadow beneath the footer container."
   },
   {
     name: "--bubble-footer-width",
@@ -1355,7 +1449,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 1e3,
-    description: "Bubble Card · Footer · Breite des Footers."
+    description: "Bubble Card · Footer · Breite des Footers.",
+    description_en: "Bubble Card · Footer · Width of the footer."
   },
   {
     name: "--bubble-media-player-border-radius",
@@ -1367,13 +1462,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Media-Player · Ecken-Rundung der Media-Player-Card."
+    description: "Bubble Card · Media-Player · Ecken-Rundung der Media-Player-Card.",
+    description_en: "Bubble Card · Media player · Corner radius of the media player card."
   },
   {
     name: "--bubble-media-player-button-background-color",
     type: "color",
     category: "media-player",
-    description: "Bubble Card · Media-Player · Hintergrund-Farbe der Steuer-Buttons (Play/Pause/Skip)."
+    description: "Bubble Card · Media-Player · Hintergrund-Farbe der Steuer-Buttons (Play/Pause/Skip).",
+    description_en: "Bubble Card · Media player · Background color of the control buttons (play/pause/skip)."
   },
   {
     name: "--bubble-media-player-buttons-border-radius",
@@ -1385,31 +1482,36 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Media-Player · Ecken-Rundung der Steuer-Buttons."
+    description: "Bubble Card · Media-Player · Ecken-Rundung der Steuer-Buttons.",
+    description_en: "Bubble Card · Media player · Corner radius of the control buttons."
   },
   {
     name: "--bubble-media-player-play-pause-icon-color",
     type: "color",
     category: "media-player",
-    description: "Bubble Card · Media-Player · Icon-Farbe des Play-/Pause-Buttons."
+    description: "Bubble Card · Media-Player · Icon-Farbe des Play-/Pause-Buttons.",
+    description_en: "Bubble Card · Media player · Icon color of the play/pause button."
   },
   {
     name: "--bubble-media-player-slider-background-color",
     type: "color",
     category: "media-player",
-    description: "Bubble Card · Media-Player · Hintergrund-Farbe der Position-/Volume-Slider."
+    description: "Bubble Card · Media-Player · Hintergrund-Farbe der Position-/Volume-Slider.",
+    description_en: "Bubble Card · Media player · Background color of the position/volume sliders."
   },
   {
     name: "--bubble-select-arrow-background-color",
     type: "color",
     category: "select",
-    description: "Bubble Card · Select · Hintergrund-Farbe des Dropdown-Pfeils."
+    description: "Bubble Card · Select · Hintergrund-Farbe des Dropdown-Pfeils.",
+    description_en: "Bubble Card · Select · Background color of the dropdown arrow."
   },
   {
     name: "--bubble-select-border",
     type: "raw",
     category: "select",
-    description: "Bubble Card · Select · CSS-`border`-Wert des Select-Buttons."
+    description: "Bubble Card · Select · CSS-`border`-Wert des Select-Buttons.",
+    description_en: "Bubble Card · Select · CSS `border` value of the select button."
   },
   {
     name: "--bubble-select-button-border-radius",
@@ -1421,13 +1523,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Select · Ecken-Rundung des Select-Buttons."
+    description: "Bubble Card · Select · Ecken-Rundung des Select-Buttons.",
+    description_en: "Bubble Card · Select · Corner radius of the select button."
   },
   {
     name: "--bubble-select-list-background-color",
     type: "color",
     category: "select",
-    description: "Bubble Card · Select · Hintergrund-Farbe der Dropdown-Liste."
+    description: "Bubble Card · Select · Hintergrund-Farbe der Dropdown-Liste.",
+    description_en: "Bubble Card · Select · Background color of the dropdown list."
   },
   {
     name: "--bubble-select-list-border-radius",
@@ -1439,13 +1543,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Select · Ecken-Rundung der Dropdown-Liste."
+    description: "Bubble Card · Select · Ecken-Rundung der Dropdown-Liste.",
+    description_en: "Bubble Card · Select · Corner radius of the dropdown list."
   },
   {
     name: "--bubble-select-list-item-accent-color",
     type: "color",
     category: "select",
-    description: "Bubble Card · Select · Akzent-Farbe für den ausgewählten Listen-Eintrag."
+    description: "Bubble Card · Select · Akzent-Farbe für den ausgewählten Listen-Eintrag.",
+    description_en: "Bubble Card · Select · Accent color for the selected list entry."
   },
   {
     name: "--bubble-select-list-width",
@@ -1458,25 +1564,29 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 100,
     max: 800,
-    description: "Bubble Card · Select · Breite der Dropdown-Liste."
+    description: "Bubble Card · Select · Breite der Dropdown-Liste.",
+    description_en: "Bubble Card · Select · Width of the dropdown list."
   },
   {
     name: "--bubble-select-main-background-color",
     type: "color",
     category: "select",
-    description: "Bubble Card · Select · Haupt-Hintergrund der Select-Card."
+    description: "Bubble Card · Select · Haupt-Hintergrund der Select-Card.",
+    description_en: "Bubble Card · Select · Main background of the select card."
   },
   {
     name: "--bubble-slider-fill-color",
     type: "color",
     category: "slider",
-    description: "Bubble Card · Slider · Füll-Farbe des Slider-Tracks (linker Teil)."
+    description: "Bubble Card · Slider · Füll-Farbe des Slider-Tracks (linker Teil).",
+    description_en: "Bubble Card · Slider · Fill color of the slider track (left part)."
   },
   {
     name: "--bubble-sub-slider-background-color",
     type: "color",
     category: "slider",
-    description: "Bubble Card · Sub-Slider · Hintergrund-Farbe des Sub-Sliders."
+    description: "Bubble Card · Sub-Slider · Hintergrund-Farbe des Sub-Sliders.",
+    description_en: "Bubble Card · Sub-slider · Background color of the sub-slider."
   },
   {
     name: "--bubble-sub-slider-border-radius",
@@ -1488,7 +1598,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Bubble Card · Sub-Slider · Ecken-Rundung des Sub-Sliders."
+    description: "Bubble Card · Sub-Slider · Ecken-Rundung des Sub-Sliders.",
+    description_en: "Bubble Card · Sub-slider · Corner radius of the sub-slider."
   },
   {
     name: "--bubble-sub-slider-height",
@@ -1500,7 +1611,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 8,
     max: 80,
-    description: "Bubble Card · Sub-Slider · Höhe des Sub-Sliders."
+    description: "Bubble Card · Sub-Slider · Höhe des Sub-Sliders.",
+    description_en: "Bubble Card · Sub-slider · Height of the sub-slider."
   },
   {
     name: "--bubble-sub-slider-left-offset",
@@ -1512,7 +1624,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: -50,
     max: 100,
-    description: "Bubble Card · Sub-Slider · Linker Offset des Sub-Sliders."
+    description: "Bubble Card · Sub-Slider · Linker Offset des Sub-Sliders.",
+    description_en: "Bubble Card · Sub-slider · Left offset of the sub-slider."
   },
   {
     name: "--bubble-sub-slider-width",
@@ -1525,404 +1638,466 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 500,
-    description: "Bubble Card · Sub-Slider · Breite des Sub-Sliders."
+    description: "Bubble Card · Sub-Slider · Breite des Sub-Sliders.",
+    description_en: "Bubble Card · Sub-slider · Width of the sub-slider."
   },
   {
     name: "--bubble-color-cursor-background",
     type: "color",
     category: "color-cursor",
-    description: "Bubble Card · Color-Cursor · Hintergrund des Color-Cursor-Bereichs."
+    description: "Bubble Card · Color-Cursor · Hintergrund des Color-Cursor-Bereichs.",
+    description_en: "Bubble Card · Color cursor · Background of the color cursor area."
   },
   {
     name: "--bubble-color-cursor-indicator-color",
     type: "color",
     category: "color-cursor",
-    description: "Bubble Card · Color-Cursor · Farbe des Indikator-Rings/-Dots."
+    description: "Bubble Card · Color-Cursor · Farbe des Indikator-Rings/-Dots.",
+    description_en: "Bubble Card · Color cursor · Color of the indicator ring/dot."
   },
   {
     name: "--bubble-color-cursor-indicator-active-bottom",
     type: "raw",
     category: "color-cursor",
-    description: "Bubble Card · Color-Cursor · Position des aktiven Indikators (unten, % oder px)."
+    description: "Bubble Card · Color-Cursor · Position des aktiven Indikators (unten, % oder px).",
+    description_en: "Bubble Card · Color cursor · Position of the active indicator (bottom, % or px)."
   },
   {
     name: "--bubble-color-cursor-indicator-active-opacity",
     type: "raw",
     category: "color-cursor",
-    description: "Bubble Card · Color-Cursor · Opacity (0..1) des aktiven Indikators."
+    description: "Bubble Card · Color-Cursor · Opacity (0..1) des aktiven Indikators.",
+    description_en: "Bubble Card · Color cursor · Opacity (0..1) of the active indicator."
   },
   {
     name: "--bubble-color-cursor-indicator-active-top",
     type: "raw",
     category: "color-cursor",
-    description: "Bubble Card · Color-Cursor · Position des aktiven Indikators (oben, % oder px)."
+    description: "Bubble Card · Color-Cursor · Position des aktiven Indikators (oben, % oder px).",
+    description_en: "Bubble Card · Color cursor · Position of the active indicator (top, % or px)."
   },
   {
     name: "--bubble-color-cursor-indicator-bottom",
     type: "raw",
     category: "color-cursor",
-    description: "Bubble Card · Color-Cursor · Default-Position des Indikators (unten)."
+    description: "Bubble Card · Color-Cursor · Default-Position des Indikators (unten).",
+    description_en: "Bubble Card · Color cursor · Default position of the indicator (bottom)."
   },
   {
     name: "--bubble-color-cursor-indicator-opacity",
     type: "raw",
     category: "color-cursor",
-    description: "Bubble Card · Color-Cursor · Default-Opacity (0..1) des Indikators."
+    description: "Bubble Card · Color-Cursor · Default-Opacity (0..1) des Indikators.",
+    description_en: "Bubble Card · Color cursor · Default opacity (0..1) of the indicator."
   },
   {
     name: "--bubble-color-cursor-indicator-top",
     type: "raw",
     category: "color-cursor",
-    description: "Bubble Card · Color-Cursor · Default-Position des Indikators (oben)."
+    description: "Bubble Card · Color-Cursor · Default-Position des Indikators (oben).",
+    description_en: "Bubble Card · Color cursor · Default position of the indicator (top)."
   }
-], sr = {
-  id: mt,
-  categories: ht,
-  variables: bt
-}, lr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+], pr = {
+  id: ft,
+  categories: yt,
+  variables: _t
+}, mr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  categories: ht,
-  default: sr,
-  id: mt,
-  variables: bt
-}, Symbol.toStringTag, { value: "Module" })), gt = "ha-core", ft = [
+  categories: yt,
+  default: pr,
+  id: ft,
+  variables: _t
+}, Symbol.toStringTag, { value: "Module" })), vt = "ha-core", xt = [
   {
     id: "branding",
     label: "Marke",
+    label_en: "Branding",
     icon: "mdi:palette-outline"
   },
   {
     id: "background",
     label: "Hintergrund",
+    label_en: "Background",
     icon: "mdi:format-color-fill"
   },
   {
     id: "text",
     label: "Text",
+    label_en: "Text",
     icon: "mdi:format-color-text"
   },
   {
     id: "state",
     label: "Zustände (semantisch)",
+    label_en: "States (semantic)",
     icon: "mdi:lightbulb-on-outline"
   },
   {
     id: "state-colors",
     label: "State-Farben (Material)",
+    label_en: "State colors (Material)",
     icon: "mdi:palette-swatch"
   },
   {
     id: "card",
     label: "Cards",
+    label_en: "Cards",
     icon: "mdi:card-outline"
   },
   {
     id: "sidebar",
     label: "Sidebar",
+    label_en: "Sidebar",
     icon: "mdi:dock-left"
   },
   {
     id: "header",
     label: "App-Header",
+    label_en: "App header",
     icon: "mdi:page-layout-header"
   },
   {
     id: "controls",
     label: "Bedienelemente",
+    label_en: "Controls",
     icon: "mdi:tune"
   },
   {
     id: "switches",
     label: "Switches",
+    label_en: "Switches",
     icon: "mdi:toggle-switch"
   },
   {
     id: "tables",
     label: "Tabellen",
+    label_en: "Tables",
     icon: "mdi:table"
   },
   {
     id: "form-inputs",
     label: "Form-Inputs",
+    label_en: "Form inputs",
     icon: "mdi:form-textbox"
   },
   {
     id: "dialogs",
     label: "Dialoge / Modals",
+    label_en: "Dialogs / Modals",
     icon: "mdi:application-outline"
   },
   {
     id: "label-badge",
     label: "Label-Badges",
+    label_en: "Label badges",
     icon: "mdi:tag-outline"
   },
   {
     id: "polymer-legacy",
     label: "Polymer/Paper (legacy)",
+    label_en: "Polymer/Paper (legacy)",
     icon: "mdi:history"
   },
   {
     id: "mdc",
     label: "Material Design Components",
+    label_en: "Material Design Components",
     icon: "mdi:material-design"
   },
   {
     id: "rgb",
     label: "RGB-Trippel",
+    label_en: "RGB triplets",
     icon: "mdi:format-list-numbered"
   }
-], yt = [
+], wt = [
   {
     name: "--primary-color",
     type: "color",
     category: "branding",
     default: "#03a9f4",
-    description: "Hauptfarbe der HA-UI. Wirkt auf: App-Header-Hintergrund (Default), aktive Icons in Cards, Links, ausgewählte Sidebar-Einträge, Switches und Slider im 'On'-Zustand. Wird von vielen anderen Variablen via var() referenziert — Änderung hier kaskadiert auf eine Menge UI-Elemente."
+    description: "Hauptfarbe der HA-UI. Wirkt auf: App-Header-Hintergrund (Default), aktive Icons in Cards, Links, ausgewählte Sidebar-Einträge, Switches und Slider im 'On'-Zustand. Wird von vielen anderen Variablen via var() referenziert — Änderung hier kaskadiert auf eine Menge UI-Elemente.",
+    description_en: "Main color of the HA UI. Affects: app header background (default), active icons in cards, links, selected sidebar entries, switches and sliders in the 'on' state. Referenced by many other variables via var() — changing this cascades to many UI elements."
   },
   {
     name: "--accent-color",
     type: "color",
     category: "branding",
     default: "#ff9800",
-    description: "Sekundäre Akzentfarbe für Highlights und FAB-Buttons (der runde '+'-Button rechts unten in der View-Edit-Ansicht). Weniger sichtbar als --primary-color, oft als Komplementärfarbe gewählt."
+    description: "Sekundäre Akzentfarbe für Highlights und FAB-Buttons (der runde '+'-Button rechts unten in der View-Edit-Ansicht). Weniger sichtbar als --primary-color, oft als Komplementärfarbe gewählt.",
+    description_en: "Secondary accent color for highlights and FAB buttons (the round '+' button at the bottom right in the view edit mode). Less visible than --primary-color, often chosen as a complementary color."
   },
   {
     name: "--dark-primary-color",
     type: "color",
     category: "branding",
     default: "#0288d1",
-    description: "Dunklere Variation der Hauptfarbe. Wirkt auf: Status-Bar in mobilen Apps, manche dunklere Header-Akzente. Setzt sich nur durch wenn explizit referenziert — viele Themes lassen die Variable ungenutzt."
+    description: "Dunklere Variation der Hauptfarbe. Wirkt auf: Status-Bar in mobilen Apps, manche dunklere Header-Akzente. Setzt sich nur durch wenn explizit referenziert — viele Themes lassen die Variable ungenutzt.",
+    description_en: "Darker variation of the main color. Affects: status bar in mobile apps, some darker header accents. Only takes effect when explicitly referenced — many themes leave this variable unused."
   },
   {
     name: "--light-primary-color",
     type: "color",
     category: "branding",
     default: "#b3e5fc",
-    description: "Hellere Variation der Hauptfarbe. Wirkt auf: Hover-States in einigen Listen-Komponenten, leichte Background-Akzente. Wie --dark-primary-color seltener direkt sichtbar."
+    description: "Hellere Variation der Hauptfarbe. Wirkt auf: Hover-States in einigen Listen-Komponenten, leichte Background-Akzente. Wie --dark-primary-color seltener direkt sichtbar.",
+    description_en: "Lighter variation of the main color. Affects: hover states in some list components, subtle background accents. Like --dark-primary-color, rarely directly visible."
   },
   {
     name: "--primary-background-color",
     type: "color",
     category: "background",
     default: "#fafafa",
-    description: "Haupt-Seitenhintergrund — alles ausserhalb von Cards. Wirkt auf: Body, leere Lovelace-Bereiche, Sidebar-Default (ausser --sidebar-background-color ist explizit gesetzt)."
+    description: "Haupt-Seitenhintergrund — alles ausserhalb von Cards. Wirkt auf: Body, leere Lovelace-Bereiche, Sidebar-Default (ausser --sidebar-background-color ist explizit gesetzt).",
+    description_en: "Main page background — everything outside of cards. Affects: body, empty Lovelace areas, sidebar default (unless --sidebar-background-color is explicitly set)."
   },
   {
     name: "--secondary-background-color",
     type: "color",
     category: "background",
     default: "#e5e5e5",
-    description: "Sekundärer Hintergrund — sichtbar zwischen Cards in Grid-Layouts oder als Dialog-Background. Etwas dunkler/heller als der Primary für visuelle Trennung."
+    description: "Sekundärer Hintergrund — sichtbar zwischen Cards in Grid-Layouts oder als Dialog-Background. Etwas dunkler/heller als der Primary für visuelle Trennung.",
+    description_en: "Secondary background — visible between cards in grid layouts or as dialog background. Slightly darker/lighter than the primary for visual separation."
   },
   {
     name: "--card-background-color",
     type: "color",
     category: "background",
     default: "#ffffff",
-    description: "Default-Hintergrund für ha-card-Elemente. Wird von --ha-card-background überschrieben, wenn das spezifisch gesetzt ist. Tipp: in Light-Themes meist weiss, in Dark-Themes ein dunkles Grau."
+    description: "Default-Hintergrund für ha-card-Elemente. Wird von --ha-card-background überschrieben, wenn das spezifisch gesetzt ist. Tipp: in Light-Themes meist weiss, in Dark-Themes ein dunkles Grau.",
+    description_en: "Default background for ha-card elements. Overridden by --ha-card-background when that is specifically set. Tip: usually white in light themes, a dark grey in dark themes."
   },
   {
     name: "--background-image",
     type: "background",
     category: "background",
     default: "none",
-    description: "Hintergrund-Bild des HA-Frontends. CSS-`background`-Shorthand: typisch `center / cover no-repeat fixed url('https://...')` für eine fixierte Vollbild-Tapete. Häufig in Glas-/Vision-Themes, um ein Bild hinter die semi-transparenten Cards zu legen. Setze `none` für keinen Bild-Hintergrund."
+    description: "Hintergrund-Bild des HA-Frontends. CSS-`background`-Shorthand: typisch `center / cover no-repeat fixed url('https://...')` für eine fixierte Vollbild-Tapete. Häufig in Glas-/Vision-Themes, um ein Bild hinter die semi-transparenten Cards zu legen. Setze `none` für keinen Bild-Hintergrund.",
+    description_en: "Background image of the HA frontend. CSS `background` shorthand: typically `center / cover no-repeat fixed url('https://...')` for a fixed full-screen wallpaper. Common in glass/vision themes to place an image behind the semi-transparent cards. Set `none` for no image background."
   },
   {
     name: "--lovelace-background",
     type: "background",
     category: "background",
     default: "var(--primary-background-color)",
-    description: "Hintergrund des Lovelace-View-Containers (alles unter App-Header). Oft auf `var(--background-image)` gesetzt, um ein Bild als Tapete zu nutzen. Wert kann eine Farbe ODER ein `url(...)`/Gradient sein."
+    description: "Hintergrund des Lovelace-View-Containers (alles unter App-Header). Oft auf `var(--background-image)` gesetzt, um ein Bild als Tapete zu nutzen. Wert kann eine Farbe ODER ein `url(...)`/Gradient sein.",
+    description_en: "Background of the Lovelace view container (everything below the app header). Often set to `var(--background-image)` to use an image as wallpaper. The value can be a color OR a `url(...)`/gradient."
   },
   {
     name: "--primary-text-color",
     type: "color",
     category: "text",
     default: "#212121",
-    description: "Standard-Textfarbe für alle Card-Inhalte, Titel, Buttons, Werte. Wirkt praktisch überall im HA-Frontend, ausser eine speziellere Variable überschreibt für einen bestimmten Bereich."
+    description: "Standard-Textfarbe für alle Card-Inhalte, Titel, Buttons, Werte. Wirkt praktisch überall im HA-Frontend, ausser eine speziellere Variable überschreibt für einen bestimmten Bereich.",
+    description_en: "Default text color for all card contents, titles, buttons, values. Affects practically everywhere in the HA frontend, unless a more specific variable overrides for a particular area."
   },
   {
     name: "--secondary-text-color",
     type: "color",
     category: "text",
     default: "#727272",
-    description: "Textfarbe für weniger wichtige Information: Labels neben Werten, Timestamps, Sub-Titel, Hinweis-Texte. Sollte schwächer aber lesbar gegenüber --primary-text-color sein."
+    description: "Textfarbe für weniger wichtige Information: Labels neben Werten, Timestamps, Sub-Titel, Hinweis-Texte. Sollte schwächer aber lesbar gegenüber --primary-text-color sein.",
+    description_en: "Text color for less important information: labels next to values, timestamps, sub-titles, hint texts. Should be weaker but still readable compared to --primary-text-color."
   },
   {
     name: "--disabled-text-color",
     type: "color",
     category: "text",
     default: "#bdbdbd",
-    description: "Text-Farbe für deaktivierte UI-Elemente — ausgegraute Buttons, Switches im Disabled-State, nicht-klickbare Menü-Einträge. Sollte sich deutlich von --primary-text-color absetzen."
+    description: "Text-Farbe für deaktivierte UI-Elemente — ausgegraute Buttons, Switches im Disabled-State, nicht-klickbare Menü-Einträge. Sollte sich deutlich von --primary-text-color absetzen.",
+    description_en: "Text color for disabled UI elements — greyed-out buttons, switches in disabled state, non-clickable menu items. Should clearly stand apart from --primary-text-color."
   },
   {
     name: "--ha-color-text-secondary",
     type: "color",
     category: "text",
     default: "var(--secondary-text-color)",
-    description: "Modernes HA-Design-Token für sekundäre Textfarbe. Identisch zu --secondary-text-color, neuerer Name aus HAs internem Color-Token-System."
+    description: "Modernes HA-Design-Token für sekundäre Textfarbe. Identisch zu --secondary-text-color, neuerer Name aus HAs internem Color-Token-System.",
+    description_en: "Modern HA design token for secondary text color. Identical to --secondary-text-color, a newer name from HA's internal color token system."
   },
   {
     name: "--state-icon-color",
     type: "color",
     category: "state",
     default: "#44739e",
-    description: "Standard-Icon-Farbe für *inaktive* Entities: Lichter aus, Schalter off, Sensoren bei Default-Wert. Wirkt auf alle Entity-Icons in Cards und Listen, sofern kein State-spezifischer Override greift."
+    description: "Standard-Icon-Farbe für *inaktive* Entities: Lichter aus, Schalter off, Sensoren bei Default-Wert. Wirkt auf alle Entity-Icons in Cards und Listen, sofern kein State-spezifischer Override greift.",
+    description_en: "Default icon color for *inactive* entities: lights off, switches off, sensors at default value. Affects all entity icons in cards and lists, unless a state-specific override applies."
   },
   {
     name: "--state-icon-active-color",
     type: "color",
     category: "state",
     default: "#fdd835",
-    description: "Icon-Farbe wenn Entity *aktiv* ist: Licht an, Schalter on, Heizung läuft, Pumpe aktiv. Standardmässig Amber/Gelb für 'leuchtet'-Optik. Eine der meistgesehenen Variablen im HA-Frontend."
+    description: "Icon-Farbe wenn Entity *aktiv* ist: Licht an, Schalter on, Heizung läuft, Pumpe aktiv. Standardmässig Amber/Gelb für 'leuchtet'-Optik. Eine der meistgesehenen Variablen im HA-Frontend.",
+    description_en: "Icon color when the entity is *active*: light on, switch on, heater running, pump active. Defaults to amber/yellow for a 'glowing' look. One of the most visible variables in the HA frontend."
   },
   {
     name: "--state-icon-unavailable-color",
     type: "color",
     category: "state",
     default: "var(--disabled-text-color)",
-    description: "Icon-Farbe für Entities im 'Unavailable'-State (Offline, Kommunikationsfehler, kein Wert verfügbar). Default referenziert --disabled-text-color für gedämpfte Optik."
+    description: "Icon-Farbe für Entities im 'Unavailable'-State (Offline, Kommunikationsfehler, kein Wert verfügbar). Default referenziert --disabled-text-color für gedämpfte Optik.",
+    description_en: "Icon color for entities in the 'unavailable' state (offline, communication error, no value available). Default references --disabled-text-color for a muted look."
   },
   {
     name: "--state-inactive-color",
     type: "color",
     category: "state",
     default: "var(--disabled-text-color)",
-    description: "Allgemeine Farbe für inaktive States — oft synonym zu --state-icon-color, aber breiter angewendet (z.B. von Custom Cards für 'Aus'-Texte). Default referenziert --disabled-text-color."
+    description: "Allgemeine Farbe für inaktive States — oft synonym zu --state-icon-color, aber breiter angewendet (z.B. von Custom Cards für 'Aus'-Texte). Default referenziert --disabled-text-color.",
+    description_en: "General color for inactive states — often synonymous with --state-icon-color, but applied more broadly (e.g. by custom cards for 'off' labels). Default references --disabled-text-color."
   },
   {
     name: "--error-color",
     type: "color",
     category: "state",
     default: "#db4437",
-    description: "Farbe für Fehler, kritische Alarme. Wirkt auf: Error-Notifications oben, kritische Sensoren-Badges, ungültige Eingaben in Forms, Repair-Issues mit hoher Severity."
+    description: "Farbe für Fehler, kritische Alarme. Wirkt auf: Error-Notifications oben, kritische Sensoren-Badges, ungültige Eingaben in Forms, Repair-Issues mit hoher Severity.",
+    description_en: "Color for errors and critical alerts. Affects: error notifications at the top, critical sensor badges, invalid form inputs, repair issues with high severity."
   },
   {
     name: "--warning-color",
     type: "color",
     category: "state",
     default: "#ffa600",
-    description: "Farbe für Warnungen, nicht-kritische Hinweise. Wirkt auf: Warning-Notifications, Repair-Hinweise mit niedrigerer Severity, Update-Available-Badges."
+    description: "Farbe für Warnungen, nicht-kritische Hinweise. Wirkt auf: Warning-Notifications, Repair-Hinweise mit niedrigerer Severity, Update-Available-Badges.",
+    description_en: "Color for warnings and non-critical notices. Affects: warning notifications, repair hints with lower severity, update-available badges."
   },
   {
     name: "--info-color",
     type: "color",
     category: "state",
     default: "#039be5",
-    description: "Farbe für informative Hinweise und neutrale Benachrichtigungen. Wirkt auf: Info-Notifications, Hinweis-Banner, manche neutrale State-Badges."
+    description: "Farbe für informative Hinweise und neutrale Benachrichtigungen. Wirkt auf: Info-Notifications, Hinweis-Banner, manche neutrale State-Badges.",
+    description_en: "Color for informational notices and neutral notifications. Affects: info notifications, hint banners, some neutral state badges."
   },
   {
     name: "--success-color",
     type: "color",
     category: "state",
     default: "#43a047",
-    description: "Farbe für Erfolgs-Bestätigungen, OK-States. Wirkt auf: 'Saved'-Notifications, OK-Buttons, manche positive State-Badges."
+    description: "Farbe für Erfolgs-Bestätigungen, OK-States. Wirkt auf: 'Saved'-Notifications, OK-Buttons, manche positive State-Badges.",
+    description_en: "Color for success confirmations and OK states. Affects: 'saved' notifications, OK buttons, some positive state badges."
   },
   {
     name: "--red-color",
     type: "color",
     category: "state-colors",
     default: "#f44336",
-    description: "Material-Palette Rot. Häufig genutzt für state-spezifische Farben (z.B. Climate-Cool-Heat, Sensor-Werte oberhalb Schwellwert) und in Templates via `color: var(--red-color)`."
+    description: "Material-Palette Rot. Häufig genutzt für state-spezifische Farben (z.B. Climate-Cool-Heat, Sensor-Werte oberhalb Schwellwert) und in Templates via `color: var(--red-color)`.",
+    description_en: "Material palette red. Often used for state-specific colors (e.g. climate cool/heat, sensor values above threshold) and in templates via `color: var(--red-color)`."
   },
   {
     name: "--orange-color",
     type: "color",
     category: "state-colors",
     default: "#ff9800",
-    description: "Material-Palette Orange. Nützlich für Status-Badges, Aufmerksamkeit-Highlights, oder als Akzent in Custom-Lovelace-Templates."
+    description: "Material-Palette Orange. Nützlich für Status-Badges, Aufmerksamkeit-Highlights, oder als Akzent in Custom-Lovelace-Templates.",
+    description_en: "Material palette orange. Useful for status badges, attention highlights, or as an accent in custom Lovelace templates."
   },
   {
     name: "--yellow-color",
     type: "color",
     category: "state-colors",
     default: "#ffeb3b",
-    description: "Material-Palette Gelb. Oft für Warning-Light-States, Sonne-Icons, oder leuchtende Akzente in custom-Stylings."
+    description: "Material-Palette Gelb. Oft für Warning-Light-States, Sonne-Icons, oder leuchtende Akzente in custom-Stylings.",
+    description_en: "Material palette yellow. Often used for warning light states, sun icons, or glowing accents in custom styling."
   },
   {
     name: "--green-color",
     type: "color",
     category: "state-colors",
     default: "#4caf50",
-    description: "Material-Palette Grün. Standard für 'OK'/'Aktiv'/'Verbunden'-States, Solar-Production-Indikatoren, positive Sensor-Werte."
+    description: "Material-Palette Grün. Standard für 'OK'/'Aktiv'/'Verbunden'-States, Solar-Production-Indikatoren, positive Sensor-Werte.",
+    description_en: "Material palette green. Standard for 'OK'/'active'/'connected' states, solar production indicators, positive sensor values."
   },
   {
     name: "--cyan-color",
     type: "color",
     category: "state-colors",
     default: "#00bcd4",
-    description: "Material-Palette Cyan. Häufig für Wasser-/Kühlung-/Climate-Cool-Indikatoren."
+    description: "Material-Palette Cyan. Häufig für Wasser-/Kühlung-/Climate-Cool-Indikatoren.",
+    description_en: "Material palette cyan. Often used for water / cooling / climate-cool indicators."
   },
   {
     name: "--blue-color",
     type: "color",
     category: "state-colors",
     default: "#2196f3",
-    description: "Material-Palette Blau. Standard-Color in vielen HA-Defaults, oft als neutraler 'Active'-Indikator."
+    description: "Material-Palette Blau. Standard-Color in vielen HA-Defaults, oft als neutraler 'Active'-Indikator.",
+    description_en: "Material palette blue. Default color in many HA defaults, often used as a neutral 'active' indicator."
   },
   {
     name: "--light-blue-color",
     type: "color",
     category: "state-colors",
     default: "#03a9f4",
-    description: "Material-Palette Hellblau. Identisch mit dem Default-Wert von --primary-color (#03a9f4) — oft als sekundärer Akzent oder für 'Cool'-States verwendet."
+    description: "Material-Palette Hellblau. Identisch mit dem Default-Wert von --primary-color (#03a9f4) — oft als sekundärer Akzent oder für 'Cool'-States verwendet.",
+    description_en: "Material palette light blue. Identical to the default value of --primary-color (#03a9f4) — often used as a secondary accent or for 'cool' states."
   },
   {
     name: "--purple-color",
     type: "color",
     category: "state-colors",
     default: "#9c27b0",
-    description: "Material-Palette Violett. Eher selten verwendet — gelegentlich für 'Premium'-Akzente oder besondere Sensor-Kategorien."
+    description: "Material-Palette Violett. Eher selten verwendet — gelegentlich für 'Premium'-Akzente oder besondere Sensor-Kategorien.",
+    description_en: "Material palette purple. Rather rarely used — occasionally for 'premium' accents or special sensor categories."
   },
   {
     name: "--pink-color",
     type: "color",
     category: "state-colors",
     default: "#e91e63",
-    description: "Material-Palette Pink. Eher selten — gelegentlich für Akzente in Kinder-/Spass-Dashboards."
+    description: "Material-Palette Pink. Eher selten — gelegentlich für Akzente in Kinder-/Spass-Dashboards.",
+    description_en: "Material palette pink. Rather rare — occasionally for accents in kids/fun dashboards."
   },
   {
     name: "--indigo-color",
     type: "color",
     category: "state-colors",
     default: "#3f51b5",
-    description: "Material-Palette Indigo. Mittel-tiefes Blau, oft für 'Processing'-States oder als zweite Brand-Variante."
+    description: "Material-Palette Indigo. Mittel-tiefes Blau, oft für 'Processing'-States oder als zweite Brand-Variante.",
+    description_en: "Material palette indigo. Medium-deep blue, often used for 'processing' states or as a secondary brand variant."
   },
   {
     name: "--teal-color",
     type: "color",
     category: "state-colors",
     default: "#009688",
-    description: "Material-Palette Teal. Beliebt für Frische-/Garten-/Wasser-Indikatoren und als bevorzugte Akzent-Alternative zu Cyan."
+    description: "Material-Palette Teal. Beliebt für Frische-/Garten-/Wasser-Indikatoren und als bevorzugte Akzent-Alternative zu Cyan.",
+    description_en: "Material palette teal. Popular for fresh / garden / water indicators and as a preferred accent alternative to cyan."
   },
   {
     name: "--brown-color",
     type: "color",
     category: "state-colors",
     default: "#795548",
-    description: "Material-Palette Braun. Selten verwendet — gelegentlich für Erdung/Holz-Themen oder Sensor-States."
+    description: "Material-Palette Braun. Selten verwendet — gelegentlich für Erdung/Holz-Themen oder Sensor-States.",
+    description_en: "Material palette brown. Rarely used — occasionally for earth/wood themes or sensor states."
   },
   {
     name: "--grey-color",
     type: "color",
     category: "state-colors",
     default: "#9e9e9e",
-    description: "Material-Palette Grau. Standard für neutrale/inaktive Akzente, ungültige States, Placeholder."
+    description: "Material-Palette Grau. Standard für neutrale/inaktive Akzente, ungültige States, Placeholder.",
+    description_en: "Material palette grey. Standard for neutral/inactive accents, invalid states, placeholders."
   },
   {
     name: "--amber-color",
     type: "color",
     category: "state-colors",
     default: "#ffc107",
-    description: "Material-Palette Amber. Klassische 'Aktiv-Licht'-Farbe (siehe --state-icon-active-color), oft für warme Lichter und Aufmerksamkeits-States."
+    description: "Material-Palette Amber. Klassische 'Aktiv-Licht'-Farbe (siehe --state-icon-active-color), oft für warme Lichter und Aufmerksamkeits-States.",
+    description_en: "Material palette amber. Classic 'active light' color (see --state-icon-active-color), often for warm lights and attention states."
   },
   {
     name: "--ha-card-background",
     type: "color",
     category: "card",
     default: "var(--card-background-color)",
-    description: "Hintergrund speziell für ha-card-Elemente (also fast alle Karten im HA-Frontend). Überschreibt --card-background-color spezifisch für Cards. Default referenziert --card-background-color — wird also vererbt, wenn nicht explizit gesetzt."
+    description: "Hintergrund speziell für ha-card-Elemente (also fast alle Karten im HA-Frontend). Überschreibt --card-background-color spezifisch für Cards. Default referenziert --card-background-color — wird also vererbt, wenn nicht explizit gesetzt.",
+    description_en: "Background specifically for ha-card elements (so almost all cards in the HA frontend). Overrides --card-background-color specifically for cards. Default references --card-background-color — so it's inherited if not explicitly set."
   },
   {
     name: "--ha-card-border-radius",
@@ -1935,7 +2110,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 40,
-    description: "Ecken-Rundung aller ha-card-Elemente (Lovelace, Bubble Card, Mushroom etc., sofern sie ha-card als Basis nutzen). 0 = scharfe Ecken, 12px = HA-Default (Material), 24px+ = sehr rund / Pill-Style."
+    description: "Ecken-Rundung aller ha-card-Elemente (Lovelace, Bubble Card, Mushroom etc., sofern sie ha-card als Basis nutzen). 0 = scharfe Ecken, 12px = HA-Default (Material), 24px+ = sehr rund / Pill-Style.",
+    description_en: "Corner rounding of all ha-card elements (Lovelace, Bubble Card, Mushroom, etc., as long as they use ha-card as their base). 0 = sharp corners, 12px = HA default (Material), 24px+ = very round / pill style."
   },
   {
     name: "--ha-card-features-border-radius",
@@ -1948,7 +2124,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 40,
-    description: "Ecken-Rundung der Card-Features (z.B. die Action-Buttons unter Light-/Cover-/Climate-Cards). Default referenziert --ha-card-border-radius — also folgt automatisch wenn nicht separat gesetzt."
+    description: "Ecken-Rundung der Card-Features (z.B. die Action-Buttons unter Light-/Cover-/Climate-Cards). Default referenziert --ha-card-border-radius — also folgt automatisch wenn nicht separat gesetzt.",
+    description_en: "Corner rounding of card features (e.g. the action buttons under light / cover / climate cards). Default references --ha-card-border-radius — so it follows automatically when not set separately."
   },
   {
     name: "--ha-card-border-width",
@@ -1960,624 +2137,715 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 10,
-    description: "Border-Breite der Cards. Default 0px = unsichtbarer Border, Schatten übernimmt die optische Trennung. Bei > 0 wird --ha-card-border-color verwendet."
+    description: "Border-Breite der Cards. Default 0px = unsichtbarer Border, Schatten übernimmt die optische Trennung. Bei > 0 wird --ha-card-border-color verwendet.",
+    description_en: "Border width of cards. Default 0px = invisible border, the shadow handles the visual separation. When > 0, --ha-card-border-color is used."
   },
   {
     name: "--ha-card-border-color",
     type: "color",
     category: "card",
     default: "var(--divider-color)",
-    description: "Border-Farbe der Cards. Nur sichtbar wenn --ha-card-border-width > 0 ist. Default referenziert --divider-color für stimmige Trennlinien."
+    description: "Border-Farbe der Cards. Nur sichtbar wenn --ha-card-border-width > 0 ist. Default referenziert --divider-color für stimmige Trennlinien.",
+    description_en: "Border color of cards. Only visible when --ha-card-border-width > 0. Default references --divider-color for matching divider lines."
   },
   {
     name: "--ha-card-box-shadow",
     type: "shadow",
     category: "card",
     default: "0 2px 4px rgba(0, 0, 0, 0.12)",
-    description: "Schatten unter Cards. Default ist ein dezenter Drop-Shadow für Material-Design-Optik. Setze 'none' für ein komplett flaches Design (z.B. iOS-Stil)."
+    description: "Schatten unter Cards. Default ist ein dezenter Drop-Shadow für Material-Design-Optik. Setze 'none' für ein komplett flaches Design (z.B. iOS-Stil).",
+    description_en: "Shadow beneath cards. Default is a subtle drop shadow for a Material Design look. Set 'none' for a completely flat design (e.g. iOS style)."
   },
   {
     name: "--ha-card-backdrop-filter",
     type: "raw",
     category: "card",
     default: "none",
-    description: "CSS-`backdrop-filter` für Cards — wirkt auf den Bereich *hinter* der Card (nicht auf die Card selbst). Mit `blur(10px)` und einem semi-transparenten --ha-card-background bekommen Cards einen Glas-/Frosted-Effekt (typisch für visionOS-/iOS-Themes). Setze `none` zum Deaktivieren."
+    description: "CSS-`backdrop-filter` für Cards — wirkt auf den Bereich *hinter* der Card (nicht auf die Card selbst). Mit `blur(10px)` und einem semi-transparenten --ha-card-background bekommen Cards einen Glas-/Frosted-Effekt (typisch für visionOS-/iOS-Themes). Setze `none` zum Deaktivieren.",
+    description_en: "CSS `backdrop-filter` for cards — affects the area *behind* the card (not the card itself). With `blur(10px)` and a semi-transparent --ha-card-background, cards get a glass/frosted effect (typical of visionOS/iOS themes). Set `none` to disable."
   },
   {
     name: "--clear-background-color",
     type: "color",
     category: "card",
     default: "transparent",
-    description: "Vollständig transparenter Hintergrund für Card-Bereiche, die durch die Card-Hintergrund-Farbe durchscheinen sollen. Wert ist meist `transparent` oder ein rgba mit Alpha=0."
+    description: "Vollständig transparenter Hintergrund für Card-Bereiche, die durch die Card-Hintergrund-Farbe durchscheinen sollen. Wert ist meist `transparent` oder ein rgba mit Alpha=0.",
+    description_en: "Fully transparent background for card areas that should let the card background color shine through. Value is usually `transparent` or an rgba with alpha=0."
   },
   {
     name: "--sidebar-background-color",
     type: "color",
     category: "sidebar",
     default: "var(--primary-background-color)",
-    description: "Hintergrund der linken Sidebar (Navigation). Default referenziert --primary-background-color — explizit setzen, wenn Sidebar sich vom Haupt-Background absetzen soll."
+    description: "Hintergrund der linken Sidebar (Navigation). Default referenziert --primary-background-color — explizit setzen, wenn Sidebar sich vom Haupt-Background absetzen soll.",
+    description_en: "Background of the left sidebar (navigation). Default references --primary-background-color — set explicitly if the sidebar should stand out from the main background."
   },
   {
     name: "--sidebar-text-color",
     type: "color",
     category: "sidebar",
     default: "var(--primary-text-color)",
-    description: "Default-Textfarbe der Sidebar-Einträge (für die **nicht** ausgewählten Views). Default referenziert --primary-text-color."
+    description: "Default-Textfarbe der Sidebar-Einträge (für die **nicht** ausgewählten Views). Default referenziert --primary-text-color.",
+    description_en: "Default text color for sidebar entries (for the **non**-selected views). Default references --primary-text-color."
   },
   {
     name: "--sidebar-icon-color",
     type: "color",
     category: "sidebar",
     default: "var(--state-icon-color)",
-    description: "Icon-Farbe der Sidebar-Einträge (nicht-ausgewählte Views). Default referenziert --state-icon-color, deshalb folgen Sidebar-Icons standardmässig der State-Icon-Farbe."
+    description: "Icon-Farbe der Sidebar-Einträge (nicht-ausgewählte Views). Default referenziert --state-icon-color, deshalb folgen Sidebar-Icons standardmässig der State-Icon-Farbe.",
+    description_en: "Icon color of sidebar entries (non-selected views). Default references --state-icon-color, so sidebar icons follow the state icon color by default."
   },
   {
     name: "--sidebar-selected-background-color",
     type: "color",
     category: "sidebar",
     default: "#ffffff",
-    description: "Hintergrund des aktuell ausgewählten Sidebar-Eintrags (die View die du gerade ansiehst). Default Weiss — für dunkle Themes oft auf einen Akzent setzen, sonst verschwindet die Selektion."
+    description: "Hintergrund des aktuell ausgewählten Sidebar-Eintrags (die View die du gerade ansiehst). Default Weiss — für dunkle Themes oft auf einen Akzent setzen, sonst verschwindet die Selektion.",
+    description_en: "Background of the currently selected sidebar entry (the view you are looking at). Default white — for dark themes often set to an accent, otherwise the selection disappears."
   },
   {
     name: "--sidebar-selected-text-color",
     type: "color",
     category: "sidebar",
     default: "var(--primary-color)",
-    description: "Textfarbe des aktiven Sidebar-Eintrags. Default referenziert --primary-color für visuelle Konsistenz mit dem Branding."
+    description: "Textfarbe des aktiven Sidebar-Eintrags. Default referenziert --primary-color für visuelle Konsistenz mit dem Branding.",
+    description_en: "Text color of the active sidebar entry. Default references --primary-color for visual consistency with the branding."
   },
   {
     name: "--sidebar-selected-icon-color",
     type: "color",
     category: "sidebar",
     default: "var(--primary-color)",
-    description: "Icon-Farbe des aktiven Sidebar-Eintrags. Default referenziert --primary-color — der ausgewählte View-Eintrag bekommt damit eine ganzheitlich gefärbte Optik (Icon + Text in Brandfarbe)."
+    description: "Icon-Farbe des aktiven Sidebar-Eintrags. Default referenziert --primary-color — der ausgewählte View-Eintrag bekommt damit eine ganzheitlich gefärbte Optik (Icon + Text in Brandfarbe).",
+    description_en: "Icon color of the active sidebar entry. Default references --primary-color — this gives the selected view entry a fully tinted appearance (icon + text in brand color)."
   },
   {
     name: "--app-header-background-color",
     type: "color",
     category: "header",
     default: "var(--primary-color)",
-    description: "Hintergrund der App-Header-Leiste oben (mit View-Tabs und Titel). Default referenziert --primary-color — deshalb ändert sich der Header automatisch beim Anpassen der Hauptfarbe, ausser du setzt diese Variable explizit auf etwas anderes."
+    description: "Hintergrund der App-Header-Leiste oben (mit View-Tabs und Titel). Default referenziert --primary-color — deshalb ändert sich der Header automatisch beim Anpassen der Hauptfarbe, ausser du setzt diese Variable explizit auf etwas anderes.",
+    description_en: "Background of the app header bar at the top (with view tabs and title). Default references --primary-color — so the header changes automatically when adjusting the main color, unless you explicitly set this variable to something else."
   },
   {
     name: "--app-header-text-color",
     type: "color",
     category: "header",
     default: "#ffffff",
-    description: "Textfarbe in der App-Header-Leiste (View-Tabs, Titel, Menü-Icons). Default Weiss für maximalen Kontrast auf farbigem Header."
+    description: "Textfarbe in der App-Header-Leiste (View-Tabs, Titel, Menü-Icons). Default Weiss für maximalen Kontrast auf farbigem Header.",
+    description_en: "Text color in the app header bar (view tabs, title, menu icons). Default white for maximum contrast on a colored header."
   },
   {
     name: "--app-header-backdrop-filter",
     type: "raw",
     category: "header",
     default: "none",
-    description: "CSS-`backdrop-filter` für den App-Header. Mit `blur(10px)` bekommt der Header eine Glas-Optik, sodass das --background-image dezent durchschimmert (typisch für visionOS-/iOS-Themes)."
+    description: "CSS-`backdrop-filter` für den App-Header. Mit `blur(10px)` bekommt der Header eine Glas-Optik, sodass das --background-image dezent durchschimmert (typisch für visionOS-/iOS-Themes).",
+    description_en: "CSS `backdrop-filter` for the app header. With `blur(10px)`, the header gets a glass look so that the --background-image shines through subtly (typical of visionOS/iOS themes)."
   },
   {
     name: "--app-header-edit-background-color",
     type: "color",
     category: "header",
     default: "rgba(0, 0, 0, 0.2)",
-    description: "Header-Hintergrund während die View im Edit-Mode ist (Lovelace-UI-Editor offen). Default leicht dunkler/transparenter für visuelle Differenzierung zum normalen Modus."
+    description: "Header-Hintergrund während die View im Edit-Mode ist (Lovelace-UI-Editor offen). Default leicht dunkler/transparenter für visuelle Differenzierung zum normalen Modus.",
+    description_en: "Header background while the view is in edit mode (Lovelace UI editor open). Default slightly darker/more transparent for visual differentiation from the normal mode."
   },
   {
     name: "--app-theme-color",
     type: "color",
     category: "header",
     default: "var(--primary-color)",
-    description: "Wird als `meta theme-color` an Browser/Mobile-Apps weitergegeben — bestimmt die Farbe der System-Status-Bar (z.B. iOS-Notch-Bereich, Android-Top-Bar in PWA). Sollte zur Brand-/Header-Farbe passen."
+    description: "Wird als `meta theme-color` an Browser/Mobile-Apps weitergegeben — bestimmt die Farbe der System-Status-Bar (z.B. iOS-Notch-Bereich, Android-Top-Bar in PWA). Sollte zur Brand-/Header-Farbe passen.",
+    description_en: "Passed as `meta theme-color` to browsers / mobile apps — determines the color of the system status bar (e.g. iOS notch area, Android top bar in PWA). Should match the brand / header color."
   },
   {
     name: "--divider-color",
     type: "color",
     category: "controls",
     default: "rgba(0, 0, 0, 0.12)",
-    description: "Trennlinien zwischen Listen-Items, Card-Sections, Tabs, Form-Feldern. Wirkt auf viele subtile Linien im HA-Frontend. Default leichtes Schwarz mit 12% Alpha — passt sich automatisch an Light/Dark an."
+    description: "Trennlinien zwischen Listen-Items, Card-Sections, Tabs, Form-Feldern. Wirkt auf viele subtile Linien im HA-Frontend. Default leichtes Schwarz mit 12% Alpha — passt sich automatisch an Light/Dark an.",
+    description_en: "Divider lines between list items, card sections, tabs, form fields. Affects many subtle lines in the HA frontend. Default light black with 12% alpha — automatically adapts to light/dark."
   },
   {
     name: "--paper-slider-active-color",
     type: "color",
     category: "controls",
     default: "var(--primary-color)",
-    description: "Slider-Track-Farbe für den *gefüllten* Teil (links vom Knopf). Wirkt auf: Light-Brightness-Slider, Volume-Slider, alle Range-Slider in HA. Default referenziert --primary-color."
+    description: "Slider-Track-Farbe für den *gefüllten* Teil (links vom Knopf). Wirkt auf: Light-Brightness-Slider, Volume-Slider, alle Range-Slider in HA. Default referenziert --primary-color.",
+    description_en: "Slider track color for the *filled* portion (left of the knob). Affects: light brightness slider, volume slider, all range sliders in HA. Default references --primary-color."
   },
   {
     name: "--paper-slider-knob-color",
     type: "color",
     category: "controls",
     default: "var(--primary-color)",
-    description: "Farbe des Slider-Knopfs (Thumb). Default referenziert --primary-color für visuelle Konsistenz mit der aktiven Track-Farbe."
+    description: "Farbe des Slider-Knopfs (Thumb). Default referenziert --primary-color für visuelle Konsistenz mit der aktiven Track-Farbe.",
+    description_en: "Color of the slider knob (thumb). Default references --primary-color for visual consistency with the active track color."
   },
   {
     name: "--ha-slider-background",
     type: "raw",
     category: "controls",
     default: "var(--secondary-background-color)",
-    description: "Hintergrund der neuen ha-slider-Komponente (modern, replaces paper-slider). Mit `none !important` lässt sich der Slider-Hintergrund komplett ausblenden — für Custom-Looks. Wert kann Farbe ODER `none` sein."
+    description: "Hintergrund der neuen ha-slider-Komponente (modern, replaces paper-slider). Mit `none !important` lässt sich der Slider-Hintergrund komplett ausblenden — für Custom-Looks. Wert kann Farbe ODER `none` sein.",
+    description_en: "Background of the new ha-slider component (modern, replaces paper-slider). With `none !important`, the slider background can be hidden completely — for custom looks. Value can be a color OR `none`."
   },
   {
     name: "--switch-checked-color",
     type: "color",
     category: "switches",
     default: "var(--primary-color)",
-    description: "Generische Farbe eingeschalteter Switches (modern HA). Wird oft von den spezifischeren --switch-checked-button-color und --switch-checked-track-color überschrieben."
+    description: "Generische Farbe eingeschalteter Switches (modern HA). Wird oft von den spezifischeren --switch-checked-button-color und --switch-checked-track-color überschrieben.",
+    description_en: "Generic color of switches in the 'on' state (modern HA). Often overridden by the more specific --switch-checked-button-color and --switch-checked-track-color."
   },
   {
     name: "--switch-unchecked-color",
     type: "color",
     category: "switches",
     default: "#bdbdbd",
-    description: "Generische Farbe ausgeschalteter Switches (modern HA). Wird oft von den spezifischeren --switch-unchecked-button-color und --switch-unchecked-track-color überschrieben."
+    description: "Generische Farbe ausgeschalteter Switches (modern HA). Wird oft von den spezifischeren --switch-unchecked-button-color und --switch-unchecked-track-color überschrieben.",
+    description_en: "Generic color of switches in the 'off' state (modern HA). Often overridden by the more specific --switch-unchecked-button-color and --switch-unchecked-track-color."
   },
   {
     name: "--switch-checked-button-color",
     type: "color",
     category: "switches",
     default: "var(--switch-checked-color, var(--primary-color))",
-    description: "Farbe des Switch-Knopfs (Thumb) im 'On'-Zustand. Spezifischer als --switch-checked-color — überschreibt den Knopf separat vom Track."
+    description: "Farbe des Switch-Knopfs (Thumb) im 'On'-Zustand. Spezifischer als --switch-checked-color — überschreibt den Knopf separat vom Track.",
+    description_en: "Color of the switch knob (thumb) in the 'on' state. More specific than --switch-checked-color — overrides the knob separately from the track."
   },
   {
     name: "--switch-checked-track-color",
     type: "color",
     category: "switches",
     default: "var(--switch-checked-color, var(--primary-color))",
-    description: "Farbe der Switch-Schiene (Track) im 'On'-Zustand. Oft transluzent gegenüber dem Button gemacht, für Material-Look."
+    description: "Farbe der Switch-Schiene (Track) im 'On'-Zustand. Oft transluzent gegenüber dem Button gemacht, für Material-Look.",
+    description_en: "Color of the switch track in the 'on' state. Often made translucent compared to the button for a Material look."
   },
   {
     name: "--switch-unchecked-button-color",
     type: "color",
     category: "switches",
     default: "var(--switch-unchecked-color, #bdbdbd)",
-    description: "Farbe des Switch-Knopfs (Thumb) im 'Off'-Zustand. Spezifischer als --switch-unchecked-color."
+    description: "Farbe des Switch-Knopfs (Thumb) im 'Off'-Zustand. Spezifischer als --switch-unchecked-color.",
+    description_en: "Color of the switch knob (thumb) in the 'off' state. More specific than --switch-unchecked-color."
   },
   {
     name: "--switch-unchecked-track-color",
     type: "color",
     category: "switches",
     default: "var(--switch-unchecked-color, #bdbdbd)",
-    description: "Farbe der Switch-Schiene (Track) im 'Off'-Zustand. Oft heller als der Button für Material-Look."
+    description: "Farbe der Switch-Schiene (Track) im 'Off'-Zustand. Oft heller als der Button für Material-Look.",
+    description_en: "Color of the switch track in the 'off' state. Often lighter than the button for a Material look."
   },
   {
     name: "--table-row-background-color",
     type: "color",
     category: "tables",
     default: "var(--card-background-color)",
-    description: "Hintergrund von Tabellen-Zeilen (z.B. Logbook, Verlauf, History-Panel). Default referenziert --card-background-color."
+    description: "Hintergrund von Tabellen-Zeilen (z.B. Logbook, Verlauf, History-Panel). Default referenziert --card-background-color.",
+    description_en: "Background of table rows (e.g. logbook, history, history panel). Default references --card-background-color."
   },
   {
     name: "--table-row-alternative-background-color",
     type: "color",
     category: "tables",
     default: "var(--secondary-background-color)",
-    description: "Hintergrund jeder zweiten Tabellen-Zeile (Zebra-Pattern). Bietet visuelle Trennung in langen Listen. Default referenziert --secondary-background-color."
+    description: "Hintergrund jeder zweiten Tabellen-Zeile (Zebra-Pattern). Bietet visuelle Trennung in langen Listen. Default referenziert --secondary-background-color.",
+    description_en: "Background of every other table row (zebra pattern). Provides visual separation in long lists. Default references --secondary-background-color."
   },
   {
     name: "--input-fill-color",
     type: "color",
     category: "form-inputs",
     default: "transparent",
-    description: "Hintergrund-Füllfarbe von Input-Feldern (Text, Number, Select etc.) im Default-State. Oft transparent für moderne flache Themes."
+    description: "Hintergrund-Füllfarbe von Input-Feldern (Text, Number, Select etc.) im Default-State. Oft transparent für moderne flache Themes.",
+    description_en: "Background fill color of input fields (text, number, select, etc.) in the default state. Often transparent for modern flat themes."
   },
   {
     name: "--input-disabled-fill-color",
     type: "color",
     category: "form-inputs",
     default: "transparent",
-    description: "Hintergrund-Füllfarbe von deaktivierten Input-Feldern. Sollte sich subtil vom aktiven Zustand absetzen."
+    description: "Hintergrund-Füllfarbe von deaktivierten Input-Feldern. Sollte sich subtil vom aktiven Zustand absetzen.",
+    description_en: "Background fill color of disabled input fields. Should stand apart subtly from the active state."
   },
   {
     name: "--input-ink-color",
     type: "color",
     category: "form-inputs",
     default: "var(--primary-text-color)",
-    description: "Textfarbe ('Tinte') in Input-Feldern. Default referenziert --primary-text-color für Konsistenz."
+    description: "Textfarbe ('Tinte') in Input-Feldern. Default referenziert --primary-text-color für Konsistenz.",
+    description_en: "Text color ('ink') in input fields. Default references --primary-text-color for consistency."
   },
   {
     name: "--input-disabled-ink-color",
     type: "color",
     category: "form-inputs",
     default: "var(--disabled-text-color)",
-    description: "Textfarbe in deaktivierten Input-Feldern. Default referenziert --disabled-text-color."
+    description: "Textfarbe in deaktivierten Input-Feldern. Default referenziert --disabled-text-color.",
+    description_en: "Text color in disabled input fields. Default references --disabled-text-color."
   },
   {
     name: "--input-label-ink-color",
     type: "color",
     category: "form-inputs",
     default: "var(--secondary-text-color)",
-    description: "Farbe des Labels über dem Input-Feld (das floatende 'Placeholder'). Default referenziert --secondary-text-color."
+    description: "Farbe des Labels über dem Input-Feld (das floatende 'Placeholder'). Default referenziert --secondary-text-color.",
+    description_en: "Color of the label above the input field (the floating 'placeholder'). Default references --secondary-text-color."
   },
   {
     name: "--input-idle-line-color",
     type: "color",
     category: "form-inputs",
     default: "var(--secondary-text-color)",
-    description: "Unterstrich-Farbe von Input-Feldern im Default-State (nicht-fokussiert, nicht-hover)."
+    description: "Unterstrich-Farbe von Input-Feldern im Default-State (nicht-fokussiert, nicht-hover).",
+    description_en: "Underline color of input fields in the default state (not focused, not hovered)."
   },
   {
     name: "--input-hover-line-color",
     type: "color",
     category: "form-inputs",
     default: "var(--primary-text-color)",
-    description: "Unterstrich-Farbe von Input-Feldern beim Hover. Kräftiger als --input-idle-line-color für visuelles Feedback."
+    description: "Unterstrich-Farbe von Input-Feldern beim Hover. Kräftiger als --input-idle-line-color für visuelles Feedback.",
+    description_en: "Underline color of input fields on hover. Stronger than --input-idle-line-color for visual feedback."
   },
   {
     name: "--input-dropdown-icon-color",
     type: "color",
     category: "form-inputs",
     default: "var(--secondary-text-color)",
-    description: "Farbe des Dropdown-Pfeil-Icons in Select-Inputs."
+    description: "Farbe des Dropdown-Pfeil-Icons in Select-Inputs.",
+    description_en: "Color of the dropdown arrow icon in select inputs."
   },
   {
     name: "--dialog-box-shadow",
     type: "shadow",
     category: "dialogs",
     default: "var(--ha-card-box-shadow)",
-    description: "Schatten unter modalen Dialogen. Default referenziert --ha-card-box-shadow — Dialoge folgen damit dem Card-Look."
+    description: "Schatten unter modalen Dialogen. Default referenziert --ha-card-box-shadow — Dialoge folgen damit dem Card-Look.",
+    description_en: "Shadow beneath modal dialogs. Default references --ha-card-box-shadow — so dialogs follow the card look."
   },
   {
     name: "--ha-dialog-surface-background",
     type: "color",
     category: "dialogs",
     default: "var(--ha-card-background)",
-    description: "Hintergrund der Dialog-Oberfläche (die Karte des Dialogs). Default referenziert --ha-card-background — Dialoge folgen dem Card-Background."
+    description: "Hintergrund der Dialog-Oberfläche (die Karte des Dialogs). Default referenziert --ha-card-background — Dialoge folgen dem Card-Background.",
+    description_en: "Background of the dialog surface (the dialog's card). Default references --ha-card-background — dialogs follow the card background."
   },
   {
     name: "--ha-dialog-surface-backdrop-filter",
     type: "raw",
     category: "dialogs",
     default: "none",
-    description: "CSS-`backdrop-filter` für die Dialog-Oberfläche selbst. Mit `blur(...)` bekommt der Dialog einen Glas-Look. Default `none`."
+    description: "CSS-`backdrop-filter` für die Dialog-Oberfläche selbst. Mit `blur(...)` bekommt der Dialog einen Glas-Look. Default `none`.",
+    description_en: "CSS `backdrop-filter` for the dialog surface itself. With `blur(...)`, the dialog gets a glass look. Default `none`."
   },
   {
     name: "--ha-dialog-scrim-backdrop-filter",
     type: "raw",
     category: "dialogs",
     default: "none",
-    description: "CSS-`backdrop-filter` für den Scrim hinter Dialogen (der Overlay-Bereich rund um den Dialog). Mit `blur(10px)` wird das Frontend hinter dem Dialog verschwommen — während ein Dialog offen ist."
+    description: "CSS-`backdrop-filter` für den Scrim hinter Dialogen (der Overlay-Bereich rund um den Dialog). Mit `blur(10px)` wird das Frontend hinter dem Dialog verschwommen — während ein Dialog offen ist.",
+    description_en: "CSS `backdrop-filter` for the scrim behind dialogs (the overlay area around the dialog). With `blur(10px)`, the frontend behind the dialog is blurred while a dialog is open."
   },
   {
     name: "--more-info-header-background",
     type: "color",
     category: "dialogs",
     default: "var(--ha-card-background)",
-    description: "Hintergrund des Headers im More-Info-Dialog (öffnet sich bei Entity-Klick auf einer Card). Default referenziert --ha-card-background."
+    description: "Hintergrund des Headers im More-Info-Dialog (öffnet sich bei Entity-Klick auf einer Card). Default referenziert --ha-card-background.",
+    description_en: "Background of the header in the more-info dialog (opens when clicking an entity on a card). Default references --ha-card-background."
   },
   {
     name: "--label-badge-background-color",
     type: "color",
     category: "label-badge",
     default: "var(--card-background-color)",
-    description: "Hintergrund von Label-Badges — kleine Status-Markierungen die in manchen Custom-Cards neben Entity-Icons erscheinen. Default referenziert --card-background-color."
+    description: "Hintergrund von Label-Badges — kleine Status-Markierungen die in manchen Custom-Cards neben Entity-Icons erscheinen. Default referenziert --card-background-color.",
+    description_en: "Background of label badges — small status markers that appear next to entity icons in some custom cards. Default references --card-background-color."
   },
   {
     name: "--label-badge-text-color",
     type: "color",
     category: "label-badge",
     default: "var(--primary-text-color)",
-    description: "Textfarbe in Label-Badges. Default referenziert --primary-text-color."
+    description: "Textfarbe in Label-Badges. Default referenziert --primary-text-color.",
+    description_en: "Text color in label badges. Default references --primary-text-color."
   },
   {
     name: "--label-badge-red",
     type: "color",
     category: "label-badge",
     default: "var(--error-color)",
-    description: "Rot-Farbe für Label-Badges (Alarm/Error-State). Trotz des Namens ohne -color-Suffix ist es ein voller CSS-Color-Wert."
+    description: "Rot-Farbe für Label-Badges (Alarm/Error-State). Trotz des Namens ohne -color-Suffix ist es ein voller CSS-Color-Wert.",
+    description_en: "Red color for label badges (alarm/error state). Despite the name without a -color suffix, this is a full CSS color value."
   },
   {
     name: "--label-badge-green",
     type: "color",
     category: "label-badge",
     default: "var(--success-color)",
-    description: "Grün-Farbe für Label-Badges (OK/Aktiv-State)."
+    description: "Grün-Farbe für Label-Badges (OK/Aktiv-State).",
+    description_en: "Green color for label badges (OK / active state)."
   },
   {
     name: "--label-badge-blue",
     type: "color",
     category: "label-badge",
     default: "var(--info-color)",
-    description: "Blau-Farbe für Label-Badges (Info-State)."
+    description: "Blau-Farbe für Label-Badges (Info-State).",
+    description_en: "Blue color for label badges (info state)."
   },
   {
     name: "--label-badge-yellow",
     type: "color",
     category: "label-badge",
     default: "var(--warning-color)",
-    description: "Gelb-Farbe für Label-Badges (Warning-State)."
+    description: "Gelb-Farbe für Label-Badges (Warning-State).",
+    description_en: "Yellow color for label badges (warning state)."
   },
   {
     name: "--label-badge-gray",
     type: "color",
     category: "label-badge",
     default: "var(--disabled-text-color)",
-    description: "Grau-Farbe für Label-Badges (Neutral/Inaktiv-State)."
+    description: "Grau-Farbe für Label-Badges (Neutral/Inaktiv-State).",
+    description_en: "Grey color for label badges (neutral / inactive state)."
   },
   {
     name: "--paper-item-icon-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--state-icon-color)",
-    description: "Icon-Farbe in Polymer-basierten Listen-Items (Legacy HA-Komponenten, z.B. alte Sidebar-Renditionen, einige Dialog-Listen). Default referenziert --state-icon-color."
+    description: "Icon-Farbe in Polymer-basierten Listen-Items (Legacy HA-Komponenten, z.B. alte Sidebar-Renditionen, einige Dialog-Listen). Default referenziert --state-icon-color.",
+    description_en: "Icon color in Polymer-based list items (legacy HA components, e.g. older sidebar renditions, some dialog lists). Default references --state-icon-color."
   },
   {
     name: "--paper-item-icon-active-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--state-icon-active-color)",
-    description: "Aktive Variante von --paper-item-icon-color. Wirkt auf 'On'-States in Legacy-Listen-Komponenten."
+    description: "Aktive Variante von --paper-item-icon-color. Wirkt auf 'On'-States in Legacy-Listen-Komponenten.",
+    description_en: "Active variant of --paper-item-icon-color. Affects 'on' states in legacy list components."
   },
   {
     name: "--paper-card-background-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--ha-card-background)",
-    description: "Legacy-Alias für Card-Hintergrund. Wird von HA-Components verwendet, die noch nicht auf ha-card umgestellt sind."
+    description: "Legacy-Alias für Card-Hintergrund. Wird von HA-Components verwendet, die noch nicht auf ha-card umgestellt sind.",
+    description_en: "Legacy alias for card background. Used by HA components that have not yet been migrated to ha-card."
   },
   {
     name: "--paper-dialog-background-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--ha-dialog-surface-background, var(--ha-card-background))",
-    description: "Hintergrund alter Polymer-Dialoge. Wird zunehmend durch --ha-dialog-surface-background ersetzt, aber manche Legacy-Dialoge greifen noch hier zu."
+    description: "Hintergrund alter Polymer-Dialoge. Wird zunehmend durch --ha-dialog-surface-background ersetzt, aber manche Legacy-Dialoge greifen noch hier zu.",
+    description_en: "Background of old Polymer dialogs. Increasingly being replaced by --ha-dialog-surface-background, but some legacy dialogs still read from this."
   },
   {
     name: "--paper-listbox-background-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--primary-background-color)",
-    description: "Hintergrund von Polymer-Listbox-Komponenten (alte Listen-Dialoge, Dropdown-Menüs)."
+    description: "Hintergrund von Polymer-Listbox-Komponenten (alte Listen-Dialoge, Dropdown-Menüs).",
+    description_en: "Background of Polymer listbox components (older list dialogs, dropdown menus)."
   },
   {
     name: "--paper-slider-container-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--disabled-text-color)",
-    description: "Hintergrund-Track des Sliders (der ungefüllte Bereich rechts vom Knopf). Komplement zu --paper-slider-active-color."
+    description: "Hintergrund-Track des Sliders (der ungefüllte Bereich rechts vom Knopf). Komplement zu --paper-slider-active-color.",
+    description_en: "Background track of the slider (the unfilled area to the right of the knob). Complement to --paper-slider-active-color."
   },
   {
     name: "--paper-slider-secondary-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--light-primary-color)",
-    description: "Sekundäre Slider-Farbe — z.B. für Slider mit zwei Wertebereichen (Min/Max) oder Buffered-State."
+    description: "Sekundäre Slider-Farbe — z.B. für Slider mit zwei Wertebereichen (Min/Max) oder Buffered-State.",
+    description_en: "Secondary slider color — e.g. for sliders with two value ranges (min/max) or a buffered state."
   },
   {
     name: "--paper-slider-knob-start-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--paper-slider-knob-color)",
-    description: "Knopf-Farbe in der Start-Position (bei Wert 0). Variiert sich oft von --paper-slider-knob-color für visuelle Klarheit am Anfang."
+    description: "Knopf-Farbe in der Start-Position (bei Wert 0). Variiert sich oft von --paper-slider-knob-color für visuelle Klarheit am Anfang.",
+    description_en: "Knob color in the start position (at value 0). Often differs from --paper-slider-knob-color for visual clarity at the beginning."
   },
   {
     name: "--paper-slider-pin-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--paper-slider-knob-color)",
-    description: "Pin-Farbe — der kleine Tooltip der über dem Knopf erscheint wenn man zieht und den aktuellen Wert anzeigt."
+    description: "Pin-Farbe — der kleine Tooltip der über dem Knopf erscheint wenn man zieht und den aktuellen Wert anzeigt.",
+    description_en: "Pin color — the small tooltip that appears above the knob while dragging, showing the current value."
   },
   {
     name: "--paper-slider-font-color",
     type: "color",
     category: "polymer-legacy",
     default: "#000",
-    description: "Textfarbe für Werte/Labels die *innerhalb* des Slider-Pins angezeigt werden (z.B. Brightness-%)."
+    description: "Textfarbe für Werte/Labels die *innerhalb* des Slider-Pins angezeigt werden (z.B. Brightness-%).",
+    description_en: "Text color for values/labels displayed *inside* the slider pin (e.g. brightness %)."
   },
   {
     name: "--paper-toggle-button-checked-button-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--primary-color)",
-    description: "Knopf-Farbe alter Polymer-Toggle-Buttons im 'On'-Zustand. Trotz neuer --switch-*-Vars werden viele Custom-Cards und Legacy-Dialoge weiterhin von dieser bestimmt."
+    description: "Knopf-Farbe alter Polymer-Toggle-Buttons im 'On'-Zustand. Trotz neuer --switch-*-Vars werden viele Custom-Cards und Legacy-Dialoge weiterhin von dieser bestimmt.",
+    description_en: "Knob color of old Polymer toggle buttons in the 'on' state. Despite the newer --switch-* variables, many custom cards and legacy dialogs are still controlled by this."
   },
   {
     name: "--paper-toggle-button-checked-bar-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--primary-color)",
-    description: "Bar/Track-Farbe alter Polymer-Toggle-Buttons im 'On'-Zustand."
+    description: "Bar/Track-Farbe alter Polymer-Toggle-Buttons im 'On'-Zustand.",
+    description_en: "Bar/track color of old Polymer toggle buttons in the 'on' state."
   },
   {
     name: "--paper-toggle-button-unchecked-button-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--disabled-text-color)",
-    description: "Knopf-Farbe alter Polymer-Toggle-Buttons im 'Off'-Zustand."
+    description: "Knopf-Farbe alter Polymer-Toggle-Buttons im 'Off'-Zustand.",
+    description_en: "Knob color of old Polymer toggle buttons in the 'off' state."
   },
   {
     name: "--paper-toggle-button-unchecked-bar-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--disabled-text-color)",
-    description: "Bar/Track-Farbe alter Polymer-Toggle-Buttons im 'Off'-Zustand."
+    description: "Bar/Track-Farbe alter Polymer-Toggle-Buttons im 'Off'-Zustand.",
+    description_en: "Bar/track color of old Polymer toggle buttons in the 'off' state."
   },
   {
     name: "--text-primary-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--primary-text-color)",
-    description: "Legacy: primäre Textfarbe — bei modernen Themes oft auf --primary-text-color verwiesen. Manche alte Komponenten greifen noch direkt hier zu."
+    description: "Legacy: primäre Textfarbe — bei modernen Themes oft auf --primary-text-color verwiesen. Manche alte Komponenten greifen noch direkt hier zu.",
+    description_en: "Legacy: primary text color — in modern themes often pointed to --primary-text-color. Some old components still read directly from this."
   },
   {
     name: "--text-dark-color",
     type: "color",
     category: "polymer-legacy",
     default: "var(--primary-text-color)",
-    description: "Legacy: dunkle Textfarbe für hellem Hintergrund. In Dark-Themes oft auf eine helle Farbe gesetzt — der Name ist irreführend."
+    description: "Legacy: dunkle Textfarbe für hellem Hintergrund. In Dark-Themes oft auf eine helle Farbe gesetzt — der Name ist irreführend.",
+    description_en: "Legacy: dark text color for a light background. In dark themes often set to a light color — the name is misleading."
   },
   {
     name: "--mdc-select-fill-color",
     type: "color",
     category: "mdc",
     default: "rgba(245, 245, 245, 1)",
-    description: "Hintergrund-Füllfarbe von Material-Design-Select-Dropdowns (in HA-Settings, Config-Flows, Forms). Beeinflusst die Felder unter dem Label."
+    description: "Hintergrund-Füllfarbe von Material-Design-Select-Dropdowns (in HA-Settings, Config-Flows, Forms). Beeinflusst die Felder unter dem Label.",
+    description_en: "Background fill color of Material Design select dropdowns (in HA settings, config flows, forms). Affects the fields below the label."
   },
   {
     name: "--mdc-select-ink-color",
     type: "color",
     category: "mdc",
     default: "var(--primary-text-color)",
-    description: "Textfarbe ('Tinte') des ausgewählten Wertes in Material-Design-Selects. Default referenziert --primary-text-color."
+    description: "Textfarbe ('Tinte') des ausgewählten Wertes in Material-Design-Selects. Default referenziert --primary-text-color.",
+    description_en: "Text color ('ink') of the selected value in Material Design selects. Default references --primary-text-color."
   },
   {
     name: "--mdc-select-label-ink-color",
     type: "color",
     category: "mdc",
     default: "var(--secondary-text-color)",
-    description: "Farbe des Labels über dem Select-Feld. Default referenziert --secondary-text-color (dezenter als der Wert selbst)."
+    description: "Farbe des Labels über dem Select-Feld. Default referenziert --secondary-text-color (dezenter als der Wert selbst).",
+    description_en: "Color of the label above the select field. Default references --secondary-text-color (more subtle than the value itself)."
   },
   {
     name: "--mdc-select-dropdown-icon-color",
     type: "color",
     category: "mdc",
     default: "var(--secondary-text-color)",
-    description: "Farbe des Dropdown-Pfeil-Icons im Select. Default referenziert --secondary-text-color."
+    description: "Farbe des Dropdown-Pfeil-Icons im Select. Default referenziert --secondary-text-color.",
+    description_en: "Color of the dropdown arrow icon in the select. Default references --secondary-text-color."
   },
   {
     name: "--mdc-checkbox-unchecked-color",
     type: "color",
     category: "mdc",
     default: "var(--secondary-text-color)",
-    description: "Border-Farbe von Material-Design-Checkboxen im 'Unchecked'-State."
+    description: "Border-Farbe von Material-Design-Checkboxen im 'Unchecked'-State.",
+    description_en: "Border color of Material Design checkboxes in the 'unchecked' state."
   },
   {
     name: "--mdc-radio-unchecked-color",
     type: "color",
     category: "mdc",
     default: "var(--secondary-text-color)",
-    description: "Border-Farbe von Material-Design-Radio-Buttons im 'Unchecked'-State."
+    description: "Border-Farbe von Material-Design-Radio-Buttons im 'Unchecked'-State.",
+    description_en: "Border color of Material Design radio buttons in the 'unchecked' state."
   },
   {
     name: "--mdc-theme-surface",
     type: "color",
     category: "mdc",
     default: "var(--card-background-color)",
-    description: "Allgemeine Surface-Hintergrund-Farbe für Material-Design-Components. Oft synonym zu --card-background-color."
+    description: "Allgemeine Surface-Hintergrund-Farbe für Material-Design-Components. Oft synonym zu --card-background-color.",
+    description_en: "General surface background color for Material Design components. Often synonymous with --card-background-color."
   },
   {
     name: "--md-list-container-color",
     type: "color",
     category: "mdc",
     default: "var(--card-background-color)",
-    description: "Hintergrund von Material-Design-3 List-Containern. Setze 'none' (als Wort, nicht als CSS) ist nicht gültig — für transparenten Hintergrund eine transparente Farbe wählen."
+    description: "Hintergrund von Material-Design-3 List-Containern. Setze 'none' (als Wort, nicht als CSS) ist nicht gültig — für transparenten Hintergrund eine transparente Farbe wählen.",
+    description_en: "Background of Material Design 3 list containers. Setting 'none' (as a word, not as CSS) is not valid — choose a transparent color for a transparent background."
   },
   {
     name: "--rgb-primary-color",
     type: "raw",
     category: "rgb",
     default: "3, 169, 244",
-    description: "RGB-Trippel-Form von --primary-color als 'R, G, B' (Komma-getrennt, ohne `rgb()`-Wrapper). HA nutzt das für `rgba(var(--rgb-primary-color), 0.5)` Konstruktionen, um die Farbe mit variabler Transparenz zu kombinieren. Beim Anpassen von --primary-color sollte auch das hier mitgepflegt werden (es leitet sich nicht automatisch ab)."
+    description: "RGB-Trippel-Form von --primary-color als 'R, G, B' (Komma-getrennt, ohne `rgb()`-Wrapper). HA nutzt das für `rgba(var(--rgb-primary-color), 0.5)` Konstruktionen, um die Farbe mit variabler Transparenz zu kombinieren. Beim Anpassen von --primary-color sollte auch das hier mitgepflegt werden (es leitet sich nicht automatisch ab).",
+    description_en: "RGB triplet form of --primary-color as 'R, G, B' (comma-separated, without an `rgb()` wrapper). HA uses this for `rgba(var(--rgb-primary-color), 0.5)` constructions to combine the color with variable transparency. When adjusting --primary-color, this should also be kept in sync (it is not derived automatically)."
   },
   {
     name: "--rgb-accent-color",
     type: "raw",
     category: "rgb",
     default: "255, 152, 0",
-    description: "RGB-Trippel-Form von --accent-color als 'R, G, B'. Siehe --rgb-primary-color für Verwendungsmuster (Transparenz-Konstruktionen via rgba(var(--rgb-accent-color), alpha))."
+    description: "RGB-Trippel-Form von --accent-color als 'R, G, B'. Siehe --rgb-primary-color für Verwendungsmuster (Transparenz-Konstruktionen via rgba(var(--rgb-accent-color), alpha)).",
+    description_en: "RGB triplet form of --accent-color as 'R, G, B'. See --rgb-primary-color for usage patterns (transparency constructions via rgba(var(--rgb-accent-color), alpha))."
   },
   {
     name: "--rgb-state-icon-color",
     type: "raw",
     category: "rgb",
     default: "68, 115, 158",
-    description: "RGB-Trippel-Form von --state-icon-color. Für Transparenz-Berechnungen via rgba()."
+    description: "RGB-Trippel-Form von --state-icon-color. Für Transparenz-Berechnungen via rgba().",
+    description_en: "RGB triplet form of --state-icon-color. For transparency calculations via rgba()."
   },
   {
     name: "--rgb-primary-text-color",
     type: "raw",
     category: "rgb",
     default: "33, 33, 33",
-    description: "RGB-Trippel-Form von --primary-text-color. Für Transparenz-Berechnungen via rgba()."
+    description: "RGB-Trippel-Form von --primary-text-color. Für Transparenz-Berechnungen via rgba().",
+    description_en: "RGB triplet form of --primary-text-color. For transparency calculations via rgba()."
   },
   {
     name: "--rgb-secondary-text-color",
     type: "raw",
     category: "rgb",
     default: "114, 114, 114",
-    description: "RGB-Trippel-Form von --secondary-text-color. Für Transparenz-Berechnungen via rgba()."
+    description: "RGB-Trippel-Form von --secondary-text-color. Für Transparenz-Berechnungen via rgba().",
+    description_en: "RGB triplet form of --secondary-text-color. For transparency calculations via rgba()."
   },
   {
     name: "--rgb-card-background-color",
     type: "raw",
     category: "rgb",
     default: "255, 255, 255",
-    description: "RGB-Trippel-Form von --card-background-color. Wird oft für semi-transparente Card-Backgrounds genutzt: `background: rgba(var(--rgb-card-background-color), 0.7)`."
+    description: "RGB-Trippel-Form von --card-background-color. Wird oft für semi-transparente Card-Backgrounds genutzt: `background: rgba(var(--rgb-card-background-color), 0.7)`.",
+    description_en: "RGB triplet form of --card-background-color. Often used for semi-transparent card backgrounds: `background: rgba(var(--rgb-card-background-color), 0.7)`."
   }
-], cr = {
-  id: gt,
-  categories: ft,
-  variables: yt
-}, dr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+], hr = {
+  id: vt,
+  categories: xt,
+  variables: wt
+}, br = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  categories: ft,
-  default: cr,
-  id: gt,
-  variables: yt
-}, Symbol.toStringTag, { value: "Module" })), vt = "mushroom", _t = [
+  categories: xt,
+  default: hr,
+  id: vt,
+  variables: wt
+}, Symbol.toStringTag, { value: "Module" })), kt = "mushroom", Ct = [
   {
     id: "card-primary",
     label: "Card-Primary (Hauptzeile)",
+    label_en: "Card-Primary (main line)",
     icon: "mdi:format-text"
   },
   {
     id: "card-secondary",
     label: "Card-Secondary (Subzeile)",
+    label_en: "Card-Secondary (sub line)",
     icon: "mdi:format-text-variant"
   },
   {
     id: "title",
     label: "Title",
+    label_en: "Title",
     icon: "mdi:format-header-1"
   },
   {
     id: "subtitle",
     label: "Subtitle",
+    label_en: "Subtitle",
     icon: "mdi:format-header-2"
   },
   {
     id: "icon",
     label: "Icon",
+    label_en: "Icon",
     icon: "mdi:emoticon-outline"
   },
   {
     id: "badge",
     label: "Badge",
+    label_en: "Badge",
     icon: "mdi:label-outline"
   },
   {
     id: "chip",
     label: "Chip",
+    label_en: "Chip",
     icon: "mdi:pill"
   },
   {
     id: "control",
     label: "Control",
+    label_en: "Control",
     icon: "mdi:tune-variant"
   },
   {
     id: "layout",
     label: "Layout / Misc",
+    label_en: "Layout / Misc",
     icon: "mdi:dots-horizontal"
   },
   {
     id: "rgb-material",
     label: "Material-Palette (RGB)",
+    label_en: "Material palette (RGB)",
     icon: "mdi:palette-swatch"
   },
   {
     id: "rgb-semantic",
     label: "Semantic States (RGB)",
+    label_en: "Semantic states (RGB)",
     icon: "mdi:tag-outline"
   },
   {
     id: "rgb-states",
     label: "Entity-States (RGB)",
+    label_en: "Entity states (RGB)",
     icon: "mdi:state-machine"
   }
-], xt = [
+], St = [
   {
     name: "--mush-card-primary-color",
     type: "color",
     category: "card-primary",
-    description: "Mushroom · Card-Primary · Farbe der primären Card-Textzeile (z.B. Entity-Name)."
+    description: "Mushroom · Card-Primary · Farbe der primären Card-Textzeile (z.B. Entity-Name).",
+    description_en: "Mushroom · Card-Primary · Color of the primary card text line (e.g. entity name)."
   },
   {
     name: "--mush-card-primary-font-size",
@@ -2590,13 +2858,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 8,
     max: 32,
-    description: "Mushroom · Card-Primary · Schriftgröße der primären Zeile."
+    description: "Mushroom · Card-Primary · Schriftgröße der primären Zeile.",
+    description_en: "Mushroom · Card-Primary · Font size of the primary line."
   },
   {
     name: "--mush-card-primary-font-weight",
     type: "raw",
     category: "card-primary",
-    description: "Mushroom · Card-Primary · CSS-`font-weight` (normal, bold, 100..900)."
+    description: "Mushroom · Card-Primary · CSS-`font-weight` (normal, bold, 100..900).",
+    description_en: "Mushroom · Card-Primary · CSS `font-weight` (normal, bold, 100..900)."
   },
   {
     name: "--mush-card-primary-letter-spacing",
@@ -2609,19 +2879,22 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     min: -0.1,
     max: 0.5,
     step: 0.01,
-    description: "Mushroom · Card-Primary · Buchstabenabstand."
+    description: "Mushroom · Card-Primary · Buchstabenabstand.",
+    description_en: "Mushroom · Card-Primary · Letter spacing."
   },
   {
     name: "--mush-card-primary-line-height",
     type: "raw",
     category: "card-primary",
-    description: "Mushroom · Card-Primary · CSS-`line-height` (unitless Zahl oder mit Einheit)."
+    description: "Mushroom · Card-Primary · CSS-`line-height` (unitless Zahl oder mit Einheit).",
+    description_en: "Mushroom · Card-Primary · CSS `line-height` (unitless number or with unit)."
   },
   {
     name: "--mush-card-secondary-color",
     type: "color",
     category: "card-secondary",
-    description: "Mushroom · Card-Secondary · Farbe der sekundären Card-Zeile (z.B. State-Text)."
+    description: "Mushroom · Card-Secondary · Farbe der sekundären Card-Zeile (z.B. State-Text).",
+    description_en: "Mushroom · Card-Secondary · Color of the secondary card line (e.g. state text)."
   },
   {
     name: "--mush-card-secondary-font-size",
@@ -2634,13 +2907,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 8,
     max: 32,
-    description: "Mushroom · Card-Secondary · Schriftgröße der sekundären Zeile."
+    description: "Mushroom · Card-Secondary · Schriftgröße der sekundären Zeile.",
+    description_en: "Mushroom · Card-Secondary · Font size of the secondary line."
   },
   {
     name: "--mush-card-secondary-font-weight",
     type: "raw",
     category: "card-secondary",
-    description: "Mushroom · Card-Secondary · CSS-`font-weight`."
+    description: "Mushroom · Card-Secondary · CSS-`font-weight`.",
+    description_en: "Mushroom · Card-Secondary · CSS `font-weight`."
   },
   {
     name: "--mush-card-secondary-letter-spacing",
@@ -2653,19 +2928,22 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     min: -0.1,
     max: 0.5,
     step: 0.01,
-    description: "Mushroom · Card-Secondary · Buchstabenabstand."
+    description: "Mushroom · Card-Secondary · Buchstabenabstand.",
+    description_en: "Mushroom · Card-Secondary · Letter spacing."
   },
   {
     name: "--mush-card-secondary-line-height",
     type: "raw",
     category: "card-secondary",
-    description: "Mushroom · Card-Secondary · CSS-`line-height`."
+    description: "Mushroom · Card-Secondary · CSS-`line-height`.",
+    description_en: "Mushroom · Card-Secondary · CSS `line-height`."
   },
   {
     name: "--mush-title-color",
     type: "color",
     category: "title",
-    description: "Mushroom · Title · Farbe von Title-Cards."
+    description: "Mushroom · Title · Farbe von Title-Cards.",
+    description_en: "Mushroom · Title · Color of title cards."
   },
   {
     name: "--mush-title-font-size",
@@ -2678,13 +2956,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 10,
     max: 48,
-    description: "Mushroom · Title · Schriftgröße."
+    description: "Mushroom · Title · Schriftgröße.",
+    description_en: "Mushroom · Title · Font size."
   },
   {
     name: "--mush-title-font-weight",
     type: "raw",
     category: "title",
-    description: "Mushroom · Title · CSS-`font-weight`."
+    description: "Mushroom · Title · CSS-`font-weight`.",
+    description_en: "Mushroom · Title · CSS `font-weight`."
   },
   {
     name: "--mush-title-letter-spacing",
@@ -2697,13 +2977,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     min: -0.1,
     max: 0.5,
     step: 0.01,
-    description: "Mushroom · Title · Buchstabenabstand."
+    description: "Mushroom · Title · Buchstabenabstand.",
+    description_en: "Mushroom · Title · Letter spacing."
   },
   {
     name: "--mush-title-line-height",
     type: "raw",
     category: "title",
-    description: "Mushroom · Title · CSS-`line-height`."
+    description: "Mushroom · Title · CSS-`line-height`.",
+    description_en: "Mushroom · Title · CSS `line-height`."
   },
   {
     name: "--mush-title-padding",
@@ -2715,7 +2997,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Mushroom · Title · Innenabstand der Title-Card."
+    description: "Mushroom · Title · Innenabstand der Title-Card.",
+    description_en: "Mushroom · Title · Inner padding of the title card."
   },
   {
     name: "--mush-title-spacing",
@@ -2727,13 +3010,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Mushroom · Title · Abstand zwischen Title und folgendem Element."
+    description: "Mushroom · Title · Abstand zwischen Title und folgendem Element.",
+    description_en: "Mushroom · Title · Spacing between title and following element."
   },
   {
     name: "--mush-subtitle-color",
     type: "color",
     category: "subtitle",
-    description: "Mushroom · Subtitle · Farbe von Subtitle-Texten."
+    description: "Mushroom · Subtitle · Farbe von Subtitle-Texten.",
+    description_en: "Mushroom · Subtitle · Color of subtitle text."
   },
   {
     name: "--mush-subtitle-font-size",
@@ -2746,13 +3031,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 8,
     max: 32,
-    description: "Mushroom · Subtitle · Schriftgröße."
+    description: "Mushroom · Subtitle · Schriftgröße.",
+    description_en: "Mushroom · Subtitle · Font size."
   },
   {
     name: "--mush-subtitle-font-weight",
     type: "raw",
     category: "subtitle",
-    description: "Mushroom · Subtitle · CSS-`font-weight`."
+    description: "Mushroom · Subtitle · CSS-`font-weight`.",
+    description_en: "Mushroom · Subtitle · CSS `font-weight`."
   },
   {
     name: "--mush-subtitle-letter-spacing",
@@ -2765,13 +3052,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     min: -0.1,
     max: 0.5,
     step: 0.01,
-    description: "Mushroom · Subtitle · Buchstabenabstand."
+    description: "Mushroom · Subtitle · Buchstabenabstand.",
+    description_en: "Mushroom · Subtitle · Letter spacing."
   },
   {
     name: "--mush-subtitle-line-height",
     type: "raw",
     category: "subtitle",
-    description: "Mushroom · Subtitle · CSS-`line-height`."
+    description: "Mushroom · Subtitle · CSS-`line-height`.",
+    description_en: "Mushroom · Subtitle · CSS `line-height`."
   },
   {
     name: "--mush-icon-border-radius",
@@ -2783,7 +3072,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Mushroom · Icon · Ecken-Rundung des Icon-Hintergrund-Containers. 50% = Kreis."
+    description: "Mushroom · Icon · Ecken-Rundung des Icon-Hintergrund-Containers. 50% = Kreis.",
+    description_en: "Mushroom · Icon · Corner radius of the icon background container. 50% = circle."
   },
   {
     name: "--mush-icon-size",
@@ -2795,7 +3085,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 16,
     max: 100,
-    description: "Mushroom · Icon · Größe des Icon-Containers."
+    description: "Mushroom · Icon · Größe des Icon-Containers.",
+    description_en: "Mushroom · Icon · Size of the icon container."
   },
   {
     name: "--mush-icon-symbol-size",
@@ -2807,7 +3098,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 8,
     max: 80,
-    description: "Mushroom · Icon · Größe des eigentlichen Icon-Symbols innerhalb des Containers."
+    description: "Mushroom · Icon · Größe des eigentlichen Icon-Symbols innerhalb des Containers.",
+    description_en: "Mushroom · Icon · Size of the actual icon symbol inside the container."
   },
   {
     name: "--mush-badge-border-radius",
@@ -2819,7 +3111,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Mushroom · Badge · Ecken-Rundung der State-Badge."
+    description: "Mushroom · Badge · Ecken-Rundung der State-Badge.",
+    description_en: "Mushroom · Badge · Corner radius of the state badge."
   },
   {
     name: "--mush-badge-icon-size",
@@ -2831,7 +3124,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 4,
     max: 40,
-    description: "Mushroom · Badge · Größe des Badge-Icons."
+    description: "Mushroom · Badge · Größe des Badge-Icons.",
+    description_en: "Mushroom · Badge · Size of the badge icon."
   },
   {
     name: "--mush-badge-size",
@@ -2843,7 +3137,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 8,
     max: 60,
-    description: "Mushroom · Badge · Größe der gesamten Badge."
+    description: "Mushroom · Badge · Größe der gesamten Badge.",
+    description_en: "Mushroom · Badge · Size of the entire badge."
   },
   {
     name: "--mush-chip-avatar-border-radius",
@@ -2855,7 +3150,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Mushroom · Chip · Ecken-Rundung des Avatar-Bildes im Chip."
+    description: "Mushroom · Chip · Ecken-Rundung des Avatar-Bildes im Chip.",
+    description_en: "Mushroom · Chip · Corner radius of the avatar image inside the chip."
   },
   {
     name: "--mush-chip-avatar-padding",
@@ -2866,19 +3162,22 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 20,
-    description: "Mushroom · Chip · Innenabstand um den Avatar."
+    description: "Mushroom · Chip · Innenabstand um den Avatar.",
+    description_en: "Mushroom · Chip · Inner padding around the avatar."
   },
   {
     name: "--mush-chip-background",
     type: "color",
     category: "chip",
-    description: "Mushroom · Chip · Hintergrund-Farbe der Chip-Container."
+    description: "Mushroom · Chip · Hintergrund-Farbe der Chip-Container.",
+    description_en: "Mushroom · Chip · Background color of the chip containers."
   },
   {
     name: "--mush-chip-border-color",
     type: "color",
     category: "chip",
-    description: "Mushroom · Chip · Border-Farbe der Chips."
+    description: "Mushroom · Chip · Border-Farbe der Chips.",
+    description_en: "Mushroom · Chip · Border color of the chips."
   },
   {
     name: "--mush-chip-border-radius",
@@ -2890,7 +3189,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Mushroom · Chip · Ecken-Rundung der Chips."
+    description: "Mushroom · Chip · Ecken-Rundung der Chips.",
+    description_en: "Mushroom · Chip · Corner radius of the chips."
   },
   {
     name: "--mush-chip-border-width",
@@ -2901,13 +3201,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 8,
-    description: "Mushroom · Chip · Border-Breite."
+    description: "Mushroom · Chip · Border-Breite.",
+    description_en: "Mushroom · Chip · Border width."
   },
   {
     name: "--mush-chip-box-shadow",
     type: "shadow",
     category: "chip",
-    description: "Mushroom · Chip · Schatten unter Chips. `none` für flach."
+    description: "Mushroom · Chip · Schatten unter Chips. `none` für flach.",
+    description_en: "Mushroom · Chip · Shadow under chips. `none` for flat."
   },
   {
     name: "--mush-chip-font-size",
@@ -2919,13 +3221,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 8,
     max: 24,
-    description: "Mushroom · Chip · Schriftgröße in Chips."
+    description: "Mushroom · Chip · Schriftgröße in Chips.",
+    description_en: "Mushroom · Chip · Font size in chips."
   },
   {
     name: "--mush-chip-font-weight",
     type: "raw",
     category: "chip",
-    description: "Mushroom · Chip · `font-weight` in Chips."
+    description: "Mushroom · Chip · `font-weight` in Chips.",
+    description_en: "Mushroom · Chip · `font-weight` in chips."
   },
   {
     name: "--mush-chip-height",
@@ -2937,7 +3241,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 16,
     max: 80,
-    description: "Mushroom · Chip · Höhe der Chips."
+    description: "Mushroom · Chip · Höhe der Chips.",
+    description_en: "Mushroom · Chip · Height of the chips."
   },
   {
     name: "--mush-chip-icon-size",
@@ -2949,7 +3254,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 8,
     max: 40,
-    description: "Mushroom · Chip · Icon-Größe in Chips."
+    description: "Mushroom · Chip · Icon-Größe in Chips.",
+    description_en: "Mushroom · Chip · Icon size in chips."
   },
   {
     name: "--mush-chip-padding",
@@ -2961,7 +3267,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 30,
-    description: "Mushroom · Chip · Innen-Padding der Chips."
+    description: "Mushroom · Chip · Innen-Padding der Chips.",
+    description_en: "Mushroom · Chip · Inner padding of the chips."
   },
   {
     name: "--mush-chip-spacing",
@@ -2973,7 +3280,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 30,
-    description: "Mushroom · Chip · Abstand zwischen Chips."
+    description: "Mushroom · Chip · Abstand zwischen Chips.",
+    description_en: "Mushroom · Chip · Spacing between chips."
   },
   {
     name: "--mush-control-border-radius",
@@ -2985,13 +3293,15 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 50,
-    description: "Mushroom · Control · Ecken-Rundung der Control-Elemente (Sliders, Buttons)."
+    description: "Mushroom · Control · Ecken-Rundung der Control-Elemente (Sliders, Buttons).",
+    description_en: "Mushroom · Control · Corner radius of control elements (sliders, buttons)."
   },
   {
     name: "--mush-control-button-ratio",
     type: "raw",
     category: "control",
-    description: "Mushroom · Control · Verhältnis Button-Breite zur Höhe (unitless Zahl, z.B. `1` = quadratisch)."
+    description: "Mushroom · Control · Verhältnis Button-Breite zur Höhe (unitless Zahl, z.B. `1` = quadratisch).",
+    description_en: "Mushroom · Control · Ratio of button width to height (unitless number, e.g. `1` = square)."
   },
   {
     name: "--mush-control-height",
@@ -3003,7 +3313,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 24,
     max: 80,
-    description: "Mushroom · Control · Höhe der Control-Buttons/Slider."
+    description: "Mushroom · Control · Höhe der Control-Buttons/Slider.",
+    description_en: "Mushroom · Control · Height of the control buttons/sliders."
   },
   {
     name: "--mush-control-icon-size",
@@ -3015,7 +3326,8 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 12,
     max: 48,
-    description: "Mushroom · Control · Icon-Größe in Controls."
+    description: "Mushroom · Control · Icon-Größe in Controls.",
+    description_en: "Mushroom · Control · Icon size in controls."
   },
   {
     name: "--mush-control-spacing",
@@ -3027,25 +3339,29 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 30,
-    description: "Mushroom · Control · Abstand zwischen Control-Elementen."
+    description: "Mushroom · Control · Abstand zwischen Control-Elementen.",
+    description_en: "Mushroom · Control · Spacing between control elements."
   },
   {
     name: "--mush-input-number-debounce",
     type: "raw",
     category: "layout",
-    description: "Mushroom · Misc · Debounce-Zeit für Number-Inputs in ms (z.B. `1000`)."
+    description: "Mushroom · Misc · Debounce-Zeit für Number-Inputs in ms (z.B. `1000`).",
+    description_en: "Mushroom · Misc · Debounce time for number inputs in ms (e.g. `1000`)."
   },
   {
     name: "--mush-layout-align",
     type: "raw",
     category: "layout",
-    description: "Mushroom · Misc · Layout-Ausrichtung (flex-start, center, flex-end)."
+    description: "Mushroom · Misc · Layout-Ausrichtung (flex-start, center, flex-end).",
+    description_en: "Mushroom · Misc · Layout alignment (flex-start, center, flex-end)."
   },
   {
     name: "--mush-slider-threshold",
     type: "raw",
     category: "layout",
-    description: "Mushroom · Misc · Schwellwert für Slider-Aktivierung (unitless Zahl)."
+    description: "Mushroom · Misc · Schwellwert für Slider-Aktivierung (unitless Zahl).",
+    description_en: "Mushroom · Misc · Threshold for slider activation (unitless number)."
   },
   {
     name: "--mush-spacing",
@@ -3057,399 +3373,761 @@ const qe = "bubble-card", Je = "Bubble Card", Ye = "0.1.0", Xe = ">=2.0.0", Qe =
     ],
     min: 0,
     max: 40,
-    description: "Mushroom · Misc · Generischer Standard-Abstand zwischen Elementen."
+    description: "Mushroom · Misc · Generischer Standard-Abstand zwischen Elementen.",
+    description_en: "Mushroom · Misc · Generic default spacing between elements."
   },
   {
     name: "--mush-rgb-amber",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Amber als 'R, G, B'. Für rgba(var(--mush-rgb-amber), alpha)."
+    description: "Mushroom · Material-RGB · Amber als 'R, G, B'. Für rgba(var(--mush-rgb-amber), alpha).",
+    description_en: "Mushroom · Material-RGB · Amber as 'R, G, B'. For rgba(var(--mush-rgb-amber), alpha)."
   },
   {
     name: "--mush-rgb-black",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Schwarz."
+    description: "Mushroom · Material-RGB · Schwarz.",
+    description_en: "Mushroom · Material-RGB · Black."
   },
   {
     name: "--mush-rgb-blue",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Blau."
+    description: "Mushroom · Material-RGB · Blau.",
+    description_en: "Mushroom · Material-RGB · Blue."
   },
   {
     name: "--mush-rgb-blue-grey",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Blau-Grau."
+    description: "Mushroom · Material-RGB · Blau-Grau.",
+    description_en: "Mushroom · Material-RGB · Blue-grey."
   },
   {
     name: "--mush-rgb-brown",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Braun."
+    description: "Mushroom · Material-RGB · Braun.",
+    description_en: "Mushroom · Material-RGB · Brown."
   },
   {
     name: "--mush-rgb-cyan",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Cyan."
+    description: "Mushroom · Material-RGB · Cyan.",
+    description_en: "Mushroom · Material-RGB · Cyan."
   },
   {
     name: "--mush-rgb-dark-grey",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Dunkelgrau."
+    description: "Mushroom · Material-RGB · Dunkelgrau.",
+    description_en: "Mushroom · Material-RGB · Dark grey."
   },
   {
     name: "--mush-rgb-deep-orange",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Dunkel-Orange."
+    description: "Mushroom · Material-RGB · Dunkel-Orange.",
+    description_en: "Mushroom · Material-RGB · Deep orange."
   },
   {
     name: "--mush-rgb-deep-purple",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Dunkel-Violett."
+    description: "Mushroom · Material-RGB · Dunkel-Violett.",
+    description_en: "Mushroom · Material-RGB · Deep purple."
   },
   {
     name: "--mush-rgb-green",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Grün."
+    description: "Mushroom · Material-RGB · Grün.",
+    description_en: "Mushroom · Material-RGB · Green."
   },
   {
     name: "--mush-rgb-grey",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Grau."
+    description: "Mushroom · Material-RGB · Grau.",
+    description_en: "Mushroom · Material-RGB · Grey."
   },
   {
     name: "--mush-rgb-indigo",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Indigo."
+    description: "Mushroom · Material-RGB · Indigo.",
+    description_en: "Mushroom · Material-RGB · Indigo."
   },
   {
     name: "--mush-rgb-light-blue",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Hellblau."
+    description: "Mushroom · Material-RGB · Hellblau.",
+    description_en: "Mushroom · Material-RGB · Light blue."
   },
   {
     name: "--mush-rgb-light-green",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Hellgrün."
+    description: "Mushroom · Material-RGB · Hellgrün.",
+    description_en: "Mushroom · Material-RGB · Light green."
   },
   {
     name: "--mush-rgb-light-grey",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Hellgrau."
+    description: "Mushroom · Material-RGB · Hellgrau.",
+    description_en: "Mushroom · Material-RGB · Light grey."
   },
   {
     name: "--mush-rgb-lime",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Lime."
+    description: "Mushroom · Material-RGB · Lime.",
+    description_en: "Mushroom · Material-RGB · Lime."
   },
   {
     name: "--mush-rgb-orange",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Orange."
+    description: "Mushroom · Material-RGB · Orange.",
+    description_en: "Mushroom · Material-RGB · Orange."
   },
   {
     name: "--mush-rgb-pink",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Pink."
+    description: "Mushroom · Material-RGB · Pink.",
+    description_en: "Mushroom · Material-RGB · Pink."
   },
   {
     name: "--mush-rgb-purple",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Violett."
+    description: "Mushroom · Material-RGB · Violett.",
+    description_en: "Mushroom · Material-RGB · Purple."
   },
   {
     name: "--mush-rgb-red",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Rot."
+    description: "Mushroom · Material-RGB · Rot.",
+    description_en: "Mushroom · Material-RGB · Red."
   },
   {
     name: "--mush-rgb-teal",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Teal."
+    description: "Mushroom · Material-RGB · Teal.",
+    description_en: "Mushroom · Material-RGB · Teal."
   },
   {
     name: "--mush-rgb-white",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Weiss."
+    description: "Mushroom · Material-RGB · Weiss.",
+    description_en: "Mushroom · Material-RGB · White."
   },
   {
     name: "--mush-rgb-yellow",
     type: "raw",
     category: "rgb-material",
-    description: "Mushroom · Material-RGB · Gelb."
+    description: "Mushroom · Material-RGB · Gelb.",
+    description_en: "Mushroom · Material-RGB · Yellow."
   },
   {
     name: "--mush-rgb-danger",
     type: "raw",
     category: "rgb-semantic",
-    description: "Mushroom · Semantic · Danger/Error (typisch rot)."
+    description: "Mushroom · Semantic · Danger/Error (typisch rot).",
+    description_en: "Mushroom · Semantic · Danger/error (typically red)."
   },
   {
     name: "--mush-rgb-disabled",
     type: "raw",
     category: "rgb-semantic",
-    description: "Mushroom · Semantic · Disabled-Zustand (typisch grau)."
+    description: "Mushroom · Semantic · Disabled-Zustand (typisch grau).",
+    description_en: "Mushroom · Semantic · Disabled state (typically grey)."
   },
   {
     name: "--mush-rgb-info",
     type: "raw",
     category: "rgb-semantic",
-    description: "Mushroom · Semantic · Info (typisch blau)."
+    description: "Mushroom · Semantic · Info (typisch blau).",
+    description_en: "Mushroom · Semantic · Info (typically blue)."
   },
   {
     name: "--mush-rgb-success",
     type: "raw",
     category: "rgb-semantic",
-    description: "Mushroom · Semantic · Success (typisch grün)."
+    description: "Mushroom · Semantic · Success (typisch grün).",
+    description_en: "Mushroom · Semantic · Success (typically green)."
   },
   {
     name: "--mush-rgb-warning",
     type: "raw",
     category: "rgb-semantic",
-    description: "Mushroom · Semantic · Warning (typisch gelb/orange)."
+    description: "Mushroom · Semantic · Warning (typisch gelb/orange).",
+    description_en: "Mushroom · Semantic · Warning (typically yellow/orange)."
   },
   {
     name: "--mush-rgb-update-installing",
     type: "raw",
     category: "rgb-semantic",
-    description: "Mushroom · Semantic · Update wird gerade installiert."
+    description: "Mushroom · Semantic · Update wird gerade installiert.",
+    description_en: "Mushroom · Semantic · Update currently installing."
   },
   {
     name: "--mush-rgb-update-off",
     type: "raw",
     category: "rgb-semantic",
-    description: "Mushroom · Semantic · Kein Update verfügbar."
+    description: "Mushroom · Semantic · Kein Update verfügbar.",
+    description_en: "Mushroom · Semantic · No update available."
   },
   {
     name: "--mush-rgb-state-update-on",
     type: "raw",
     category: "rgb-semantic",
-    description: "Mushroom · Semantic · Update verfügbar (typisch orange)."
+    description: "Mushroom · Semantic · Update verfügbar (typisch orange).",
+    description_en: "Mushroom · Semantic · Update available (typically orange)."
   },
   {
     name: "--mush-rgb-state-entity",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Default-Farbe für inaktive Entities."
+    description: "Mushroom · State · Default-Farbe für inaktive Entities.",
+    description_en: "Mushroom · State · Default color for inactive entities."
   },
   {
     name: "--mush-rgb-state-alarm-armed",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Alarm armiert."
+    description: "Mushroom · State · Alarm armiert.",
+    description_en: "Mushroom · State · Alarm armed."
   },
   {
     name: "--mush-rgb-state-alarm-disarmed",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Alarm deaktiviert."
+    description: "Mushroom · State · Alarm deaktiviert.",
+    description_en: "Mushroom · State · Alarm disarmed."
   },
   {
     name: "--mush-rgb-state-alarm-triggered",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Alarm ausgelöst."
+    description: "Mushroom · State · Alarm ausgelöst.",
+    description_en: "Mushroom · State · Alarm triggered."
   },
   {
     name: "--mush-rgb-state-climate-auto",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Climate-Auto-Modus."
+    description: "Mushroom · State · Climate-Auto-Modus.",
+    description_en: "Mushroom · State · Climate auto mode."
   },
   {
     name: "--mush-rgb-state-climate-cool",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Climate-Cool-Modus (Kühlen)."
+    description: "Mushroom · State · Climate-Cool-Modus (Kühlen).",
+    description_en: "Mushroom · State · Climate cool mode (cooling)."
   },
   {
     name: "--mush-rgb-state-climate-dry",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Climate-Dry-Modus (Entfeuchten)."
+    description: "Mushroom · State · Climate-Dry-Modus (Entfeuchten).",
+    description_en: "Mushroom · State · Climate dry mode (dehumidifying)."
   },
   {
     name: "--mush-rgb-state-climate-fan-only",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Climate-Fan-Only-Modus."
+    description: "Mushroom · State · Climate-Fan-Only-Modus.",
+    description_en: "Mushroom · State · Climate fan-only mode."
   },
   {
     name: "--mush-rgb-state-climate-heat",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Climate-Heat-Modus (Heizen)."
+    description: "Mushroom · State · Climate-Heat-Modus (Heizen).",
+    description_en: "Mushroom · State · Climate heat mode (heating)."
   },
   {
     name: "--mush-rgb-state-climate-heat-cool",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Climate-Heat-Cool-Modus (Hybrid)."
+    description: "Mushroom · State · Climate-Heat-Cool-Modus (Hybrid).",
+    description_en: "Mushroom · State · Climate heat-cool mode (hybrid)."
   },
   {
     name: "--mush-rgb-state-climate-idle",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Climate-Idle-Zustand."
+    description: "Mushroom · State · Climate-Idle-Zustand.",
+    description_en: "Mushroom · State · Climate idle state."
   },
   {
     name: "--mush-rgb-state-climate-off",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Climate-Off."
+    description: "Mushroom · State · Climate-Off.",
+    description_en: "Mushroom · State · Climate off."
   },
   {
     name: "--mush-rgb-state-cover-closed",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Cover geschlossen."
+    description: "Mushroom · State · Cover geschlossen.",
+    description_en: "Mushroom · State · Cover closed."
   },
   {
     name: "--mush-rgb-state-cover-open",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Cover offen."
+    description: "Mushroom · State · Cover offen.",
+    description_en: "Mushroom · State · Cover open."
   },
   {
     name: "--mush-rgb-state-fan",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Fan-Entity."
+    description: "Mushroom · State · Fan-Entity.",
+    description_en: "Mushroom · State · Fan entity."
   },
   {
     name: "--mush-rgb-state-humidifier",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Humidifier-Entity."
+    description: "Mushroom · State · Humidifier-Entity.",
+    description_en: "Mushroom · State · Humidifier entity."
   },
   {
     name: "--mush-rgb-state-light",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Light-Entity (typisch amber/gelb)."
+    description: "Mushroom · State · Light-Entity (typisch amber/gelb).",
+    description_en: "Mushroom · State · Light entity (typically amber/yellow)."
   },
   {
     name: "--mush-rgb-state-lock",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Lock-Entity (generisch)."
+    description: "Mushroom · State · Lock-Entity (generisch).",
+    description_en: "Mushroom · State · Lock entity (generic)."
   },
   {
     name: "--mush-rgb-state-lock-locked",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Lock im 'Locked'-State."
+    description: "Mushroom · State · Lock im 'Locked'-State.",
+    description_en: "Mushroom · State · Lock in 'locked' state."
   },
   {
     name: "--mush-rgb-state-lock-pending",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Lock im 'Pending'-State."
+    description: "Mushroom · State · Lock im 'Pending'-State.",
+    description_en: "Mushroom · State · Lock in 'pending' state."
   },
   {
     name: "--mush-rgb-state-lock-unlocked",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Lock im 'Unlocked'-State."
+    description: "Mushroom · State · Lock im 'Unlocked'-State.",
+    description_en: "Mushroom · State · Lock in 'unlocked' state."
   },
   {
     name: "--mush-rgb-state-media-player",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Media-Player-Entity."
+    description: "Mushroom · State · Media-Player-Entity.",
+    description_en: "Mushroom · State · Media player entity."
   },
   {
     name: "--mush-rgb-state-number",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Number-Entity."
+    description: "Mushroom · State · Number-Entity.",
+    description_en: "Mushroom · State · Number entity."
   },
   {
     name: "--mush-rgb-state-person-home",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Person zuhause."
+    description: "Mushroom · State · Person zuhause.",
+    description_en: "Mushroom · State · Person home."
   },
   {
     name: "--mush-rgb-state-person-not-home",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Person nicht zuhause."
+    description: "Mushroom · State · Person nicht zuhause.",
+    description_en: "Mushroom · State · Person not home."
   },
   {
     name: "--mush-rgb-state-person-unknown",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Person Status unbekannt."
+    description: "Mushroom · State · Person Status unbekannt.",
+    description_en: "Mushroom · State · Person status unknown."
   },
   {
     name: "--mush-rgb-state-person-zone",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Person in einer Zone."
+    description: "Mushroom · State · Person in einer Zone.",
+    description_en: "Mushroom · State · Person in a zone."
   },
   {
     name: "--mush-rgb-state-vacuum",
     type: "raw",
     category: "rgb-states",
-    description: "Mushroom · State · Vacuum-Entity."
+    description: "Mushroom · State · Vacuum-Entity.",
+    description_en: "Mushroom · State · Vacuum entity."
   }
-], ur = {
-  id: vt,
-  categories: _t,
-  variables: xt
-}, pr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+], gr = {
+  id: kt,
+  categories: Ct,
+  variables: St
+}, fr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  categories: _t,
-  default: ur,
-  id: vt,
-  variables: xt
-}, Symbol.toStringTag, { value: "Module" })), mr = /-(radius|size|width|height|padding|margin|gap)$/, hr = /-(color|bg|background)$/, br = /-(image|background-image)$/, gr = [
+  categories: Ct,
+  default: gr,
+  id: kt,
+  variables: St
+}, Symbol.toStringTag, { value: "Module" })), yr = {
+  // panel-main
+  "panel.tab_themes": "Themes",
+  "panel.tab_modules": "Bubble Card Module",
+  "panel.tab_compare": "Vergleichen",
+  "panel.hacs_warn": "HACS-Detection fehlgeschlagen — Plugin-Filter ist inaktiv, alle Plugins werden gezeigt (auch wenn das zugehörige Custom-Repo gar nicht installiert ist).",
+  "panel.hacs_warn_dismiss": "Hinweis ausblenden",
+  // common
+  "common.error_prefix": "Fehler",
+  // theme-picker
+  "picker.loading": "Lade Themes…",
+  "picker.heading": "Welches Theme möchtest du tunen?",
+  "picker.empty": "Keine Themes gefunden. Lege eine YAML-Datei in themes/ an.",
+  "picker.var_count": "{n} Variablen",
+  "picker.yaml_errors_heading": "YAML-Fehler in folgenden Dateien:",
+  // module-picker
+  "module_picker.loading": "Lade Module…",
+  "module_picker.heading": "Welches Bubble-Card-Modul möchtest du anpassen?",
+  "module_picker.no_root": "Kein bubble_card/modules/-Verzeichnis gefunden. Bubble Card legt das automatisch an, sobald du dein erstes Modul speicherst — oder leg es manuell unter <config>/bubble_card/modules/ an.",
+  "module_picker.empty": "Keine Module in bubble_card/modules/ gefunden.",
+  "module_picker.tag_global": "global",
+  "module_picker.tag_no_code": "kein code",
+  // common
+  "common.backup": "Backup",
+  // compare-view
+  "compare.mode_default": "Default",
+  "compare.need_two_themes": "Theme-Switcher braucht mindestens 2 Themes im themes/-Verzeichnis (aktuell {count}).",
+  "compare.theme_a": "Theme A",
+  "compare.theme_b": "Theme B",
+  "compare.diff_only": "Nur Unterschiede",
+  "compare.no_theme": "(kein Theme)",
+  "compare.loading_theme": "Lade Theme-Inhalt…",
+  "compare.pick_both": "Wähle beide Themes oben aus.",
+  "compare.mode_only_in": "Nur in {side} vorhanden",
+  "compare.mode_label": "{mode}-Mode",
+  "compare.mode_missing_hint": "{theme} hat keine {mode}-Mode (Copy würde sie anlegen).",
+  "compare.summary": "{themeA} hat {countA} Vars, {themeB} hat {countB}. Insgesamt",
+  "compare.summary_diffs": "{n} Unterschiede oder einseitige Einträge.",
+  "compare.no_diffs": "Keine Unterschiede zwischen den Themes in der {mode}-Mode.",
+  "compare.col_variable": "Variable",
+  "compare.col_action": "Aktion",
+  "compare.not_in_theme": "(nicht im Theme)",
+  "compare.copy_no_value": "{side} hat keinen Wert",
+  "compare.copy_tooltip": "Wert von {from} nach {to} kopieren",
+  "compare.copy_confirm": `Kopieren: '{key}' = '{value}' von {from} nach {to} ({file})
+Mode: {mode}
+
+Ein Backup von {file} wird automatisch angelegt.`,
+  "compare.copy_confirm_new_mode": "— wird neu angelegt",
+  "compare.copy_success": "{key} kopiert nach {theme} ({mode})",
+  "compare.copy_failed": "Kopieren fehlgeschlagen",
+  // common toolbar / buttons
+  "common.back": "← Zurück",
+  "common.save": "Speichern",
+  "common.saving": "Speichere…",
+  "common.discard": "Verwerfen",
+  "common.dirty_badge": "geändert",
+  "common.notice": "Hinweis",
+  "common.fallback": "Fallback",
+  "common.tag_heuristic": "heuristik",
+  "common.save_failed": "Speichern fehlgeschlagen",
+  // module-editor
+  "module_editor.loading": "Lade Modul…",
+  "module_editor.back_confirm": "Ungespeicherte Änderungen am Modul gehen verloren. Trotzdem zurück?",
+  "module_editor.save_confirm": `Modul '{moduleId}' in '{file}' speichern?
+
+Ein Backup wird automatisch unter bubble_card/.backups/ angelegt.`,
+  "module_editor.reset_confirm": "Alle Änderungen am Modul werden auf den Original-Zustand zurückgesetzt. Fortfahren?",
+  "module_editor.reload_notice": "Bubble Card lädt Module beim Card-Render. Nach Save musst du deine Dashboards neu laden (Cmd+R), damit die Änderungen wirksam werden.",
+  "module_editor.metadata_heading": "Metadaten",
+  "module_editor.field_name": "Name",
+  "module_editor.field_description": "Description",
+  "module_editor.field_version": "Version",
+  "module_editor.field_supported": "Supported",
+  "module_editor.supported_help": "Komma-getrennte Card-Types (button, climate, cover, horizontal-buttons-stack, media-player, pop-up, select, separator, sub-buttons).",
+  "module_editor.extra_keys": "Weitere Felder im YAML (werden beim Save 1:1 erhalten)",
+  "module_editor.css_heading": "CSS-Code",
+  "module_editor.vars_heading": "Verwendete Variablen",
+  "module_editor.vars_empty": "Keine var(--…) im Code gefunden.",
+  "module_editor.save_success": "Modul gespeichert",
+  "module_editor.save_success_reload": "Lade jetzt das Dashboard neu (Cmd+R), damit die Änderung wirksam wird.",
+  // editor-view
+  "editor.mode_default": "Default",
+  "editor.cat_unknown": "Unbekannt (Heuristik)",
+  "editor.cat_other": "Sonstige",
+  "editor.preview": "Preview",
+  "editor.preview_tooltip": "Live-Preview eines Dashboards in einem iframe daneben",
+  "editor.discard_all": "Alles verwerfen",
+  "editor.mode_bar_label": "Mode",
+  "editor.tab_in_theme": "Im Theme",
+  "editor.tag_default": "default",
+  "editor.tag_adding": "+ wird ergänzt",
+  "editor.tag_removing": "× wird entfernt",
+  "editor.loading": "Lade Theme…",
+  "editor.empty_default": "Keine editierbaren Variablen in diesem Theme.",
+  "editor.empty_mode": "Keine Override-Variablen für Mode '{mode}' im Theme. Wechsle auf einen Plugin-Tab um welche hinzuzufügen.",
+  "editor.empty_plugin": "Keine Variablen in diesem Plugin-Tab.",
+  "editor.notice_skipped_prefix": "Diese Theme-Datei enthält komplexe Werte unter",
+  "editor.notice_skipped_suffix": ", die der Variablen-Editor nicht abbildet (verschachtelte Strukturen).",
+  "editor.notice_mode_prefix": "Edits hier landen unter",
+  "editor.notice_mode_suffix": "im YAML und wirken in HA nur wenn dieser Mode aktiv ist. Live-Preview greift dennoch unabhängig vom HA-Mode — schalte HA ggf. selbst um, um den richtigen Render-Kontext zu sehen.",
+  "editor.notice_plugin_strong": "Plugin-Tab",
+  "editor.notice_plugin_prefix": "alle {n} Schema-Variablen werden gezeigt. Variablen mit",
+  "editor.notice_plugin_middle": "-Tag stehen (noch) nicht im Theme. Sobald du einen Wert änderst, wird die Variable beim Speichern als",
+  "editor.notice_plugin_top_level": "Top-Level-Eintrag",
+  "editor.notice_plugin_override": "Override unter",
+  "editor.notice_plugin_suffix": "ins Theme aufgenommen.",
+  "editor.save_confirm": `{what} in '{file}' > '{theme}' speichern?
+
+Ein Backup wird automatisch unter themes/.backups/ angelegt.`,
+  "editor.save_part_modify_one": "{n} bestehende Änderung",
+  "editor.save_part_modify_many": "{n} bestehende Änderungen",
+  "editor.save_part_add_one": "{n} neue Variable",
+  "editor.save_part_add_many": "{n} neue Variablen",
+  "editor.save_part_remove_one": "{n} Entfernung",
+  "editor.save_part_remove_many": "{n} Entfernungen",
+  "editor.reset_confirm": "{n} ungespeicherte Änderung(en) werden verworfen (über alle Modes und Tabs). Fortfahren?",
+  "editor.back_confirm": "{n} ungespeicherte Änderung(en) gehen verloren. Trotzdem zurück?",
+  "editor.save_success": "Gespeichert",
+  "editor.dirty_count_one": "{n} Änderung",
+  "editor.dirty_count_many": "{n} Änderungen",
+  "editor.dirty_adding": "{n} neu",
+  "editor.dirty_removing": "{n} ×",
+  "editor.reset_row_tooltip": "Auf Original zurücksetzen (verwirft auch eine Entfernen-Markierung)",
+  "editor.remove_row_tooltip": "Variable beim nächsten Speichern aus dem Theme entfernen",
+  "editor.remove_row_disabled_tooltip": "Nicht im Theme — nichts zu entfernen",
+  // preview-pane
+  "preview.label": "Preview",
+  "preview.reload_tooltip": "iframe neu laden",
+  "preview.overrides_one": "{n} override",
+  "preview.overrides_many": "{n} overrides",
+  "preview.override_failed": "iframe-CSS-Override fehlgeschlagen (möglicherweise Cross-Origin)",
+  // background-picker
+  "bg.no_image": "(kein Bild — '{value}')",
+  "bg.url_placeholder": "https://… oder /local/wallpaper.jpg (= /homeassistant/www/wallpaper.jpg)",
+  "bg.modifier": "Modifier",
+  "bg.modifier_placeholder": "z.B. center / cover no-repeat fixed",
+  "bg.preset_cover_tooltip": "Vollbild, zentriert, fixiert (Apple-/visionOS-Style)",
+  "bg.preset_contain_tooltip": "Komplett sichtbar, zentriert",
+  "bg.preset_tile_tooltip": "Bild wiederholen (Pattern)",
+  "bg.clear": "Clear",
+  "bg.clear_tooltip": "Auf 'none' setzen — kein Hintergrund-Bild"
+}, _r = {
+  // panel-main
+  "panel.tab_themes": "Themes",
+  "panel.tab_modules": "Bubble Card Modules",
+  "panel.tab_compare": "Compare",
+  "panel.hacs_warn": "HACS detection failed — plugin filter is inactive, all plugins are shown (even if the corresponding custom repository is not installed).",
+  "panel.hacs_warn_dismiss": "Dismiss notice",
+  // common
+  "common.error_prefix": "Error",
+  // theme-picker
+  "picker.loading": "Loading themes…",
+  "picker.heading": "Which theme do you want to tune?",
+  "picker.empty": "No themes found. Drop a YAML file into themes/ to get started.",
+  "picker.var_count": "{n} variables",
+  "picker.yaml_errors_heading": "YAML errors in these files:",
+  // module-picker
+  "module_picker.loading": "Loading modules…",
+  "module_picker.heading": "Which Bubble Card module do you want to tweak?",
+  "module_picker.no_root": "No bubble_card/modules/ directory found. Bubble Card creates it automatically when you save your first module — or create it manually at <config>/bubble_card/modules/.",
+  "module_picker.empty": "No modules found in bubble_card/modules/.",
+  "module_picker.tag_global": "global",
+  "module_picker.tag_no_code": "no code",
+  // common
+  "common.backup": "Backup",
+  // compare-view
+  "compare.mode_default": "Default",
+  "compare.need_two_themes": "Theme switcher needs at least 2 themes in themes/ (currently {count}).",
+  "compare.theme_a": "Theme A",
+  "compare.theme_b": "Theme B",
+  "compare.diff_only": "Only differences",
+  "compare.no_theme": "(no theme)",
+  "compare.loading_theme": "Loading theme contents…",
+  "compare.pick_both": "Pick both themes above.",
+  "compare.mode_only_in": "Only in {side}",
+  "compare.mode_label": "{mode} mode",
+  "compare.mode_missing_hint": "{theme} has no {mode} mode (copy would create it).",
+  "compare.summary": "{themeA} has {countA} vars, {themeB} has {countB}. In total",
+  "compare.summary_diffs": "{n} differences or one-sided entries.",
+  "compare.no_diffs": "No differences between themes in {mode} mode.",
+  "compare.col_variable": "Variable",
+  "compare.col_action": "Action",
+  "compare.not_in_theme": "(not in theme)",
+  "compare.copy_no_value": "{side} has no value",
+  "compare.copy_tooltip": "Copy value from {from} to {to}",
+  "compare.copy_confirm": `Copy: '{key}' = '{value}' from {from} to {to} ({file})
+Mode: {mode}
+
+A backup of {file} will be created automatically.`,
+  "compare.copy_confirm_new_mode": "— will be created",
+  "compare.copy_success": "{key} copied to {theme} ({mode})",
+  "compare.copy_failed": "Copy failed",
+  // common toolbar / buttons
+  "common.back": "← Back",
+  "common.save": "Save",
+  "common.saving": "Saving…",
+  "common.discard": "Discard",
+  "common.dirty_badge": "modified",
+  "common.notice": "Note",
+  "common.fallback": "Fallback",
+  "common.tag_heuristic": "heuristic",
+  "common.save_failed": "Save failed",
+  // module-editor
+  "module_editor.loading": "Loading module…",
+  "module_editor.back_confirm": "Unsaved changes to the module will be lost. Go back anyway?",
+  "module_editor.save_confirm": `Save module '{moduleId}' in '{file}'?
+
+A backup will be created automatically at bubble_card/.backups/.`,
+  "module_editor.reset_confirm": "All module changes will be reverted to the original state. Continue?",
+  "module_editor.reload_notice": "Bubble Card loads modules at card-render time. After saving, reload your dashboards (Cmd+R) for the changes to take effect.",
+  "module_editor.metadata_heading": "Metadata",
+  "module_editor.field_name": "Name",
+  "module_editor.field_description": "Description",
+  "module_editor.field_version": "Version",
+  "module_editor.field_supported": "Supported",
+  "module_editor.supported_help": "Comma-separated card types (button, climate, cover, horizontal-buttons-stack, media-player, pop-up, select, separator, sub-buttons).",
+  "module_editor.extra_keys": "Additional YAML fields (preserved verbatim on save)",
+  "module_editor.css_heading": "CSS code",
+  "module_editor.vars_heading": "Used variables",
+  "module_editor.vars_empty": "No var(--…) found in code.",
+  "module_editor.save_success": "Module saved",
+  "module_editor.save_success_reload": "Reload your dashboard (Cmd+R) for the change to take effect.",
+  // editor-view
+  "editor.mode_default": "Default",
+  "editor.cat_unknown": "Unknown (heuristic)",
+  "editor.cat_other": "Other",
+  "editor.preview": "Preview",
+  "editor.preview_tooltip": "Live preview of a dashboard in an iframe next to the editor",
+  "editor.discard_all": "Discard all",
+  "editor.mode_bar_label": "Mode",
+  "editor.tab_in_theme": "In theme",
+  "editor.tag_default": "default",
+  "editor.tag_adding": "+ will be added",
+  "editor.tag_removing": "× will be removed",
+  "editor.loading": "Loading theme…",
+  "editor.empty_default": "No editable variables in this theme.",
+  "editor.empty_mode": "No override variables for mode '{mode}' in the theme. Switch to a plugin tab to add some.",
+  "editor.empty_plugin": "No variables in this plugin tab.",
+  "editor.notice_skipped_prefix": "This theme file contains complex values under",
+  "editor.notice_skipped_suffix": " that the variable editor cannot map (nested structures).",
+  "editor.notice_mode_prefix": "Edits here land under",
+  "editor.notice_mode_suffix": "in the YAML and only apply in HA when this mode is active. Live preview still works regardless of HA mode — switch HA itself if you need the matching render context.",
+  "editor.notice_plugin_strong": "Plugin tab",
+  "editor.notice_plugin_prefix": "all {n} schema variables are shown. Variables with the",
+  "editor.notice_plugin_middle": "tag are not yet in the theme. As soon as you change a value, the variable is added on save as",
+  "editor.notice_plugin_top_level": "a top-level entry",
+  "editor.notice_plugin_override": "an override under",
+  "editor.notice_plugin_suffix": "in the theme.",
+  "editor.save_confirm": `Save {what} in '{file}' > '{theme}'?
+
+A backup will be created automatically at themes/.backups/.`,
+  "editor.save_part_modify_one": "{n} existing change",
+  "editor.save_part_modify_many": "{n} existing changes",
+  "editor.save_part_add_one": "{n} new variable",
+  "editor.save_part_add_many": "{n} new variables",
+  "editor.save_part_remove_one": "{n} removal",
+  "editor.save_part_remove_many": "{n} removals",
+  "editor.reset_confirm": "{n} unsaved change(s) will be discarded (across all modes and tabs). Continue?",
+  "editor.back_confirm": "{n} unsaved change(s) will be lost. Go back anyway?",
+  "editor.save_success": "Saved",
+  "editor.dirty_count_one": "{n} change",
+  "editor.dirty_count_many": "{n} changes",
+  "editor.dirty_adding": "{n} new",
+  "editor.dirty_removing": "{n} ×",
+  "editor.reset_row_tooltip": "Reset to original (also discards a removal mark)",
+  "editor.remove_row_tooltip": "Remove the variable from the theme on next save",
+  "editor.remove_row_disabled_tooltip": "Not in theme — nothing to remove",
+  // preview-pane
+  "preview.label": "Preview",
+  "preview.reload_tooltip": "Reload iframe",
+  "preview.overrides_one": "{n} override",
+  "preview.overrides_many": "{n} overrides",
+  "preview.override_failed": "iframe CSS override failed (possibly cross-origin)",
+  // background-picker
+  "bg.no_image": "(no image — '{value}')",
+  "bg.url_placeholder": "https://… or /local/wallpaper.jpg (= /homeassistant/www/wallpaper.jpg)",
+  "bg.modifier": "Modifier",
+  "bg.modifier_placeholder": "e.g. center / cover no-repeat fixed",
+  "bg.preset_cover_tooltip": "Fullscreen, centered, fixed (Apple/visionOS style)",
+  "bg.preset_contain_tooltip": "Fully visible, centered",
+  "bg.preset_tile_tooltip": "Repeat image (pattern)",
+  "bg.clear": "Clear",
+  "bg.clear_tooltip": "Set to 'none' — no background image"
+}, de = { de: yr, en: _r }, Ae = "en";
+let W = Ae;
+function vr(e) {
+  if (!e)
+    return W = Ae, W;
+  const t = e.toLowerCase().split(/[-_]/, 1)[0];
+  return W = t in de ? t : Ae, W;
+}
+function $t() {
+  return W;
+}
+function s(e, t, r) {
+  const a = de[W][e] ?? de.en[e] ?? de.de[e] ?? t ?? e;
+  return r ? a.replace(
+    /\{(\w+)\}/g,
+    (o, i) => i in r ? String(r[i]) : `{${i}}`
+  ) : a;
+}
+const xr = /-(radius|size|width|height|padding|margin|gap)$/, wr = /-(color|bg|background)$/, kr = /-(image|background-image)$/, Cr = [
   /^#[0-9a-f]{3,8}$/i,
   // #rgb, #rrggbb, #rrggbbaa
   /^(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\s*\(/i,
   /^(transparent|currentColor|inherit)$/i
-], fr = /^var\(\s*--[A-Za-z0-9_-]*-(color|bg|background)\b/i, yr = /^-?\d*\.?\d+(px|rem|em|vh|vw|vmin|vmax|%)$/i, vr = /^var\(\s*--[A-Za-z0-9_-]*-(radius|size|width|height|padding|margin|gap)\b/i;
-function _r(t) {
-  const e = t.trim();
-  if (e) {
-    if (/url\s*\(/i.test(e) || /gradient\s*\(/i.test(e)) return "background";
-    if (gr.some((r) => r.test(e)) || fr.test(e)) return "color";
-    if (yr.test(e) || vr.test(e)) return "length";
+], Sr = /^var\(\s*--[A-Za-z0-9_-]*-(color|bg|background)\b/i, $r = /^-?\d*\.?\d+(px|rem|em|vh|vw|vmin|vmax|%)$/i, Br = /^var\(\s*--[A-Za-z0-9_-]*-(radius|size|width|height|padding|margin|gap)\b/i;
+function Mr(e) {
+  const t = e.trim();
+  if (t) {
+    if (/url\s*\(/i.test(t) || /gradient\s*\(/i.test(t)) return "background";
+    if (Cr.some((r) => r.test(t)) || Sr.test(t)) return "color";
+    if ($r.test(t) || Br.test(t)) return "length";
   }
 }
-function xr(t, e) {
-  if (/-family$/.test(t)) return "font-family";
-  if (/-shadow$/.test(t)) return "shadow";
-  if (br.test(t)) return "background";
-  if (mr.test(t)) return "length";
-  if (hr.test(t)) return "color";
-  if (e !== void 0) {
-    const r = _r(e);
+function Ar(e, t) {
+  if (/-family$/.test(e)) return "font-family";
+  if (/-shadow$/.test(e)) return "shadow";
+  if (kr.test(e)) return "background";
+  if (xr.test(e)) return "length";
+  if (wr.test(e)) return "color";
+  if (t !== void 0) {
+    const r = Mr(t);
     if (r) return r;
   }
   return "raw";
 }
-const wr = [
+const zr = [
   // Third-party Custom Cards
   { re: /^--bubble-/, label: "Bubble Card" },
   { re: /^--mush-/, label: "Mushroom" },
@@ -3484,7 +4162,7 @@ const wr = [
   { re: /^--code-editor-/, label: "HA Code-Editor" },
   { re: /^--codemirror-/, label: "CodeMirror-Syntax-Highlight" },
   { re: /^--markdown-/, label: "Markdown-Rendering" }
-], kr = {
+], Tr = {
   color: "Farbe",
   length: "Länge / Größe",
   shadow: "Schatten",
@@ -3494,97 +4172,108 @@ const wr = [
   "var-ref": "var()-Referenz",
   raw: "freier Text-Wert"
 };
-function $r(t, e) {
-  const a = wr.find(({ re: i }) => i.test(t))?.label ?? "Quelle unbekannt", o = kr[e];
+function Pr(e, t) {
+  const a = zr.find(({ re: i }) => i.test(e))?.label ?? "Quelle unbekannt", o = Tr[t];
   return `${a} · vermutlich ${o} (Heuristik).`;
 }
-const Sr = /* @__PURE__ */ Object.assign({
-  "../plugins/bubble-card/manifest.json": rr,
-  "../plugins/ha-core/manifest.json": ar,
-  "../plugins/mushroom/manifest.json": nr
-}), Cr = /* @__PURE__ */ Object.assign({
-  "../plugins/bubble-card/schema.json": lr,
-  "../plugins/ha-core/schema.json": dr,
-  "../plugins/mushroom/schema.json": pr
+const Er = /* @__PURE__ */ Object.assign({
+  "../plugins/bubble-card/manifest.json": sr,
+  "../plugins/ha-core/manifest.json": cr,
+  "../plugins/mushroom/manifest.json": ur
+}), Dr = /* @__PURE__ */ Object.assign({
+  "../plugins/bubble-card/schema.json": mr,
+  "../plugins/ha-core/schema.json": br,
+  "../plugins/mushroom/schema.json": fr
 });
-function Mr() {
-  const t = [];
-  for (const [e, r] of Object.entries(Sr)) {
-    const a = e.replace(/\/manifest\.json$/, "/schema.json"), o = Cr[a];
+function Rr() {
+  const e = [];
+  for (const [t, r] of Object.entries(Er)) {
+    const a = t.replace(/\/manifest\.json$/, "/schema.json"), o = Dr[a];
     if (!o) {
       console.warn(
-        `[theme-studio] Plugin at ${e} has no schema.json — skipping.`
+        `[theme-studio] Plugin at ${t} has no schema.json — skipping.`
       );
       continue;
     }
-    t.push({ manifest: r.default, schema: o.default });
+    e.push({ manifest: r.default, schema: o.default });
   }
-  return t;
+  return e;
 }
-const ee = Object.freeze(Mr());
-let de = null;
-const Ce = /* @__PURE__ */ new Set();
-function Br(t) {
-  de = t === null ? null : new Set(t);
-  for (const e of Ce)
+const re = Object.freeze(Rr());
+let be = null;
+const ze = /* @__PURE__ */ new Set();
+function Hr(e) {
+  be = e === null ? null : new Set(e);
+  for (const t of ze)
     try {
-      e();
+      t();
     } catch {
     }
 }
-function wt(t) {
-  return Ce.add(t), () => Ce.delete(t);
+function Bt(e) {
+  return ze.add(e), () => ze.delete(e);
 }
-const Ne = ["ha-core"];
-function zr(t) {
-  return [...t].sort((e, r) => {
-    const a = Ne.indexOf(e.manifest.id), o = Ne.indexOf(r.manifest.id);
-    return a !== -1 && o !== -1 ? a - o : a !== -1 ? -1 : o !== -1 ? 1 : e.manifest.id.localeCompare(r.manifest.id);
+const We = ["ha-core"];
+function Fr(e) {
+  return [...e].sort((t, r) => {
+    const a = We.indexOf(t.manifest.id), o = We.indexOf(r.manifest.id);
+    return a !== -1 && o !== -1 ? a - o : a !== -1 ? -1 : o !== -1 ? 1 : t.manifest.id.localeCompare(r.manifest.id);
   });
 }
-function te() {
-  const t = ee.filter((e) => {
-    const r = e.manifest.detect;
-    return r.method === "always" ? !0 : r.method === "hacs-repo" && r.value ? de === null ? !0 : de.has(r.value) : !0;
+function oe() {
+  const e = re.filter((t) => {
+    const r = t.manifest.detect;
+    return r.method === "always" ? !0 : r.method === "hacs-repo" && r.value ? be === null ? !0 : be.has(r.value) : !0;
   });
-  return zr(t);
+  return Fr(e);
 }
-const ue = /* @__PURE__ */ new Map();
-for (const t of ee)
-  for (const e of t.schema.variables)
-    ue.has(e.name) || ue.set(e.name, { pluginId: t.manifest.id, def: e });
-function pe(t, e) {
-  const r = ue.get(t);
+const ge = /* @__PURE__ */ new Map();
+for (const e of re)
+  for (const t of e.schema.variables)
+    ge.has(t.name) || ge.set(t.name, { pluginId: e.manifest.id, def: t });
+function fe(e, t) {
+  const r = ge.get(e);
   if (r)
-    return { ...r.def, source: "schema", plugin: r.pluginId };
-  const a = xr(t, e);
+    return {
+      ...r.def,
+      description: Or(r.def),
+      source: "schema",
+      plugin: r.pluginId
+    };
+  const a = Ar(e, t);
   return {
-    name: t,
+    name: e,
     type: a,
-    description: $r(t, a),
+    description: Pr(e, a),
     source: "heuristic"
   };
 }
-function je() {
-  const t = te();
+function Or(e) {
+  return $t() === "en" && e.description_en ? e.description_en : e.description;
+}
+function Lr(e) {
+  return $t() === "en" && e.label_en ? e.label_en : e.label;
+}
+function Ke() {
+  const e = oe();
   return {
-    plugins: ee.length,
-    pluginIds: ee.map((e) => e.manifest.id),
-    activePluginIds: t.map((e) => e.manifest.id),
-    indexedVariables: ue.size,
-    categories: ee.reduce(
-      (e, r) => e + r.schema.categories.length,
+    plugins: re.length,
+    pluginIds: re.map((t) => t.manifest.id),
+    activePluginIds: e.map((t) => t.manifest.id),
+    indexedVariables: ge.size,
+    categories: re.reduce(
+      (t, r) => t + r.schema.categories.length,
       0
     ),
-    hacsFilterApplied: de !== null
+    hacsFilterApplied: be !== null
   };
 }
-var Ar = Object.defineProperty, Tr = Object.getOwnPropertyDescriptor, K = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Tr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Ar(e, r, o), o;
+var Gr = Object.defineProperty, Ir = Object.getOwnPropertyDescriptor, Y = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? Ir(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && Gr(t, r, o), o;
 };
-let D = class extends v {
+let F = class extends v {
   constructor() {
     super(...arguments), this._loading = !0, this._themes = [], this._errors = [], this._loadError = null;
   }
@@ -3594,36 +4283,37 @@ let D = class extends v {
   async _load() {
     this._loading = !0, this._loadError = null;
     try {
-      const t = await this.hass.connection.sendMessagePromise({
+      const e = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/list_themes"
       });
-      this._themes = t.themes, this._errors = t.errors;
-    } catch (t) {
-      this._loadError = t instanceof Error ? t.message : String(t);
+      this._themes = e.themes, this._errors = e.errors;
+    } catch (e) {
+      this._loadError = e instanceof Error ? e.message : String(e);
     } finally {
       this._loading = !1;
     }
   }
   render() {
-    return this._loading ? s`<div class="empty">Lade Themes…</div>` : this._loadError ? s`<div class="error">Fehler: ${this._loadError}</div>` : s`
-      <h2>Welches Theme möchtest du tunen?</h2>
-      ${this._themes.length === 0 ? s`<div class="empty">
-            Keine Themes gefunden. Lege eine YAML-Datei in
-            <code>themes/</code> an oder erstelle ein neues Theme (folgt in
-            Schritt 8).
-          </div>` : s`
+    return this._loading ? l`<div class="empty">${s("picker.loading")}</div>` : this._loadError ? l`<div class="error">
+        ${s("common.error_prefix")}: ${this._loadError}
+      </div>` : l`
+      <h2>${s("picker.heading")}</h2>
+      ${this._themes.length === 0 ? l`<div class="empty">${s("picker.empty")}</div>` : l`
             <div class="list">
               ${this._themes.map(
-      (t) => s`
+      (e) => l`
                   <button
                     class="item"
-                    @click=${() => this._select(t)}
-                    title=${t.file}
+                    @click=${() => this._select(e)}
+                    title=${e.file}
                   >
                     <div class="info">
-                      <div class="name">${t.theme_name}</div>
+                      <div class="name">${e.theme_name}</div>
                       <div class="meta">
-                        ${t.file} · ${t.variable_count} Variablen
+                        ${e.file} ·
+                        ${s("picker.var_count", void 0, {
+        n: e.variable_count
+      })}
                       </div>
                     </div>
                     <div class="arrow">→</div>
@@ -3632,29 +4322,29 @@ let D = class extends v {
     )}
             </div>
           `}
-      ${this._errors.length > 0 ? s`
+      ${this._errors.length > 0 ? l`
             <div class="errors-list">
-              <h3>YAML-Fehler in folgenden Dateien:</h3>
+              <h3>${s("picker.yaml_errors_heading")}</h3>
               <ul>
                 ${this._errors.map(
-      (t) => s`<li>${t.file}: ${t.error}</li>`
+      (e) => l`<li>${e.file}: ${e.error}</li>`
     )}
               </ul>
             </div>
           ` : ""}
     `;
   }
-  _select(t) {
+  _select(e) {
     this.dispatchEvent(
       new CustomEvent("theme-selected", {
-        detail: { file: t.file, theme_name: t.theme_name },
+        detail: { file: e.file, theme_name: e.theme_name },
         bubbles: !0,
         composed: !0
       })
     );
   }
 };
-D.styles = C`
+F.styles = B`
     :host {
       display: block;
       max-width: 720px;
@@ -3744,35 +4434,35 @@ D.styles = C`
       font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
     }
   `;
-K([
-  g({ attribute: !1 })
-], D.prototype, "hass", 2);
-K([
-  h()
-], D.prototype, "_loading", 2);
-K([
-  h()
-], D.prototype, "_themes", 2);
-K([
-  h()
-], D.prototype, "_errors", 2);
-K([
-  h()
-], D.prototype, "_loadError", 2);
-D = K([
+Y([
+  f({ attribute: !1 })
+], F.prototype, "hass", 2);
+Y([
+  b()
+], F.prototype, "_loading", 2);
+Y([
+  b()
+], F.prototype, "_themes", 2);
+Y([
+  b()
+], F.prototype, "_errors", 2);
+Y([
+  b()
+], F.prototype, "_loadError", 2);
+F = Y([
   M("theme-picker")
-], D);
-var Er = Object.defineProperty, Pr = Object.getOwnPropertyDescriptor, kt = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Pr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Er(e, r, o), o;
+], F);
+var Ur = Object.defineProperty, Nr = Object.getOwnPropertyDescriptor, Mt = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? Nr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && Ur(t, r, o), o;
 };
-let me = class extends v {
+let ye = class extends v {
   constructor() {
     super(...arguments), this.value = "";
   }
   render() {
-    return s`
+    return l`
       <div class="swatch">
         <div class="fill" style="background: ${this.value || "transparent"}"></div>
         <input
@@ -3791,27 +4481,27 @@ let me = class extends v {
       />
     `;
   }
-  _asHex(t) {
-    const e = /^#([0-9a-f]{6})$/i.exec(t.trim());
-    return e ? `#${e[1]}` : "#000000";
+  _asHex(e) {
+    const t = /^#([0-9a-f]{6})$/i.exec(e.trim());
+    return t ? `#${t[1]}` : "#000000";
   }
-  _onColorInput(t) {
-    this._emit(t.target.value);
+  _onColorInput(e) {
+    this._emit(e.target.value);
   }
-  _onTextChange(t) {
-    this._emit(t.target.value);
+  _onTextChange(e) {
+    this._emit(e.target.value);
   }
-  _emit(t) {
-    this.value = t, this.dispatchEvent(
+  _emit(e) {
+    this.value = e, this.dispatchEvent(
       new CustomEvent("value-changed", {
-        detail: { value: t },
+        detail: { value: e },
         bubbles: !0,
         composed: !0
       })
     );
   }
 };
-me.styles = C`
+ye.styles = B`
     :host {
       display: inline-flex;
       align-items: center;
@@ -3865,30 +4555,30 @@ me.styles = C`
       border-color: transparent;
     }
   `;
-kt([
-  g({ type: String })
-], me.prototype, "value", 2);
-me = kt([
+Mt([
+  f({ type: String })
+], ye.prototype, "value", 2);
+ye = Mt([
   M("ts-color-picker")
-], me);
-var Fr = Object.defineProperty, Hr = Object.getOwnPropertyDescriptor, Z = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Hr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Fr(e, r, o), o;
+], ye);
+var jr = Object.defineProperty, Vr = Object.getOwnPropertyDescriptor, q = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? Vr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && jr(t, r, o), o;
 };
-let R = class extends v {
+let O = class extends v {
   constructor() {
     super(...arguments), this.value = "0px", this.units = ["px"], this.min = 0, this.max = 100, this.step = 1;
   }
   render() {
-    const t = this._parse(this.value);
-    return s`
+    const e = this._parse(this.value);
+    return l`
       <input
         type="range"
         min=${this.min}
         max=${this.max}
         step=${this.step}
-        .value=${String(t.num)}
+        .value=${String(e.num)}
         @input=${this._onSlider}
       />
       <input
@@ -3896,52 +4586,52 @@ let R = class extends v {
         min=${this.min}
         max=${this.max}
         step=${this.step}
-        .value=${String(t.num)}
+        .value=${String(e.num)}
         @change=${this._onNumber}
       />
-      ${this.units.length > 1 ? s`
+      ${this.units.length > 1 ? l`
             <select @change=${this._onUnit}>
               ${this.units.map(
-      (e) => s`
-                  <option value=${e} ?selected=${e === t.unit}>
-                    ${e}
+      (t) => l`
+                  <option value=${t} ?selected=${t === e.unit}>
+                    ${t}
                   </option>
                 `
     )}
             </select>
-          ` : s`<span class="unit">${t.unit}</span>`}
+          ` : l`<span class="unit">${e.unit}</span>`}
     `;
   }
-  _parse(t) {
-    const e = this.units[0] ?? "px", r = /^(-?\d*\.?\d+)\s*([a-z%]*)$/i.exec(t.trim());
+  _parse(e) {
+    const t = this.units[0] ?? "px", r = /^(-?\d*\.?\d+)\s*([a-z%]*)$/i.exec(e.trim());
     return r ? {
       num: parseFloat(r[1]),
-      unit: r[2] || e
-    } : { num: 0, unit: e };
+      unit: r[2] || t
+    } : { num: 0, unit: t };
   }
-  _onSlider(t) {
-    const e = Number(t.target.value), { unit: r } = this._parse(this.value);
-    this._emit(`${e}${r}`);
+  _onSlider(e) {
+    const t = Number(e.target.value), { unit: r } = this._parse(this.value);
+    this._emit(`${t}${r}`);
   }
-  _onNumber(t) {
-    const e = Number(t.target.value), { unit: r } = this._parse(this.value);
-    this._emit(`${e}${r}`);
+  _onNumber(e) {
+    const t = Number(e.target.value), { unit: r } = this._parse(this.value);
+    this._emit(`${t}${r}`);
   }
-  _onUnit(t) {
-    const e = t.target.value, { num: r } = this._parse(this.value);
-    this._emit(`${r}${e}`);
+  _onUnit(e) {
+    const t = e.target.value, { num: r } = this._parse(this.value);
+    this._emit(`${r}${t}`);
   }
-  _emit(t) {
-    this.value = t, this.dispatchEvent(
+  _emit(e) {
+    this.value = e, this.dispatchEvent(
       new CustomEvent("value-changed", {
-        detail: { value: t },
+        detail: { value: e },
         bubbles: !0,
         composed: !0
       })
     );
   }
 };
-R.styles = C`
+O.styles = B`
     :host {
       display: inline-flex;
       align-items: center;
@@ -3977,38 +4667,38 @@ R.styles = C`
       min-width: 28px;
     }
   `;
-Z([
-  g({ type: String })
-], R.prototype, "value", 2);
-Z([
-  g({ type: Array })
-], R.prototype, "units", 2);
-Z([
-  g({ type: Number })
-], R.prototype, "min", 2);
-Z([
-  g({ type: Number })
-], R.prototype, "max", 2);
-Z([
-  g({ type: Number })
-], R.prototype, "step", 2);
-R = Z([
+q([
+  f({ type: String })
+], O.prototype, "value", 2);
+q([
+  f({ type: Array })
+], O.prototype, "units", 2);
+q([
+  f({ type: Number })
+], O.prototype, "min", 2);
+q([
+  f({ type: Number })
+], O.prototype, "max", 2);
+q([
+  f({ type: Number })
+], O.prototype, "step", 2);
+O = q([
   M("ts-length-slider")
-], R);
-var Dr = Object.defineProperty, Rr = Object.getOwnPropertyDescriptor, $t = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Rr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Dr(e, r, o), o;
+], O);
+var Wr = Object.defineProperty, Kr = Object.getOwnPropertyDescriptor, At = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? Kr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && Wr(t, r, o), o;
 };
-let he = class extends v {
+let _e = class extends v {
   constructor() {
     super(...arguments), this.value = "";
   }
   render() {
     return this.value.length > 40 || this.value.includes(`
-`) ? s`<textarea rows="3" @change=${this._onChange} spellcheck="false">
+`) ? l`<textarea rows="3" @change=${this._onChange} spellcheck="false">
 ${this.value}</textarea
-        >` : s`<input
+        >` : l`<input
           type="text"
           .value=${this.value}
           @change=${this._onChange}
@@ -4016,18 +4706,18 @@ ${this.value}</textarea
           autocomplete="off"
         />`;
   }
-  _onChange(t) {
-    const e = t.target.value;
-    this.value = e, this.dispatchEvent(
+  _onChange(e) {
+    const t = e.target.value;
+    this.value = t, this.dispatchEvent(
       new CustomEvent("value-changed", {
-        detail: { value: e },
+        detail: { value: t },
         bubbles: !0,
         composed: !0
       })
     );
   }
 };
-he.styles = C`
+_e.styles = B`
     :host {
       display: block;
       width: 100%;
@@ -4055,65 +4745,67 @@ he.styles = C`
       border-color: transparent;
     }
   `;
-$t([
-  g({ type: String })
-], he.prototype, "value", 2);
-he = $t([
+At([
+  f({ type: String })
+], _e.prototype, "value", 2);
+_e = At([
   M("ts-raw-input")
-], he);
-var Or = Object.defineProperty, Lr = Object.getOwnPropertyDescriptor, St = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Lr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Or(e, r, o), o;
+], _e);
+var Zr = Object.defineProperty, Yr = Object.getOwnPropertyDescriptor, zt = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? Yr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && Zr(t, r, o), o;
 };
-const Ir = [
+const qr = [
   {
     label: "Cover",
     modifiers: "center / cover no-repeat fixed",
-    title: "Vollbild, zentriert, fixiert (Apple-/visionOS-Style)"
+    titleKey: "bg.preset_cover_tooltip"
   },
   {
     label: "Contain",
     modifiers: "center / contain no-repeat fixed",
-    title: "Komplett sichtbar, zentriert"
+    titleKey: "bg.preset_contain_tooltip"
   },
   {
     label: "Tile",
     modifiers: "top left repeat fixed",
-    title: "Bild wiederholen (Pattern)"
+    titleKey: "bg.preset_tile_tooltip"
   }
 ];
-function ne(t) {
-  const e = t.trim();
-  if (!e || e === "none") return { url: "", modifiers: "" };
-  const r = /url\(\s*['"]?([^'")]+)['"]?\s*\)/.exec(e);
-  if (!r) return { url: "", modifiers: e };
-  const a = r[1].trim(), o = (e.slice(0, r.index) + e.slice(r.index + r[0].length)).trim().replace(/\s+/g, " ");
+function le(e) {
+  const t = e.trim();
+  if (!t || t === "none") return { url: "", modifiers: "" };
+  const r = /url\(\s*['"]?([^'")]+)['"]?\s*\)/.exec(t);
+  if (!r) return { url: "", modifiers: t };
+  const a = r[1].trim(), o = (t.slice(0, r.index) + t.slice(r.index + r[0].length)).trim().replace(/\s+/g, " ");
   return { url: a, modifiers: o };
 }
-function ve(t, e) {
-  const r = t.trim(), a = e.trim();
+function Ce(e, t) {
+  const r = e.trim(), a = t.trim();
   if (!r && !a) return "none";
   if (!a) return r;
   const o = `url('${a}')`;
   return r ? `${r} ${o}` : o;
 }
-function Ur(t) {
-  const e = t.trim();
-  if (!e) return "";
-  const r = /^\/(homeassistant|config)\/www\/(.+)$/.exec(e);
-  return r ? `/local/${r[2]}` : e;
+function Jr(e) {
+  const t = e.trim();
+  if (!t) return "";
+  const r = /^\/(homeassistant|config)\/www\/(.+)$/.exec(t);
+  return r ? `/local/${r[2]}` : t;
 }
-let be = class extends v {
+let ve = class extends v {
   constructor() {
     super(...arguments), this.value = "";
   }
   render() {
-    const t = ne(this.value), e = !!t.url, r = e ? `background-image: url('${t.url.replace(/'/g, "\\'")}');` : "";
-    return s`
+    const e = le(this.value), t = !!e.url, r = t ? `background-image: url('${e.url.replace(/'/g, "\\'")}');` : "";
+    return l`
       <div class="preview" style=${r}>
-        ${e ? "" : s`<div class="preview-empty">
-              (kein Bild — '${this.value || "none"}')
+        ${t ? "" : l`<div class="preview-empty">
+              ${s("bg.no_image", void 0, {
+      value: this.value || "none"
+    })}
             </div>`}
       </div>
       <div class="field">
@@ -4121,31 +4813,31 @@ let be = class extends v {
         <input
           id="url"
           type="url"
-          .value=${t.url}
+          .value=${e.url}
           @change=${this._onUrlChange}
-          placeholder="https://… oder /local/wallpaper.jpg (= /homeassistant/www/wallpaper.jpg)"
+          placeholder=${s("bg.url_placeholder")}
           spellcheck="false"
           autocomplete="off"
         />
       </div>
       <div class="field">
-        <label for="mods">Modifier</label>
+        <label for="mods">${s("bg.modifier")}</label>
         <input
           id="mods"
           type="text"
-          .value=${t.modifiers}
+          .value=${e.modifiers}
           @change=${this._onModsChange}
-          placeholder="z.B. center / cover no-repeat fixed"
+          placeholder=${s("bg.modifier_placeholder")}
           spellcheck="false"
           autocomplete="off"
         />
       </div>
       <div class="presets">
-        ${Ir.map(
-      (a) => s`
+        ${qr.map(
+      (a) => l`
             <button
               class="preset-btn"
-              title=${a.title}
+              title=${s(a.titleKey)}
               @click=${() => this._applyPreset(a.modifiers)}
             >
               ${a.label}
@@ -4154,40 +4846,40 @@ let be = class extends v {
     )}
         <button
           class="preset-btn danger"
-          title="Auf 'none' setzen — kein Hintergrund-Bild"
+          title=${s("bg.clear_tooltip")}
           @click=${this._clear}
         >
-          Clear
+          ${s("bg.clear")}
         </button>
       </div>
     `;
   }
-  _onUrlChange(t) {
-    const e = t.target.value, r = Ur(e), { modifiers: a } = ne(this.value);
-    this._emit(ve(a, r));
+  _onUrlChange(e) {
+    const t = e.target.value, r = Jr(t), { modifiers: a } = le(this.value);
+    this._emit(Ce(a, r));
   }
-  _onModsChange(t) {
-    const e = t.target.value, { url: r } = ne(this.value);
-    this._emit(ve(e, r));
+  _onModsChange(e) {
+    const t = e.target.value, { url: r } = le(this.value);
+    this._emit(Ce(t, r));
   }
-  _applyPreset(t) {
-    const { url: e } = ne(this.value);
-    this._emit(ve(t, e));
+  _applyPreset(e) {
+    const { url: t } = le(this.value);
+    this._emit(Ce(e, t));
   }
   _clear() {
     this._emit("none");
   }
-  _emit(t) {
-    this.value = t, this.dispatchEvent(
+  _emit(e) {
+    this.value = e, this.dispatchEvent(
       new CustomEvent("value-changed", {
-        detail: { value: t },
+        detail: { value: e },
         bubbles: !0,
         composed: !0
       })
     );
   }
 };
-be.styles = C`
+ve.styles = B`
     :host {
       display: block;
       width: 100%;
@@ -4265,25 +4957,25 @@ be.styles = C`
       border-color: var(--error-color, #db4437);
     }
   `;
-St([
-  g({ type: String })
-], be.prototype, "value", 2);
-be = St([
+zt([
+  f({ type: String })
+], ve.prototype, "value", 2);
+ve = zt([
   M("ts-background-picker")
-], be);
-var Nr = Object.defineProperty, jr = Object.getOwnPropertyDescriptor, q = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? jr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Nr(e, r, o), o;
+], ve);
+var Xr = Object.defineProperty, Qr = Object.getOwnPropertyDescriptor, J = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? Qr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && Xr(t, r, o), o;
 };
-let O = class extends v {
+let L = class extends v {
   constructor() {
     super(...arguments), this.src = "/lovelace/0", this.overrides = /* @__PURE__ */ new Map(), this._loaded = !1, this._loadError = null, this._appliedToFrame = /* @__PURE__ */ new Set();
   }
   render() {
-    return s`
+    return l`
       <div class="toolbar">
-        <span class="label">Preview:</span>
+        <span class="label">${s("preview.label")}:</span>
         <input
           type="text"
           .value=${this.src}
@@ -4291,49 +4983,55 @@ let O = class extends v {
           spellcheck="false"
           autocomplete="off"
         />
-        <button @click=${this._reload} title="iframe neu laden">↻</button>
-        ${this._appliedToFrame.size > 0 ? s`<span class="badge"
-              >${this._appliedToFrame.size} override${this._appliedToFrame.size === 1 ? "" : "s"}</span
+        <button @click=${this._reload} title=${s("preview.reload_tooltip")}>
+          ↻
+        </button>
+        ${this._appliedToFrame.size > 0 ? l`<span class="badge"
+              >${s(
+      this._appliedToFrame.size === 1 ? "preview.overrides_one" : "preview.overrides_many",
+      void 0,
+      { n: this._appliedToFrame.size }
+    )}</span
             >` : ""}
       </div>
-      ${this._loadError ? s`<div class="error">${this._loadError}</div>` : ""}
+      ${this._loadError ? l`<div class="error">${this._loadError}</div>` : ""}
       <iframe src=${this.src} @load=${this._onLoad}></iframe>
     `;
   }
   _onLoad() {
     this._loaded = !0, this._loadError = null, this._appliedToFrame.clear(), this._applyOverrides();
   }
-  _onSrcChange(t) {
-    const e = t.target.value.trim();
-    e && e !== this.src && (this.src = e, this._loaded = !1);
+  _onSrcChange(e) {
+    const t = e.target.value.trim();
+    t && t !== this.src && (this.src = t, this._loaded = !1);
   }
   _reload() {
     this._iframe && (this._loaded = !1, this._iframe.src = this._iframe.src);
   }
-  updated(t) {
-    t.has("overrides") && this._loaded && this._applyOverrides();
+  updated(e) {
+    e.has("overrides") && this._loaded && this._applyOverrides();
   }
   _applyOverrides() {
     if (!this._iframe?.contentDocument) return;
-    const t = this._iframe.contentDocument.documentElement;
-    for (const e of this._appliedToFrame)
-      if (!this.overrides.has(e)) {
+    const e = this._iframe.contentDocument.documentElement;
+    for (const t of this._appliedToFrame)
+      if (!this.overrides.has(t)) {
         try {
-          t.style.removeProperty(e);
+          e.style.removeProperty(t);
         } catch {
         }
-        this._appliedToFrame.delete(e);
+        this._appliedToFrame.delete(t);
       }
     try {
-      for (const [e, r] of this.overrides)
-        t.style.setProperty(e, r), this._appliedToFrame.add(e);
-    } catch (e) {
-      this._loadError = "iframe-CSS-Override fehlgeschlagen (möglicherweise Cross-Origin): " + (e instanceof Error ? e.message : String(e));
+      for (const [t, r] of this.overrides)
+        e.style.setProperty(t, r), this._appliedToFrame.add(t);
+    } catch (t) {
+      this._loadError = s("preview.override_failed") + ": " + (t instanceof Error ? t.message : String(t));
     }
     this.requestUpdate();
   }
 };
-O.styles = C`
+L.styles = B`
     :host {
       display: flex;
       flex-direction: column;
@@ -4401,72 +5099,71 @@ O.styles = C`
       font-size: 0.9rem;
     }
   `;
-q([
-  g({ type: String })
-], O.prototype, "src", 2);
-q([
-  g({ attribute: !1 })
-], O.prototype, "overrides", 2);
-q([
-  er("iframe")
-], O.prototype, "_iframe", 2);
-q([
-  h()
-], O.prototype, "_loaded", 2);
-q([
-  h()
-], O.prototype, "_loadError", 2);
-O = q([
+J([
+  f({ type: String })
+], L.prototype, "src", 2);
+J([
+  f({ attribute: !1 })
+], L.prototype, "overrides", 2);
+J([
+  ir("iframe")
+], L.prototype, "_iframe", 2);
+J([
+  b()
+], L.prototype, "_loaded", 2);
+J([
+  b()
+], L.prototype, "_loadError", 2);
+L = J([
   M("ts-preview-pane")
-], O);
-var Vr = Object.defineProperty, Gr = Object.getOwnPropertyDescriptor, k = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Gr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Vr(e, r, o), o;
+], L);
+var eo = Object.defineProperty, to = Object.getOwnPropertyDescriptor, C = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? to(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && eo(t, r, o), o;
 };
-const _e = {
+const ue = {
   id: "_unknown",
-  label: "Unbekannt (Heuristik)",
+  label: "_unknown_placeholder",
   icon: "mdi:help-circle-outline"
-}, xe = {
+}, pe = {
   id: "_other",
-  label: "Sonstige",
+  label: "_other_placeholder",
   icon: "mdi:dots-horizontal"
-}, z = "in-theme", w = "default", Wr = {
-  default: "Default",
-  light: "Light",
-  dark: "Dark"
-};
-function we(t) {
-  return Wr[t] ?? t;
+}, z = "in-theme", k = "default";
+function Se(e) {
+  return e === k ? s("editor.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
 }
-let _ = class extends v {
+function ro(e) {
+  return e === ue ? s("editor.cat_unknown") : e === pe ? s("editor.cat_other") : Lr(e);
+}
+let x = class extends v {
   constructor() {
-    super(...arguments), this.file = "", this.themeName = "", this._loading = !0, this._error = null, this._rows = [], this._skippedKeys = [], this._saveStatus = { state: "idle" }, this._activeTab = z, this._activeMode = w, this._modes = [w], this._showPreview = !1, this._previewSrc = "/lovelace/0", this._appliedVars = /* @__PURE__ */ new Set(), this._originalFullTheme = {}, this._onBeforeUnload = (t) => {
-      this._dirtyCount() !== 0 && (t.preventDefault(), t.returnValue = "");
+    super(...arguments), this.file = "", this.themeName = "", this._loading = !0, this._error = null, this._rows = [], this._skippedKeys = [], this._saveStatus = { state: "idle" }, this._activeTab = z, this._activeMode = k, this._modes = [k], this._showPreview = !1, this._previewSrc = "/lovelace/0", this._appliedVars = /* @__PURE__ */ new Set(), this._originalFullTheme = {}, this._onBeforeUnload = (e) => {
+      this._dirtyCount() !== 0 && (e.preventDefault(), e.returnValue = "");
     };
   }
   connectedCallback() {
-    super.connectedCallback(), this._unsubRegistry = wt(() => this.requestUpdate()), window.addEventListener("beforeunload", this._onBeforeUnload), this._load();
+    super.connectedCallback(), this._unsubRegistry = Bt(() => this.requestUpdate()), window.addEventListener("beforeunload", this._onBeforeUnload), this._load();
   }
   disconnectedCallback() {
     super.disconnectedCallback(), this._unsubRegistry?.(), this._unsubRegistry = void 0, window.removeEventListener("beforeunload", this._onBeforeUnload), this._revertAll();
   }
-  updated(t) {
-    const e = t.has("file") && t.get("file") !== void 0, r = t.has("themeName") && t.get("themeName") !== void 0;
-    (e || r) && (this._revertAll(), this._rows = [], this._activeTab = z, this._activeMode = w, this._modes = [w], this._load());
+  updated(e) {
+    const t = e.has("file") && e.get("file") !== void 0, r = e.has("themeName") && e.get("themeName") !== void 0;
+    (t || r) && (this._revertAll(), this._rows = [], this._activeTab = z, this._activeMode = k, this._modes = [k], this._load());
   }
   async _load() {
     this._loading = !0, this._error = null, this._saveStatus = { state: "idle" };
     try {
-      const t = await this.hass.connection.sendMessagePromise({
+      const e = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/get_theme",
         file: this.file,
         theme_name: this.themeName
       });
-      this._originalFullTheme = t.variables, this._buildRows(t.variables);
-    } catch (t) {
-      this._error = t instanceof Error ? t.message : String(t);
+      this._originalFullTheme = e.variables, this._buildRows(e.variables);
+    } catch (e) {
+      this._error = e instanceof Error ? e.message : String(e);
     } finally {
       this._loading = !1;
     }
@@ -4478,29 +5175,29 @@ let _ = class extends v {
    * jeweiligen Mode-Bezeichnung. Andere Dict-Keys (selten) werden
    * weiterhin in `_skippedKeys` registriert und beim Save 1:1 erhalten.
    */
-  _buildRows(t) {
-    const e = [], r = [], a = [w];
-    for (const [o, i] of Object.entries(t)) {
+  _buildRows(e) {
+    const t = [], r = [], a = [k];
+    for (const [o, i] of Object.entries(e)) {
       if (i == null) continue;
       if (o === "modes" && typeof i == "object") {
-        for (const [u, p] of Object.entries(
+        for (const [p, m] of Object.entries(
           i
         ))
-          if (!(typeof p != "object" || p === null)) {
-            a.includes(u) || a.push(u);
-            for (const [m, b] of Object.entries(
-              p
+          if (!(typeof m != "object" || m === null)) {
+            a.includes(p) || a.push(p);
+            for (const [h, g] of Object.entries(
+              m
             )) {
-              if (b == null || typeof b == "object") continue;
-              const x = String(b), j = m.startsWith("--") ? m : `--${m}`, Mt = j.slice(2), Bt = pe(j, x);
-              e.push({
+              if (g == null || typeof g == "object") continue;
+              const w = String(g), j = h.startsWith("--") ? h : `--${h}`, Pt = j.slice(2), Et = fe(j, w);
+              t.push({
                 varName: j,
-                yamlKey: Mt,
-                meta: Bt,
-                original: x,
-                current: x,
+                yamlKey: Pt,
+                meta: Et,
+                original: w,
+                current: w,
                 inTheme: !0,
-                mode: u
+                mode: p
               });
             }
           }
@@ -4510,18 +5207,18 @@ let _ = class extends v {
         r.push(o);
         continue;
       }
-      const n = String(i), c = o.startsWith("--") ? o : `--${o}`, l = c.slice(2), d = pe(c, n);
-      e.push({
-        varName: c,
-        yamlKey: l,
-        meta: d,
+      const n = String(i), d = o.startsWith("--") ? o : `--${o}`, c = d.slice(2), u = fe(d, n);
+      t.push({
+        varName: d,
+        yamlKey: c,
+        meta: u,
         original: n,
         current: n,
         inTheme: !0,
-        mode: w
+        mode: k
       });
     }
-    this._skippedKeys = r, this._rows = e, this._modes = a;
+    this._skippedKeys = r, this._rows = t, this._modes = a;
   }
   /**
    * Beim Wechsel auf einen Plugin-Tab: alle Vars dieses Plugins, die für
@@ -4532,15 +5229,15 @@ let _ = class extends v {
    * "kein Override im jeweiligen Mode" und wird beim Save nicht
    * geschrieben.
    */
-  _ensurePluginRows(t, e) {
-    const r = te().find((i) => i.manifest.id === t);
+  _ensurePluginRows(e, t) {
+    const r = oe().find((i) => i.manifest.id === e);
     if (!r) return;
     const a = new Set(
-      this._rows.filter((i) => i.mode === e).map((i) => i.varName)
+      this._rows.filter((i) => i.mode === t).map((i) => i.varName)
     ), o = [];
     for (const i of r.schema.variables) {
       if (a.has(i.name)) continue;
-      const n = e === w ? i.default ?? "" : "";
+      const n = t === k ? i.default ?? "" : "";
       o.push({
         varName: i.name,
         yamlKey: i.name.startsWith("--") ? i.name.slice(2) : i.name,
@@ -4548,7 +5245,7 @@ let _ = class extends v {
         original: n,
         current: n,
         inTheme: !1,
-        mode: e
+        mode: t
       });
     }
     o.length > 0 && (this._rows = [...this._rows, ...o]);
@@ -4556,29 +5253,49 @@ let _ = class extends v {
   // ─── Save-Flow ──────────────────────────────────────────────────────
   async _save() {
     if (this._dirtyCount() === 0 || this._saveStatus.state === "saving") return;
-    const e = this._rows.filter(
-      (l) => !l.inTheme && !l.markedForRemoval && l.current !== l.original && l.current !== ""
+    const t = this._rows.filter(
+      (c) => !c.inTheme && !c.markedForRemoval && c.current !== c.original && c.current !== ""
     ).length, r = this._rows.filter(
-      (l) => l.inTheme && !l.markedForRemoval && l.current !== l.original
+      (c) => c.inTheme && !c.markedForRemoval && c.current !== c.original
     ).length, a = this._removingCount(), o = [];
-    r > 0 && o.push(`${r} bestehende Änderung${r === 1 ? "" : "en"}`), e > 0 && o.push(`${e} neue Variable${e === 1 ? "" : "n"}`), a > 0 && o.push(`${a} Entfernung${a === 1 ? "" : "en"}`);
-    const n = `${o.join(" + ")} in '${this.file}' > '${this.themeName}' speichern?
-
-Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
+    r > 0 && o.push(
+      s(
+        r === 1 ? "editor.save_part_modify_one" : "editor.save_part_modify_many",
+        void 0,
+        { n: r }
+      )
+    ), t > 0 && o.push(
+      s(
+        t === 1 ? "editor.save_part_add_one" : "editor.save_part_add_many",
+        void 0,
+        { n: t }
+      )
+    ), a > 0 && o.push(
+      s(
+        a === 1 ? "editor.save_part_remove_one" : "editor.save_part_remove_many",
+        void 0,
+        { n: a }
+      )
+    );
+    const i = o.join(" + "), n = s("editor.save_confirm", void 0, {
+      what: i,
+      file: this.file,
+      theme: this.themeName
+    });
     if (!confirm(n)) return;
     this._saveStatus = { state: "saving" };
-    const c = this._buildSaveMerge();
+    const d = this._buildSaveMerge();
     try {
-      const l = await this.hass.connection.sendMessagePromise({
+      const c = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/save_theme",
         file: this.file,
         theme_name: this.themeName,
-        variables: c
+        variables: d
       });
-      this._originalFullTheme = c, this._rows = this._rows.filter((d) => !d.markedForRemoval).map((d) => d.inTheme ? { ...d, original: d.current } : d.current !== d.original && d.current !== "" ? { ...d, original: d.current, inTheme: !0 } : d), this._activeTab !== z && this._ensurePluginRows(this._activeTab, this._activeMode), this._saveStatus = { state: "success", backup: l.backup };
-    } catch (l) {
-      const d = l instanceof Error ? l.message : String(l);
-      this._saveStatus = { state: "error", msg: d };
+      this._originalFullTheme = d, this._rows = this._rows.filter((u) => !u.markedForRemoval).map((u) => u.inTheme ? { ...u, original: u.current } : u.current !== u.original && u.current !== "" ? { ...u, original: u.current, inTheme: !0 } : u), this._activeTab !== z && this._ensurePluginRows(this._activeTab, this._activeMode), this._saveStatus = { state: "success", backup: c.backup };
+    } catch (c) {
+      const u = c instanceof Error ? c.message : String(c);
+      this._saveStatus = { state: "error", msg: u };
     }
   }
   /**
@@ -4586,166 +5303,164 @@ Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
    * Editor-Zustand. Bewahrt Key-Form (mit/ohne `--`) und Dict-Strukturen.
    */
   _buildSaveMerge() {
-    const t = {}, e = this._originalFullTheme.modes && typeof this._originalFullTheme.modes == "object" ? this._originalFullTheme.modes : {}, r = /* @__PURE__ */ new Set();
+    const e = {}, t = this._originalFullTheme.modes && typeof this._originalFullTheme.modes == "object" ? this._originalFullTheme.modes : {}, r = /* @__PURE__ */ new Set();
     for (const [o, i] of Object.entries(this._originalFullTheme)) {
       if (o === "modes") continue;
       if (typeof i == "object" && i !== null) {
-        t[o] = i;
+        e[o] = i;
         continue;
       }
-      const n = o.startsWith("--") ? o.slice(2) : o, c = this._rows.find(
-        (l) => l.mode === w && l.inTheme && l.yamlKey === n
+      const n = o.startsWith("--") ? o.slice(2) : o, d = this._rows.find(
+        (c) => c.mode === k && c.inTheme && c.yamlKey === n
       );
-      if (c) {
-        if (c.markedForRemoval) {
-          r.add(c.varName);
+      if (d) {
+        if (d.markedForRemoval) {
+          r.add(d.varName);
           continue;
         }
-        t[o] = c.current, r.add(c.varName);
+        e[o] = d.current, r.add(d.varName);
       } else
-        t[o] = i;
+        e[o] = i;
     }
     for (const o of this._rows)
-      o.mode === w && (o.inTheme || o.markedForRemoval || o.current !== o.original && o.current !== "" && (r.has(o.varName) || (t[o.yamlKey] = o.current)));
-    const a = this._modes.filter((o) => o !== w);
-    if (a.length > 0 || Object.keys(e).length > 0) {
+      o.mode === k && (o.inTheme || o.markedForRemoval || o.current !== o.original && o.current !== "" && (r.has(o.varName) || (e[o.yamlKey] = o.current)));
+    const a = this._modes.filter((o) => o !== k);
+    if (a.length > 0 || Object.keys(t).length > 0) {
       const o = {}, i = /* @__PURE__ */ new Set([
-        ...Object.keys(e),
+        ...Object.keys(t),
         ...a
       ]);
       for (const n of i) {
-        const c = e[n] || {}, l = {}, d = /* @__PURE__ */ new Set();
-        for (const [u, p] of Object.entries(c)) {
-          if (typeof p == "object" && p !== null) {
-            l[u] = p;
+        const d = t[n] || {}, c = {}, u = /* @__PURE__ */ new Set();
+        for (const [p, m] of Object.entries(d)) {
+          if (typeof m == "object" && m !== null) {
+            c[p] = m;
             continue;
           }
-          const m = u.startsWith("--") ? u.slice(2) : u, b = this._rows.find(
-            (x) => x.mode === n && x.inTheme && x.yamlKey === m
+          const h = p.startsWith("--") ? p.slice(2) : p, g = this._rows.find(
+            (w) => w.mode === n && w.inTheme && w.yamlKey === h
           );
-          if (b) {
-            if (b.markedForRemoval) {
-              d.add(b.varName);
+          if (g) {
+            if (g.markedForRemoval) {
+              u.add(g.varName);
               continue;
             }
-            l[u] = b.current, d.add(b.varName);
+            c[p] = g.current, u.add(g.varName);
           } else
-            l[u] = p;
+            c[p] = m;
         }
-        for (const u of this._rows)
-          u.mode === n && (u.inTheme || u.markedForRemoval || u.current !== u.original && u.current !== "" && (d.has(u.varName) || (l[u.yamlKey] = u.current)));
-        Object.keys(l).length > 0 && (o[n] = l);
+        for (const p of this._rows)
+          p.mode === n && (p.inTheme || p.markedForRemoval || p.current !== p.original && p.current !== "" && (u.has(p.varName) || (c[p.yamlKey] = p.current)));
+        Object.keys(c).length > 0 && (o[n] = c);
       }
-      Object.keys(o).length > 0 && (t.modes = o);
+      Object.keys(o).length > 0 && (e.modes = o);
     }
-    return t;
+    return e;
   }
   // ─── Kategorien-Gruppierung ─────────────────────────────────────────
-  _groupByCategory(t) {
-    const e = /* @__PURE__ */ new Map();
-    for (const n of te())
-      for (const c of n.schema.categories)
-        e.has(c.id) || e.set(c.id, c);
+  _groupByCategory(e) {
+    const t = /* @__PURE__ */ new Map();
+    for (const n of oe())
+      for (const d of n.schema.categories)
+        t.has(d.id) || t.set(d.id, d);
     const r = /* @__PURE__ */ new Map();
-    for (const n of t) {
-      let c;
-      n.meta.source === "heuristic" ? c = _e.id : n.meta.category && e.has(n.meta.category) ? c = n.meta.category : c = xe.id;
-      const l = r.get(c) ?? [];
-      l.push(n), r.set(c, l);
+    for (const n of e) {
+      let d;
+      n.meta.source === "heuristic" ? d = ue.id : n.meta.category && t.has(n.meta.category) ? d = n.meta.category : d = pe.id;
+      const c = r.get(d) ?? [];
+      c.push(n), r.set(d, c);
     }
     const a = [];
-    for (const [n, c] of e) {
-      const l = r.get(n);
-      l && l.length > 0 && a.push({ ...c, rows: l });
+    for (const [n, d] of t) {
+      const c = r.get(n);
+      c && c.length > 0 && a.push({ ...d, rows: c });
     }
-    const o = r.get(_e.id);
-    o && o.length > 0 && a.push({ ..._e, rows: o });
-    const i = r.get(xe.id);
-    return i && i.length > 0 && a.push({ ...xe, rows: i }), a;
+    const o = r.get(ue.id);
+    o && o.length > 0 && a.push({ ...ue, rows: o });
+    const i = r.get(pe.id);
+    return i && i.length > 0 && a.push({ ...pe, rows: i }), a;
   }
   // ─── CSS-Variable-Anwendung ─────────────────────────────────────────
-  _setCssVar(t, e) {
-    document.documentElement.style.setProperty(t, e), this._appliedVars.add(t);
+  _setCssVar(e, t) {
+    document.documentElement.style.setProperty(e, t), this._appliedVars.add(e);
   }
-  _revertCssVar(t) {
-    document.documentElement.style.removeProperty(t), this._appliedVars.delete(t);
+  _revertCssVar(e) {
+    document.documentElement.style.removeProperty(e), this._appliedVars.delete(e);
   }
   _revertAll() {
-    for (const t of this._appliedVars)
-      document.documentElement.style.removeProperty(t);
+    for (const e of this._appliedVars)
+      document.documentElement.style.removeProperty(e);
     this._appliedVars.clear();
   }
   // ─── Row-Mutationen ─────────────────────────────────────────────────
-  _changeRow(t, e) {
-    this._setCssVar(t.varName, e), this._rows = this._rows.map(
-      (r) => r.varName === t.varName && r.mode === t.mode ? { ...r, current: e } : r
+  _changeRow(e, t) {
+    this._setCssVar(e.varName, t), this._rows = this._rows.map(
+      (r) => r.varName === e.varName && r.mode === e.mode ? { ...r, current: t } : r
     );
   }
-  _resetRow(t) {
-    this._revertCssVar(t.varName), this._rows = this._rows.map(
-      (e) => e.varName === t.varName && e.mode === t.mode ? { ...e, current: e.original, markedForRemoval: !1 } : e
+  _resetRow(e) {
+    this._revertCssVar(e.varName), this._rows = this._rows.map(
+      (t) => t.varName === e.varName && t.mode === e.mode ? { ...t, current: t.original, markedForRemoval: !1 } : t
     );
   }
-  _removeRow(t) {
-    t.inTheme && (this._revertCssVar(t.varName), this._rows = this._rows.map(
-      (e) => e.varName === t.varName && e.mode === t.mode ? { ...e, markedForRemoval: !0 } : e
+  _removeRow(e) {
+    e.inTheme && (this._revertCssVar(e.varName), this._rows = this._rows.map(
+      (t) => t.varName === e.varName && t.mode === e.mode ? { ...t, markedForRemoval: !0 } : t
     ));
   }
   _resetAll() {
-    const t = this._dirtyCount();
-    t !== 0 && confirm(
-      `${t} ungespeicherte Änderung(en) werden verworfen (über alle Modes und Tabs). Fortfahren?`
-    ) && (this._revertAll(), this._rows = this._rows.map((e) => ({
-      ...e,
-      current: e.original,
+    const e = this._dirtyCount();
+    e !== 0 && confirm(s("editor.reset_confirm", void 0, { n: e })) && (this._revertAll(), this._rows = this._rows.map((t) => ({
+      ...t,
+      current: t.original,
       markedForRemoval: !1
     })));
   }
-  _isRowDirty(t) {
-    return t.current !== t.original || t.markedForRemoval === !0;
+  _isRowDirty(e) {
+    return e.current !== e.original || e.markedForRemoval === !0;
   }
   _dirtyCount() {
     return this._rows.reduce(
-      (t, e) => t + (this._isRowDirty(e) ? 1 : 0),
+      (e, t) => e + (this._isRowDirty(t) ? 1 : 0),
       0
     );
   }
-  _modeDirtyCount(t) {
+  _modeDirtyCount(e) {
     return this._rows.reduce(
-      (e, r) => e + (r.mode === t && this._isRowDirty(r) ? 1 : 0),
+      (t, r) => t + (r.mode === e && this._isRowDirty(r) ? 1 : 0),
       0
     );
   }
   _removingCount() {
     return this._rows.reduce(
-      (t, e) => t + (e.markedForRemoval ? 1 : 0),
+      (e, t) => e + (t.markedForRemoval ? 1 : 0),
       0
     );
   }
   _onBack() {
-    const t = this._dirtyCount();
-    t > 0 && !confirm(
-      `${t} ungespeicherte Änderung(en) gehen verloren. Trotzdem zurück?`
-    ) || (this._revertAll(), this.dispatchEvent(
+    const e = this._dirtyCount();
+    e > 0 && !confirm(s("editor.back_confirm", void 0, { n: e })) || (this._revertAll(), this.dispatchEvent(
       new CustomEvent("back-to-picker", { bubbles: !0, composed: !0 })
     ));
   }
   // ─── Tab/Mode-Handling ──────────────────────────────────────────────
-  _onTabSelect(t) {
-    t !== this._activeTab && (t !== z && this._ensurePluginRows(t, this._activeMode), this._activeTab = t);
+  _onTabSelect(e) {
+    e !== this._activeTab && (e !== z && this._ensurePluginRows(e, this._activeMode), this._activeTab = e);
   }
-  _onModeSelect(t) {
-    t !== this._activeMode && (this._activeTab !== z && this._ensurePluginRows(this._activeTab, t), this._activeMode = t);
+  _onModeSelect(e) {
+    e !== this._activeMode && (this._activeTab !== z && this._ensurePluginRows(this._activeTab, e), this._activeMode = e);
   }
   _visibleRows() {
-    const t = this._rows.filter((e) => e.mode === this._activeMode);
-    return this._activeTab === z ? t.filter((e) => e.inTheme) : t.filter((e) => e.meta.plugin === this._activeTab);
+    const e = this._rows.filter((t) => t.mode === this._activeMode);
+    return this._activeTab === z ? e.filter((t) => t.inTheme) : e.filter((t) => t.meta.plugin === this._activeTab);
   }
   // ─── Rendering ──────────────────────────────────────────────────────
   render() {
-    return s`
+    return l`
       <div class="toolbar">
-        <button class="back-btn" @click=${this._onBack}>← Zurück</button>
+        <button class="back-btn" @click=${this._onBack}>
+          ${s("common.back")}
+        </button>
         <div class="breadcrumb">
           <div class="theme-name">${this.themeName}</div>
           <code>${this.file}</code>
@@ -4754,30 +5469,30 @@ Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
         <button
           class="preview-toggle ${this._showPreview ? "active" : ""}"
           @click=${this._togglePreview}
-          title="Live-Preview eines Dashboards in einem iframe daneben"
+          title=${s("editor.preview_tooltip")}
         >
-          👁 Preview
+          👁 ${s("editor.preview")}
         </button>
         <button
           class="danger-btn"
           ?disabled=${this._dirtyCount() === 0 || this._saveStatus.state === "saving"}
           @click=${this._resetAll}
         >
-          Alles verwerfen
+          ${s("editor.discard_all")}
         </button>
         <button
           class="primary-btn"
           ?disabled=${this._dirtyCount() === 0 || this._saveStatus.state === "saving"}
           @click=${this._save}
         >
-          ${this._saveStatus.state === "saving" ? "Speichere…" : "Speichern"}
+          ${this._saveStatus.state === "saving" ? s("common.saving") : s("common.save")}
         </button>
       </div>
       ${this._renderModeBar()} ${this._renderTabs()}
       ${this._renderSaveStatus()}
       <div class="body-grid ${this._showPreview ? "with-preview" : ""}">
         <div class="editor-col">${this._renderBody()}</div>
-        ${this._showPreview ? s`<div class="preview-col">
+        ${this._showPreview ? l`<div class="preview-col">
               <ts-preview-pane
                 .src=${this._previewSrc}
                 .overrides=${this._currentOverrides()}
@@ -4790,32 +5505,32 @@ Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
   _togglePreview() {
     this._showPreview = !this._showPreview, this.classList.toggle("with-preview", this._showPreview);
   }
-  _onPreviewSrcChange(t) {
-    this._previewSrc = t.detail.src;
+  _onPreviewSrcChange(e) {
+    this._previewSrc = e.detail.src;
   }
   /**
    * Aktuelle CSS-Overrides als Map — alle Rows wo `current !== original`,
    * unabhängig vom Mode (Live-Preview ist mode-agnostisch).
    */
   _currentOverrides() {
-    const t = /* @__PURE__ */ new Map();
-    for (const e of this._rows)
-      e.current !== e.original && t.set(e.varName, e.current);
-    return t;
+    const e = /* @__PURE__ */ new Map();
+    for (const t of this._rows)
+      t.current !== t.original && e.set(t.varName, t.current);
+    return e;
   }
   _renderModeBar() {
-    return this._loading || this._error || this._modes.length === 1 ? "" : s`
+    return this._loading || this._error || this._modes.length === 1 ? "" : l`
       <div class="mode-bar">
-        <span class="label">Mode:</span>
-        ${this._modes.map((t) => {
-      const e = this._modeDirtyCount(t);
-      return s`
+        <span class="label">${s("editor.mode_bar_label")}:</span>
+        ${this._modes.map((e) => {
+      const t = this._modeDirtyCount(e);
+      return l`
             <button
-              class="mode-btn ${this._activeMode === t ? "active" : ""}"
-              @click=${() => this._onModeSelect(t)}
+              class="mode-btn ${this._activeMode === e ? "active" : ""}"
+              @click=${() => this._onModeSelect(e)}
             >
-              ${we(t)}
-              ${e > 0 ? s`<span class="mode-count">${e} ●</span>` : ""}
+              ${Se(e)}
+              ${t > 0 ? l`<span class="mode-count">${t} ●</span>` : ""}
             </button>
           `;
     })}
@@ -4824,21 +5539,21 @@ Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
   }
   _renderTabs() {
     if (this._loading || this._error) return "";
-    const t = this._rows.filter(
+    const e = this._rows.filter(
       (r) => r.inTheme && r.mode === this._activeMode
-    ).length, e = [
-      { id: z, label: "Im Theme", count: t }
+    ).length, t = [
+      { id: z, label: s("editor.tab_in_theme"), count: e }
     ];
-    for (const r of te())
-      e.push({
+    for (const r of oe())
+      t.push({
         id: r.manifest.id,
         label: r.manifest.name,
         count: r.schema.variables.length
       });
-    return s`
+    return l`
       <div class="tabs" role="tablist">
-        ${e.map(
-      (r) => s`
+        ${t.map(
+      (r) => l`
             <button
               class="tab ${this._activeTab === r.id ? "active" : ""}"
               role="tab"
@@ -4854,152 +5569,163 @@ Ein Backup wird automatisch unter themes/.backups/ angelegt.`;
     `;
   }
   _renderSaveStatus() {
-    const t = this._saveStatus;
-    return t.state === "idle" || t.state === "saving" ? "" : t.state === "success" ? s`
+    const e = this._saveStatus;
+    return e.state === "idle" || e.state === "saving" ? "" : e.state === "success" ? l`
         <div class="status-banner success">
-          ✓ Gespeichert${t.backup ? s` &middot; Backup: <code>${t.backup}</code>` : ""}
+          ✓ ${s("editor.save_success")}${e.backup ? l` &middot; ${s("common.backup")}: <code>${e.backup}</code>` : ""}
         </div>
-      ` : s`
+      ` : l`
       <div class="status-banner error">
-        ✗ Speichern fehlgeschlagen: ${t.msg}
+        ✗ ${s("common.save_failed")}: ${e.msg}
       </div>
     `;
   }
   _renderDirtyBadge() {
-    const t = this._dirtyCount();
-    if (t === 0) return "";
-    const e = this._rows.filter(
-      (i) => !i.inTheme && !i.markedForRemoval && i.current !== i.original && i.current !== ""
+    const e = this._dirtyCount();
+    if (e === 0) return "";
+    const t = this._rows.filter(
+      (n) => !n.inTheme && !n.markedForRemoval && n.current !== n.original && n.current !== ""
     ).length, r = this._removingCount(), a = [];
-    e > 0 && a.push(`${e} neu`), r > 0 && a.push(`${r} ×`);
-    const o = a.length > 0 ? ` (${a.join(", ")})` : "";
-    return s`<span class="dirty-badge"
-      >${t} Änderung${t === 1 ? "" : "en"}${o}</span
-    >`;
+    t > 0 && a.push(s("editor.dirty_adding", void 0, { n: t })), r > 0 && a.push(s("editor.dirty_removing", void 0, { n: r }));
+    const o = a.length > 0 ? ` (${a.join(", ")})` : "", i = s(
+      e === 1 ? "editor.dirty_count_one" : "editor.dirty_count_many",
+      void 0,
+      { n: e }
+    );
+    return l`<span class="dirty-badge">${i}${o}</span>`;
   }
   _renderBody() {
     if (this._loading)
-      return s`<div class="loading">Lade Theme…</div>`;
+      return l`<div class="loading">${s("editor.loading")}</div>`;
     if (this._error)
-      return s`<div class="error">Fehler: ${this._error}</div>`;
-    const t = this._visibleRows();
-    if (t.length === 0) {
-      const r = this._activeTab === z ? this._activeMode === w ? "Keine editierbaren Variablen in diesem Theme." : `Keine Override-Variablen für Mode '${we(this._activeMode)}' im Theme. Wechsle auf einen Plugin-Tab um welche hinzuzufügen.` : "Keine Variablen in diesem Plugin-Tab.";
-      return s`<div class="empty">${r}</div>`;
+      return l`<div class="error">
+        ${s("common.error_prefix")}: ${this._error}
+      </div>`;
+    const e = this._visibleRows();
+    if (e.length === 0) {
+      const r = this._activeTab === z ? this._activeMode === k ? s("editor.empty_default") : s("editor.empty_mode", void 0, {
+        mode: Se(this._activeMode)
+      }) : s("editor.empty_plugin");
+      return l`<div class="empty">${r}</div>`;
     }
-    const e = this._groupByCategory(t);
-    return s`
-      ${this._activeTab === z && this._activeMode === w && this._skippedKeys.length > 0 ? s`<div class="notice">
-            Diese Theme-Datei enthält komplexe Werte unter
+    const t = this._groupByCategory(e);
+    return l`
+      ${this._activeTab === z && this._activeMode === k && this._skippedKeys.length > 0 ? l`<div class="notice">
+            ${s("editor.notice_skipped_prefix")}
             ${this._skippedKeys.map(
-      (r, a) => s`${a > 0 ? ", " : ""}<code>${r}</code>`
-    )},
-            die der Variablen-Editor nicht abbildet (verschachtelte
-            Strukturen).
+      (r, a) => l`${a > 0 ? ", " : ""}<code>${r}</code>`
+    )}${s("editor.notice_skipped_suffix")}
           </div>` : ""}
-      ${this._activeMode !== w ? s`<div class="notice">
-            <strong>${we(this._activeMode)}-Mode:</strong> Edits hier
-            landen unter <code>modes.${this._activeMode}</code> im YAML und
-            wirken in HA nur wenn dieser Mode aktiv ist.
-            Live-Preview greift dennoch unabhängig vom HA-Mode — schalte HA
-            ggf. selbst um, um den richtigen Render-Kontext zu sehen.
+      ${this._activeMode !== k ? l`<div class="notice">
+            <strong>${Se(this._activeMode)}-Mode:</strong>
+            ${s("editor.notice_mode_prefix")}
+            <code>modes.${this._activeMode}</code>
+            ${s("editor.notice_mode_suffix")}
           </div>` : ""}
-      ${this._activeTab !== z ? s`<div class="notice">
-            <strong>Plugin-Tab:</strong> alle ${t.length} Schema-Variablen
-            werden gezeigt. Variablen mit
-            <span class="row-tag default">default</span>-Tag stehen
-            (noch) nicht im Theme. Sobald du einen Wert änderst, wird die
-            Variable beim Speichern als
-            ${this._activeMode === w ? "Top-Level-Eintrag" : s`Override unter <code>modes.${this._activeMode}</code>`}
-            ins Theme aufgenommen.
+      ${this._activeTab !== z ? l`<div class="notice">
+            <strong>${s("editor.notice_plugin_strong")}:</strong>
+            ${s("editor.notice_plugin_prefix", void 0, { n: e.length })}
+            <span class="row-tag default">${s("editor.tag_default")}</span>${s(
+      "editor.notice_plugin_middle"
+    )}
+            ${this._activeMode === k ? s("editor.notice_plugin_top_level") : l`${s("editor.notice_plugin_override")}
+                  <code>modes.${this._activeMode}</code>`}${s(
+      "editor.notice_plugin_suffix"
+    )}
           </div>` : ""}
-      ${e.map((r) => this._renderCategory(r))}
+      ${t.map((r) => this._renderCategory(r))}
     `;
   }
-  _renderCategory(t) {
-    return s`
+  _renderCategory(e) {
+    return l`
       <div class="category-card">
         <h3>
-          <span>${t.label}</span>
-          <span class="count">${t.rows.length}</span>
+          <span>${ro(e)}</span>
+          <span class="count">${e.rows.length}</span>
         </h3>
-        ${t.rows.map((e) => this._renderRow(e))}
+        ${e.rows.map((t) => this._renderRow(t))}
       </div>
     `;
   }
-  _renderRow(t) {
-    const e = t.current !== t.original, r = t.markedForRemoval === !0, a = e || r, o = !t.inTheme && !e && !r, i = !t.inTheme && e && t.current !== "" && !r, n = ["row"];
-    return e && !r && n.push("dirty"), r && n.push("removed"), s`
+  _renderRow(e) {
+    const t = e.current !== e.original, r = e.markedForRemoval === !0, a = t || r, o = !e.inTheme && !t && !r, i = !e.inTheme && t && e.current !== "" && !r, n = ["row"];
+    return t && !r && n.push("dirty"), r && n.push("removed"), l`
       <div class=${n.join(" ")}>
         <div class="meta-cell">
           <code class="var-name">
-            ${a ? s`<span class="dirty-dot">●</span>` : ""}
-            ${t.varName}
-            ${t.meta.source === "heuristic" ? s`<span class="row-tag heuristic">${t.meta.type}</span>` : ""}
-            ${o ? s`<span class="row-tag default">default</span>` : ""}
-            ${i ? s`<span class="row-tag adding">+ wird ergänzt</span>` : ""}
-            ${r ? s`<span class="row-tag removing">× wird entfernt</span>` : ""}
+            ${a ? l`<span class="dirty-dot">●</span>` : ""}
+            ${e.varName}
+            ${e.meta.source === "heuristic" ? l`<span class="row-tag heuristic">${e.meta.type}</span>` : ""}
+            ${o ? l`<span class="row-tag default"
+                  >${s("editor.tag_default")}</span
+                >` : ""}
+            ${i ? l`<span class="row-tag adding"
+                  >${s("editor.tag_adding")}</span
+                >` : ""}
+            ${r ? l`<span class="row-tag removing"
+                  >${s("editor.tag_removing")}</span
+                >` : ""}
           </code>
-          ${t.meta.description ? s`<span class="description">${t.meta.description}</span>` : ""}
+          ${e.meta.description ? l`<span class="description">${e.meta.description}</span>` : ""}
         </div>
-        <div class="control-cell">${this._renderControl(t)}</div>
+        <div class="control-cell">${this._renderControl(e)}</div>
         <button
           class="reset-btn"
           ?disabled=${!a}
-          @click=${() => this._resetRow(t)}
-          title="Auf Original zurücksetzen (verwirft auch eine Entfernen-Markierung)"
+          @click=${() => this._resetRow(e)}
+          title=${s("editor.reset_row_tooltip")}
         >
           ↺
         </button>
         <button
           class="remove-btn"
-          ?disabled=${!t.inTheme || r}
-          @click=${() => this._removeRow(t)}
-          title=${t.inTheme ? "Variable beim nächsten Speichern aus dem Theme entfernen" : "Nicht im Theme — nichts zu entfernen"}
+          ?disabled=${!e.inTheme || r}
+          @click=${() => this._removeRow(e)}
+          title=${e.inTheme ? s("editor.remove_row_tooltip") : s("editor.remove_row_disabled_tooltip")}
         >
           🗑
         </button>
       </div>
     `;
   }
-  _renderControl(t) {
-    const e = (r) => this._changeRow(t, r.detail.value);
-    switch (t.meta.type) {
+  _renderControl(e) {
+    const t = (r) => this._changeRow(e, r.detail.value);
+    switch (e.meta.type) {
       case "color":
-        return s`
+        return l`
           <ts-color-picker
-            .value=${t.current}
-            @value-changed=${e}
+            .value=${e.current}
+            @value-changed=${t}
           ></ts-color-picker>
         `;
       case "length":
-        return s`
+        return l`
           <ts-length-slider
-            .value=${t.current}
-            .units=${t.meta.unit ?? ["px"]}
-            .min=${t.meta.min ?? 0}
-            .max=${t.meta.max ?? 100}
-            @value-changed=${e}
+            .value=${e.current}
+            .units=${e.meta.unit ?? ["px"]}
+            .min=${e.meta.min ?? 0}
+            .max=${e.meta.max ?? 100}
+            @value-changed=${t}
           ></ts-length-slider>
         `;
       case "background":
-        return s`
+        return l`
           <ts-background-picker
-            .value=${t.current}
-            @value-changed=${e}
+            .value=${e.current}
+            @value-changed=${t}
           ></ts-background-picker>
         `;
       default:
-        return s`
+        return l`
           <ts-raw-input
-            .value=${t.current}
-            @value-changed=${e}
+            .value=${e.current}
+            @value-changed=${t}
           ></ts-raw-input>
         `;
     }
   }
 };
-_.styles = C`
+x.styles = B`
     :host {
       display: block;
       max-width: 1100px;
@@ -5373,52 +6099,52 @@ _.styles = C`
       border-radius: 3px;
     }
   `;
-k([
-  g({ attribute: !1 })
-], _.prototype, "hass", 2);
-k([
-  g({ type: String })
-], _.prototype, "file", 2);
-k([
-  g({ type: String })
-], _.prototype, "themeName", 2);
-k([
-  h()
-], _.prototype, "_loading", 2);
-k([
-  h()
-], _.prototype, "_error", 2);
-k([
-  h()
-], _.prototype, "_rows", 2);
-k([
-  h()
-], _.prototype, "_skippedKeys", 2);
-k([
-  h()
-], _.prototype, "_saveStatus", 2);
-k([
-  h()
-], _.prototype, "_activeTab", 2);
-k([
-  h()
-], _.prototype, "_activeMode", 2);
-k([
-  h()
-], _.prototype, "_modes", 2);
-k([
-  h()
-], _.prototype, "_showPreview", 2);
-k([
-  h()
-], _.prototype, "_previewSrc", 2);
-_ = k([
+C([
+  f({ attribute: !1 })
+], x.prototype, "hass", 2);
+C([
+  f({ type: String })
+], x.prototype, "file", 2);
+C([
+  f({ type: String })
+], x.prototype, "themeName", 2);
+C([
+  b()
+], x.prototype, "_loading", 2);
+C([
+  b()
+], x.prototype, "_error", 2);
+C([
+  b()
+], x.prototype, "_rows", 2);
+C([
+  b()
+], x.prototype, "_skippedKeys", 2);
+C([
+  b()
+], x.prototype, "_saveStatus", 2);
+C([
+  b()
+], x.prototype, "_activeTab", 2);
+C([
+  b()
+], x.prototype, "_activeMode", 2);
+C([
+  b()
+], x.prototype, "_modes", 2);
+C([
+  b()
+], x.prototype, "_showPreview", 2);
+C([
+  b()
+], x.prototype, "_previewSrc", 2);
+x = C([
   M("ts-editor-view")
-], _);
-var Kr = Object.defineProperty, Zr = Object.getOwnPropertyDescriptor, N = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Zr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Kr(e, r, o), o;
+], x);
+var oo = Object.defineProperty, ao = Object.getOwnPropertyDescriptor, N = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? ao(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && oo(t, r, o), o;
 };
 let E = class extends v {
   constructor() {
@@ -5430,44 +6156,48 @@ let E = class extends v {
   async _load() {
     this._loading = !0, this._loadError = null;
     try {
-      const t = await this.hass.connection.sendMessagePromise({
+      const e = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/list_modules"
       });
-      this._modules = t.modules, this._errors = t.errors, this._rootExists = t.root_exists;
-    } catch (t) {
-      this._loadError = t instanceof Error ? t.message : String(t);
+      this._modules = e.modules, this._errors = e.errors, this._rootExists = e.root_exists;
+    } catch (e) {
+      this._loadError = e instanceof Error ? e.message : String(e);
     } finally {
       this._loading = !1;
     }
   }
   render() {
-    return this._loading ? s`<div class="empty">Lade Module…</div>` : this._loadError ? s`<div class="error">Fehler: ${this._loadError}</div>` : s`
-      <h2>Welches Bubble-Card-Modul möchtest du anpassen?</h2>
-      ${this._rootExists ? this._modules.length === 0 ? s`<div class="empty">
-              Keine Module in <code>bubble_card/modules/</code> gefunden.
-            </div>` : s`
+    return this._loading ? l`<div class="empty">${s("module_picker.loading")}</div>` : this._loadError ? l`<div class="error">
+        ${s("common.error_prefix")}: ${this._loadError}
+      </div>` : l`
+      <h2>${s("module_picker.heading")}</h2>
+      ${this._rootExists ? this._modules.length === 0 ? l`<div class="empty">${s("module_picker.empty")}</div>` : l`
               <div class="list">
                 ${this._modules.map(
-      (t) => s`
+      (e) => l`
                     <button
                       class="item"
-                      @click=${() => this._select(t)}
-                      title=${t.file}
+                      @click=${() => this._select(e)}
+                      title=${e.file}
                     >
                       <div class="info">
                         <div class="name-row">
-                          <span class="name">${t.name}</span>
-                          <span class="module-id">${t.module_id}</span>
+                          <span class="name">${e.name}</span>
+                          <span class="module-id">${e.module_id}</span>
                         </div>
-                        ${t.description ? s`<div class="desc">${t.description}</div>` : ""}
+                        ${e.description ? l`<div class="desc">${e.description}</div>` : ""}
                         <div class="meta">
-                          <span class="tag">${t.file}</span>
-                          ${t.is_global ? s`<span class="tag global">global</span>` : ""}
-                          ${t.has_code ? "" : s`<span class="tag no-code">kein code</span>`}
-                          ${t.supported.map(
-        (e) => s`<span class="tag">${e}</span>`
+                          <span class="tag">${e.file}</span>
+                          ${e.is_global ? l`<span class="tag global"
+                                >${s("module_picker.tag_global")}</span
+                              >` : ""}
+                          ${e.has_code ? "" : l`<span class="tag no-code"
+                                >${s("module_picker.tag_no_code")}</span
+                              >`}
+                          ${e.supported.map(
+        (t) => l`<span class="tag">${t}</span>`
       )}
-                          ${t.version ? s`<span class="tag">v${t.version}</span>` : ""}
+                          ${e.version ? l`<span class="tag">v${e.version}</span>` : ""}
                         </div>
                       </div>
                       <div class="arrow">→</div>
@@ -5475,35 +6205,30 @@ let E = class extends v {
                   `
     )}
               </div>
-            ` : s`<div class="empty">
-            Kein <code>bubble_card/modules/</code>-Verzeichnis gefunden.
-            Bubble Card legt das automatisch an, sobald du dein erstes
-            Modul speicherst — oder leg es manuell unter
-            <code>&lt;config&gt;/bubble_card/modules/</code> an.
-          </div>`}
-      ${this._errors.length > 0 ? s`
+            ` : l`<div class="empty">${s("module_picker.no_root")}</div>`}
+      ${this._errors.length > 0 ? l`
             <div class="errors-list">
-              <h3>YAML-Fehler in folgenden Dateien:</h3>
+              <h3>${s("picker.yaml_errors_heading")}</h3>
               <ul>
                 ${this._errors.map(
-      (t) => s`<li>${t.file}: ${t.error}</li>`
+      (e) => l`<li>${e.file}: ${e.error}</li>`
     )}
               </ul>
             </div>
           ` : ""}
     `;
   }
-  _select(t) {
+  _select(e) {
     this.dispatchEvent(
       new CustomEvent("module-selected", {
-        detail: { file: t.file, module_id: t.module_id },
+        detail: { file: e.file, module_id: e.module_id },
         bubbles: !0,
         composed: !0
       })
     );
   }
 };
-E.styles = C`
+E.styles = B`
     :host {
       display: block;
       max-width: 800px;
@@ -5627,62 +6352,62 @@ E.styles = C`
     }
   `;
 N([
-  g({ attribute: !1 })
+  f({ attribute: !1 })
 ], E.prototype, "hass", 2);
 N([
-  h()
+  b()
 ], E.prototype, "_loading", 2);
 N([
-  h()
+  b()
 ], E.prototype, "_modules", 2);
 N([
-  h()
+  b()
 ], E.prototype, "_errors", 2);
 N([
-  h()
+  b()
 ], E.prototype, "_rootExists", 2);
 N([
-  h()
+  b()
 ], E.prototype, "_loadError", 2);
 E = N([
   M("ts-module-picker")
 ], E);
-var qr = Object.defineProperty, Jr = Object.getOwnPropertyDescriptor, P = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Jr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && qr(e, r, o), o;
+var io = Object.defineProperty, no = Object.getOwnPropertyDescriptor, D = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? no(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && io(t, r, o), o;
 };
-function Yr(t) {
-  const e = /* @__PURE__ */ new Map(), r = /var\(\s*(--[\w-]+)/g;
+function so(e) {
+  const t = /* @__PURE__ */ new Map(), r = /var\(\s*(--[\w-]+)/g;
   let a;
-  for (; (a = r.exec(t)) !== null; ) {
+  for (; (a = r.exec(e)) !== null; ) {
     const o = a[1];
     let i = a.index + a[0].length;
-    for (; i < t.length && /\s/.test(t[i]); ) i++;
+    for (; i < e.length && /\s/.test(e[i]); ) i++;
     let n;
-    if (t[i] === ",") {
-      for (i++; i < t.length && /\s/.test(t[i]); ) i++;
-      const l = i;
-      let d = 1;
-      for (; i < t.length && d > 0; ) {
-        const p = t[i];
-        if (p === "(") d++;
-        else if (p === ")" && (d--, d === 0))
+    if (e[i] === ",") {
+      for (i++; i < e.length && /\s/.test(e[i]); ) i++;
+      const c = i;
+      let u = 1;
+      for (; i < e.length && u > 0; ) {
+        const m = e[i];
+        if (m === "(") u++;
+        else if (m === ")" && (u--, u === 0))
           break;
         i++;
       }
-      const u = t.slice(l, i).trim();
-      u.length > 0 && (n = u);
+      const p = e.slice(c, i).trim();
+      p.length > 0 && (n = p);
     }
-    const c = e.get(o);
-    c ? (c.count++, !c.fallback && n && (c.fallback = n)) : e.set(o, { name: o, fallback: n, count: 1 });
+    const d = t.get(o);
+    d ? (d.count++, !d.fallback && n && (d.fallback = n)) : t.set(o, { name: o, fallback: n, count: 1 });
   }
-  return [...e.values()].sort((o, i) => o.name.localeCompare(i.name));
+  return [...t.values()].sort((o, i) => o.name.localeCompare(i.name));
 }
-let B = class extends v {
+let A = class extends v {
   constructor() {
-    super(...arguments), this.file = "", this.moduleId = "", this._loading = !0, this._error = null, this._content = {}, this._original = {}, this._saveStatus = { state: "idle" }, this._onBeforeUnload = (t) => {
-      this._isDirty() && (t.preventDefault(), t.returnValue = "");
+    super(...arguments), this.file = "", this.moduleId = "", this._loading = !0, this._error = null, this._content = {}, this._original = {}, this._saveStatus = { state: "idle" }, this._onBeforeUnload = (e) => {
+      this._isDirty() && (e.preventDefault(), e.returnValue = "");
     };
   }
   connectedCallback() {
@@ -5691,21 +6416,21 @@ let B = class extends v {
   disconnectedCallback() {
     super.disconnectedCallback(), window.removeEventListener("beforeunload", this._onBeforeUnload);
   }
-  updated(t) {
-    const e = t.has("file") && t.get("file") !== void 0, r = t.has("moduleId") && t.get("moduleId") !== void 0;
-    (e || r) && this._load();
+  updated(e) {
+    const t = e.has("file") && e.get("file") !== void 0, r = e.has("moduleId") && e.get("moduleId") !== void 0;
+    (t || r) && this._load();
   }
   async _load() {
     this._loading = !0, this._error = null, this._saveStatus = { state: "idle" };
     try {
-      const t = await this.hass.connection.sendMessagePromise({
+      const e = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/get_module",
         file: this.file,
         module_id: this.moduleId
       });
-      this._content = { ...t.content }, this._original = JSON.parse(JSON.stringify(t.content));
-    } catch (t) {
-      this._error = t instanceof Error ? t.message : String(t);
+      this._content = { ...e.content }, this._original = JSON.parse(JSON.stringify(e.content));
+    } catch (e) {
+      this._error = e instanceof Error ? e.message : String(e);
     } finally {
       this._loading = !1;
     }
@@ -5714,122 +6439,122 @@ let B = class extends v {
     return JSON.stringify(this._content) !== JSON.stringify(this._original);
   }
   _onBack() {
-    this._isDirty() && !confirm(
-      "Ungespeicherte Änderungen am Modul gehen verloren. Trotzdem zurück?"
-    ) || this.dispatchEvent(
+    this._isDirty() && !confirm(s("module_editor.back_confirm")) || this.dispatchEvent(
       new CustomEvent("back-to-picker", { bubbles: !0, composed: !0 })
     );
   }
-  _setField(t, e) {
-    this._content = { ...this._content, [t]: e };
+  _setField(e, t) {
+    this._content = { ...this._content, [e]: t };
   }
   async _save() {
     if (!(!this._isDirty() || this._saveStatus.state === "saving") && confirm(
-      `Modul '${this.moduleId}' in '${this.file}' speichern?
-
-Ein Backup wird automatisch unter bubble_card/.backups/ angelegt.`
+      s("module_editor.save_confirm", void 0, {
+        moduleId: this.moduleId,
+        file: this.file
+      })
     )) {
       this._saveStatus = { state: "saving" };
       try {
-        const t = await this.hass.connection.sendMessagePromise({
+        const e = await this.hass.connection.sendMessagePromise({
           type: "theme_studio/save_module",
           file: this.file,
           module_id: this.moduleId,
           content: this._content
         });
-        this._original = JSON.parse(JSON.stringify(this._content)), this._saveStatus = { state: "success", backup: t.backup };
-      } catch (t) {
-        const e = t instanceof Error ? t.message : String(t);
-        this._saveStatus = { state: "error", msg: e };
+        this._original = JSON.parse(JSON.stringify(this._content)), this._saveStatus = { state: "success", backup: e.backup };
+      } catch (e) {
+        const t = e instanceof Error ? e.message : String(e);
+        this._saveStatus = { state: "error", msg: t };
       }
     }
   }
   _resetAll() {
-    this._isDirty() && confirm(
-      "Alle Änderungen am Modul werden auf den Original-Zustand zurückgesetzt. Fortfahren?"
-    ) && (this._content = JSON.parse(JSON.stringify(this._original)));
+    this._isDirty() && confirm(s("module_editor.reset_confirm")) && (this._content = JSON.parse(JSON.stringify(this._original)));
   }
   render() {
     if (this._loading)
-      return s`<div class="loading">Lade Modul…</div>`;
+      return l`<div class="loading">${s("module_editor.loading")}</div>`;
     if (this._error)
-      return s`<div class="error">Fehler: ${this._error}</div>`;
-    const t = this._content.name || this.moduleId, e = this._content.description || "", r = this._content.version || "", a = Array.isArray(this._content.supported) ? this._content.supported : [], o = this._content.is_global === !0, i = this._content.code || "", n = /* @__PURE__ */ new Set([
+      return l`<div class="error">
+        ${s("common.error_prefix")}: ${this._error}
+      </div>`;
+    const e = this._content.name || this.moduleId, t = this._content.description || "", r = this._content.version || "", a = Array.isArray(this._content.supported) ? this._content.supported : [], o = this._content.is_global === !0, i = this._content.code || "", n = /* @__PURE__ */ new Set([
       "name",
       "description",
       "version",
       "supported",
       "is_global",
       "code"
-    ]), c = Object.keys(this._content).filter(
-      (d) => !n.has(d)
-    ), l = this._isDirty();
-    return s`
+    ]), d = Object.keys(this._content).filter(
+      (u) => !n.has(u)
+    ), c = this._isDirty();
+    return l`
       <div class="toolbar">
-        <button class="back-btn" @click=${this._onBack}>← Zurück</button>
+        <button class="back-btn" @click=${this._onBack}>
+          ${s("common.back")}
+        </button>
         <div class="breadcrumb">
-          <div class="module-name">${t}</div>
+          <div class="module-name">${e}</div>
           <code>${this.file} · ${this.moduleId}</code>
         </div>
-        ${l ? s`<span class="dirty-badge">geändert</span>` : ""}
+        ${c ? l`<span class="dirty-badge">${s("common.dirty_badge")}</span>` : ""}
         <button
           class="danger-btn"
-          ?disabled=${!l || this._saveStatus.state === "saving"}
+          ?disabled=${!c || this._saveStatus.state === "saving"}
           @click=${this._resetAll}
         >
-          Verwerfen
+          ${s("common.discard")}
         </button>
         <button
           class="primary-btn"
-          ?disabled=${!l || this._saveStatus.state === "saving"}
+          ?disabled=${!c || this._saveStatus.state === "saving"}
           @click=${this._save}
         >
-          ${this._saveStatus.state === "saving" ? "Speichere…" : "Speichern"}
+          ${this._saveStatus.state === "saving" ? s("common.saving") : s("common.save")}
         </button>
       </div>
 
       ${this._renderSaveStatus()}
 
       <div class="notice">
-        <strong>Hinweis:</strong> Bubble Card lädt Module beim
-        Card-Render. Nach Save musst du deine Dashboards neu laden
-        (Cmd+R), damit die Änderungen wirksam werden.
+        <strong>${s("common.notice")}:</strong>
+        ${s("module_editor.reload_notice")}
       </div>
 
       <div class="card">
-        <h3>Metadaten</h3>
+        <h3>${s("module_editor.metadata_heading")}</h3>
         <div class="field">
-          <label for="m-name">Name</label>
+          <label for="m-name">${s("module_editor.field_name")}</label>
           <input
             id="m-name"
             type="text"
-            .value=${t}
-            @input=${(d) => this._setField("name", d.target.value)}
+            .value=${e}
+            @input=${(u) => this._setField("name", u.target.value)}
           />
         </div>
         <div class="field">
-          <label for="m-desc">Description</label>
+          <label for="m-desc">${s("module_editor.field_description")}</label>
           <input
             id="m-desc"
             type="text"
-            .value=${e}
-            @input=${(d) => this._setField(
+            .value=${t}
+            @input=${(u) => this._setField(
       "description",
-      d.target.value
+      u.target.value
     )}
           />
         </div>
         <div class="field">
-          <label for="m-version">Version</label>
+          <label for="m-version">${s("module_editor.field_version")}</label>
           <input
             id="m-version"
             type="text"
             .value=${r}
-            @input=${(d) => this._setField("version", d.target.value)}
+            @input=${(u) => this._setField("version", u.target.value)}
           />
         </div>
         <div class="field">
-          <label for="m-supported">Supported</label>
+          <label for="m-supported">${s("module_editor.field_supported")}</label>
           <input
             id="m-supported"
             type="text"
@@ -5840,9 +6565,7 @@ Ein Backup wird automatisch unter bubble_card/.backups/ angelegt.`
           />
         </div>
         <div class="field-help">
-          Komma-getrennte Card-Types (button, climate, cover,
-          horizontal-buttons-stack, media-player, pop-up, select,
-          separator, sub-buttons).
+          ${s("module_editor.supported_help")}
         </div>
         <div class="field checkbox-field">
           <label for="m-global">is_global</label>
@@ -5850,90 +6573,92 @@ Ein Backup wird automatisch unter bubble_card/.backups/ angelegt.`
             id="m-global"
             type="checkbox"
             .checked=${o}
-            @change=${(d) => this._setField(
+            @change=${(u) => this._setField(
       "is_global",
-      d.target.checked
+      u.target.checked
     )}
           />
         </div>
-        ${c.length > 0 ? s`<div class="extra-keys">
-              Weitere Felder im YAML (werden beim Save 1:1 erhalten):
-              ${c.map(
-      (d, u) => s`${u > 0 ? ", " : ""}<code>${d}</code>`
+        ${d.length > 0 ? l`<div class="extra-keys">
+              ${s("module_editor.extra_keys")}:
+              ${d.map(
+      (u, p) => l`${p > 0 ? ", " : ""}<code>${u}</code>`
     )}
             </div>` : ""}
       </div>
 
       <div class="card">
-        <h3>CSS-Code</h3>
+        <h3>${s("module_editor.css_heading")}</h3>
         <div class="code-layout">
           <textarea
             class="code-editor"
             spellcheck="false"
             .value=${i}
-            @input=${(d) => this._setField("code", d.target.value)}
+            @input=${(u) => this._setField("code", u.target.value)}
           ></textarea>
           ${this._renderVarsSidebar(i)}
         </div>
       </div>
     `;
   }
-  _renderVarsSidebar(t) {
-    const e = Yr(t);
-    return s`
+  _renderVarsSidebar(e) {
+    const t = so(e);
+    return l`
       <aside class="vars-sidebar">
         <h4>
-          Verwendete Variablen
-          <span class="count">${e.length}</span>
+          ${s("module_editor.vars_heading")}
+          <span class="count">${t.length}</span>
         </h4>
-        ${e.length === 0 ? s`<div class="vars-empty">
-              Keine <code>var(--…)</code> im Code gefunden.
-            </div>` : e.map((r) => this._renderVarItem(r))}
+        ${t.length === 0 ? l`<div class="vars-empty">
+              ${s("module_editor.vars_empty")}
+            </div>` : t.map((r) => this._renderVarItem(r))}
       </aside>
     `;
   }
-  _renderVarItem(t) {
-    const e = pe(t.name, t.fallback), r = e.source === "schema", a = e.type === "color" && t.fallback ? s`<span class="var-swatch" style=${`background:${t.fallback}`}></span>` : "";
-    return s`
+  _renderVarItem(e) {
+    const t = fe(e.name, e.fallback), r = t.source === "schema", a = t.type === "color" && e.fallback ? l`<span class="var-swatch" style=${`background:${e.fallback}`}></span>` : "";
+    return l`
       <div class="var-item">
         <div class="var-header">
-          <span class="var-name">${a}${t.name}</span>
-          ${t.count > 1 ? s`<span class="var-count">×${t.count}</span>` : ""}
+          <span class="var-name">${a}${e.name}</span>
+          ${e.count > 1 ? l`<span class="var-count">×${e.count}</span>` : ""}
         </div>
         <div class="var-tags">
-          ${r ? s`<span class="var-tag plugin">${e.plugin}</span>` : s`<span class="var-tag heuristic">heuristik</span>`}
+          ${r ? l`<span class="var-tag plugin">${t.plugin}</span>` : l`<span class="var-tag heuristic"
+                >${s("common.tag_heuristic")}</span
+              >`}
           <span
-            class=${`var-tag ${e.type === "color" ? "type-color" : ""}`}
-          >${e.type}</span>
-          ${r && e.category ? s`<span class="var-tag">${e.category}</span>` : ""}
+            class=${`var-tag ${t.type === "color" ? "type-color" : ""}`}
+          >${t.type}</span>
+          ${r && t.category ? l`<span class="var-tag">${t.category}</span>` : ""}
         </div>
-        ${e.description ? s`<div class="var-desc">${e.description}</div>` : ""}
-        ${t.fallback ? s`<div class="var-fallback">
-              Fallback: <code>${t.fallback}</code>
+        ${t.description ? l`<div class="var-desc">${t.description}</div>` : ""}
+        ${e.fallback ? l`<div class="var-fallback">
+              ${s("common.fallback")}: <code>${e.fallback}</code>
             </div>` : ""}
       </div>
     `;
   }
   _renderSaveStatus() {
-    const t = this._saveStatus;
-    return t.state === "idle" || t.state === "saving" ? "" : t.state === "success" ? s`
+    const e = this._saveStatus;
+    return e.state === "idle" || e.state === "saving" ? "" : e.state === "success" ? l`
         <div class="status-banner success">
-          ✓ Modul gespeichert${t.backup ? s` &middot; Backup: <code>${t.backup}</code>` : ""}.
-          Lade jetzt das Dashboard neu (Cmd+R), damit die Änderung
-          wirksam wird.
+          ✓ ${s("module_editor.save_success")}${e.backup ? l` &middot; ${s("common.backup")}:
+                <code>${e.backup}</code>` : ""}.
+          ${s("module_editor.save_success_reload")}
         </div>
-      ` : s`
+      ` : l`
       <div class="status-banner error">
-        ✗ Speichern fehlgeschlagen: ${t.msg}
+        ✗ ${s("common.save_failed")}: ${e.msg}
       </div>
     `;
   }
-  _onSupportedInput(t) {
-    const r = t.target.value.split(",").map((a) => a.trim()).filter((a) => a.length > 0);
+  _onSupportedInput(e) {
+    const r = e.target.value.split(",").map((a) => a.trim()).filter((a) => a.length > 0);
     this._setField("supported", r);
   }
 };
-B.styles = C`
+A.styles = B`
     :host {
       display: block;
       max-width: 1100px;
@@ -6248,58 +6973,58 @@ B.styles = C`
       font-size: 0.85rem;
     }
   `;
-P([
-  g({ attribute: !1 })
-], B.prototype, "hass", 2);
-P([
-  g({ type: String })
-], B.prototype, "file", 2);
-P([
-  g({ type: String })
-], B.prototype, "moduleId", 2);
-P([
-  h()
-], B.prototype, "_loading", 2);
-P([
-  h()
-], B.prototype, "_error", 2);
-P([
-  h()
-], B.prototype, "_content", 2);
-P([
-  h()
-], B.prototype, "_original", 2);
-P([
-  h()
-], B.prototype, "_saveStatus", 2);
-B = P([
+D([
+  f({ attribute: !1 })
+], A.prototype, "hass", 2);
+D([
+  f({ type: String })
+], A.prototype, "file", 2);
+D([
+  f({ type: String })
+], A.prototype, "moduleId", 2);
+D([
+  b()
+], A.prototype, "_loading", 2);
+D([
+  b()
+], A.prototype, "_error", 2);
+D([
+  b()
+], A.prototype, "_content", 2);
+D([
+  b()
+], A.prototype, "_original", 2);
+D([
+  b()
+], A.prototype, "_saveStatus", 2);
+A = D([
   M("ts-module-editor")
-], B);
-var Xr = Object.defineProperty, Qr = Object.getOwnPropertyDescriptor, A = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Qr(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && Xr(e, r, o), o;
+], A);
+var lo = Object.defineProperty, co = Object.getOwnPropertyDescriptor, T = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? co(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && lo(t, r, o), o;
 };
-const f = "default", eo = {
+const y = "default", uo = {
   selection: null,
   full: {},
-  scalarsByMode: { [f]: {} },
-  modes: [f],
+  scalarsByMode: { [y]: {} },
+  modes: [y],
   loading: !1,
   error: null
 };
-let $ = class extends v {
+let S = class extends v {
   constructor() {
-    super(...arguments), this._themes = [], this._themesError = null, this._themesLoading = !0, this._sideA = this._freshSide(), this._sideB = this._freshSide(), this._diffOnly = !0, this._copyStatus = { state: "idle" }, this._activeMode = f;
+    super(...arguments), this._themes = [], this._themesError = null, this._themesLoading = !0, this._sideA = this._freshSide(), this._sideB = this._freshSide(), this._diffOnly = !0, this._copyStatus = { state: "idle" }, this._activeMode = y;
   }
   get _busyCopy() {
     return this._copyStatus.state === "copying";
   }
   _freshSide() {
     return {
-      ...eo,
-      scalarsByMode: { [f]: {} },
-      modes: [f]
+      ...uo,
+      scalarsByMode: { [y]: {} },
+      modes: [y]
     };
   }
   connectedCallback() {
@@ -6308,30 +7033,30 @@ let $ = class extends v {
   async _loadThemes() {
     this._themesLoading = !0, this._themesError = null;
     try {
-      const t = await this.hass.connection.sendMessagePromise({
+      const e = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/list_themes"
       });
-      this._themes = t.themes, this._themes.length >= 1 && !this._sideA.selection && await this._setSide("A", this._themes[0]), this._themes.length >= 2 && !this._sideB.selection && await this._setSide("B", this._themes[1]);
-    } catch (t) {
-      this._themesError = t instanceof Error ? t.message : String(t);
+      this._themes = e.themes, this._themes.length >= 1 && !this._sideA.selection && await this._setSide("A", this._themes[0]), this._themes.length >= 2 && !this._sideB.selection && await this._setSide("B", this._themes[1]);
+    } catch (e) {
+      this._themesError = e instanceof Error ? e.message : String(e);
     } finally {
       this._themesLoading = !1;
     }
   }
-  async _setSide(t, e) {
-    const a = { ...t === "A" ? this._sideA : this._sideB, selection: e };
-    if (this._writeSide(t, a), !e) {
-      this._writeSide(t, this._freshSide());
+  async _setSide(e, t) {
+    const a = { ...e === "A" ? this._sideA : this._sideB, selection: t };
+    if (this._writeSide(e, a), !t) {
+      this._writeSide(e, this._freshSide());
       return;
     }
-    this._writeSide(t, { ...a, loading: !0, error: null });
+    this._writeSide(e, { ...a, loading: !0, error: null });
     try {
       const o = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/get_theme",
-        file: e.file,
-        theme_name: e.theme_name
+        file: t.file,
+        theme_name: t.theme_name
       }), i = this._extractScalarsByMode(o.variables);
-      this._writeSide(t, {
+      this._writeSide(e, {
         ...a,
         loading: !1,
         full: o.variables,
@@ -6339,15 +7064,15 @@ let $ = class extends v {
         modes: Object.keys(i)
       });
     } catch (o) {
-      this._writeSide(t, {
+      this._writeSide(e, {
         ...a,
         loading: !1,
         error: o instanceof Error ? o.message : String(o)
       });
     }
   }
-  _writeSide(t, e) {
-    t === "A" ? this._sideA = e : this._sideB = e;
+  _writeSide(e, t) {
+    e === "A" ? this._sideA = t : this._sideB = t;
   }
   /**
    * Liefert pro Mode (inkl. "default") die Scalars als yamlKey → string Map.
@@ -6357,65 +7082,68 @@ let $ = class extends v {
    * Dicts/Arrays werden in beiden Fällen übersprungen — Compare-View
    * vergleicht nur skalare Werte.
    */
-  _extractScalarsByMode(t) {
-    const e = {
-      [f]: {}
+  _extractScalarsByMode(e) {
+    const t = {
+      [y]: {}
     };
-    for (const [r, a] of Object.entries(t)) {
+    for (const [r, a] of Object.entries(e)) {
       if (r === "modes" && a && typeof a == "object" && !Array.isArray(a)) {
         for (const [o, i] of Object.entries(
           a
         )) {
           if (!i || typeof i != "object") continue;
           const n = {};
-          for (const [c, l] of Object.entries(
+          for (const [d, c] of Object.entries(
             i
           ))
-            l != null && typeof l != "object" && (n[c] = String(l));
-          e[o] = n;
+            c != null && typeof c != "object" && (n[d] = String(c));
+          t[o] = n;
         }
         continue;
       }
-      a != null && typeof a != "object" && (e[f][r] = String(a));
+      a != null && typeof a != "object" && (t[y][r] = String(a));
     }
-    return e;
+    return t;
   }
   /** Union der Modes aus A und B, "default" zuerst, Rest alphabetisch. */
   _availableModes() {
-    const t = /* @__PURE__ */ new Set([f]);
-    for (const r of this._sideA.modes) t.add(r);
-    for (const r of this._sideB.modes) t.add(r);
-    const e = [...t].filter((r) => r !== f).sort();
-    return [f, ...e];
+    const e = /* @__PURE__ */ new Set([y]);
+    for (const r of this._sideA.modes) e.add(r);
+    for (const r of this._sideB.modes) e.add(r);
+    const t = [...e].filter((r) => r !== y).sort();
+    return [y, ...t];
   }
-  _modeLabel(t) {
-    return t === f ? "Default" : t.charAt(0).toUpperCase() + t.slice(1);
+  _modeLabel(e) {
+    return e === y ? s("compare.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
   }
-  _onSelect(t, e) {
-    const r = e.target.value;
+  _onSelect(e, t) {
+    const r = t.target.value;
     if (!r) {
-      this._setSide(t, null);
+      this._setSide(e, null);
       return;
     }
     const [a, o] = r.split("§§"), i = this._themes.find(
       (n) => n.file === a && n.theme_name === o
     );
-    i && this._setSide(t, i);
+    i && this._setSide(e, i);
   }
   render() {
-    return this._themesLoading ? s`<div class="loading">Lade Themes…</div>` : this._themesError ? s`<div class="error">Fehler: ${this._themesError}</div>` : this._themes.length < 2 ? s`
+    return this._themesLoading ? l`<div class="loading">${s("picker.loading")}</div>` : this._themesError ? l`<div class="error">
+        ${s("common.error_prefix")}: ${this._themesError}
+      </div>` : this._themes.length < 2 ? l`
         <div class="empty">
-          Theme-Switcher braucht mindestens 2 Themes im
-          <code>themes/</code>-Verzeichnis (aktuell ${this._themes.length}).
+          ${s("compare.need_two_themes", void 0, {
+      count: this._themes.length
+    })}
         </div>
-      ` : s`
+      ` : l`
       <div class="header">
         <div class="selector">
-          <label>Theme A</label>
+          <label>${s("compare.theme_a")}</label>
           ${this._renderSelector("A", this._sideA.selection)}
         </div>
         <div class="selector">
-          <label>Theme B</label>
+          <label>${s("compare.theme_b")}</label>
           ${this._renderSelector("B", this._sideB.selection)}
         </div>
         <div class="filter">
@@ -6423,9 +7151,9 @@ let $ = class extends v {
             id="diff-only"
             type="checkbox"
             .checked=${this._diffOnly}
-            @change=${(t) => this._diffOnly = t.target.checked}
+            @change=${(e) => this._diffOnly = e.target.checked}
           />
-          <label for="diff-only">Nur Unterschiede</label>
+          <label for="diff-only">${s("compare.diff_only")}</label>
         </div>
       </div>
       ${this._renderModeSelector()} ${this._renderCopyStatus()}
@@ -6433,44 +7161,51 @@ let $ = class extends v {
     `;
   }
   _renderCopyStatus() {
-    const t = this._copyStatus;
-    return t.state === "idle" || t.state === "copying" ? "" : t.state === "success" ? s`
+    const e = this._copyStatus;
+    return e.state === "idle" || e.state === "copying" ? "" : e.state === "success" ? l`
         <div class="status-banner success">
-          ✓ <code>${t.yamlKey}</code> kopiert nach ${t.themeName}
-          (${t.modeLabel})${t.backup ? s` &middot; Backup: <code>${t.backup}</code>` : ""}
+          ✓
+          ${s("compare.copy_success", void 0, {
+      key: e.yamlKey,
+      theme: e.themeName,
+      mode: e.modeLabel
+    })}${e.backup ? l` &middot; ${s("common.backup")}:
+                <code>${e.backup}</code>` : ""}
         </div>
-      ` : s`
+      ` : l`
       <div class="status-banner error">
-        ✗ Kopieren fehlgeschlagen: ${t.msg}
+        ✗ ${s("compare.copy_failed")}: ${e.msg}
       </div>
     `;
   }
   _renderModeSelector() {
-    const t = this._availableModes();
-    return t.length <= 1 ? "" : (t.includes(this._activeMode) || (this._activeMode = f), s`
+    const e = this._availableModes();
+    return e.length <= 1 ? "" : (e.includes(this._activeMode) || (this._activeMode = y), l`
       <div class="mode-selector">
-        ${t.map((e) => {
-      const r = this._sideA.modes.includes(e), a = this._sideB.modes.includes(e), o = e !== f && (!r || !a), i = this._modeLabel(e);
-      return s`
+        ${e.map((t) => {
+      const r = this._sideA.modes.includes(t), a = this._sideB.modes.includes(t), o = t !== y && (!r || !a), i = this._modeLabel(t);
+      return l`
             <button
-              class=${e === this._activeMode ? "active" : ""}
-              @click=${() => this._activeMode = e}
-              title=${o ? `Nur in ${r ? "A" : "B"} vorhanden` : ""}
+              class=${t === this._activeMode ? "active" : ""}
+              @click=${() => this._activeMode = t}
+              title=${o ? s("compare.mode_only_in", void 0, {
+        side: r ? "A" : "B"
+      }) : ""}
             >
-              ${i}${o ? s`<span class="badge-only">${r ? "A" : "B"}</span>` : ""}
+              ${i}${o ? l`<span class="badge-only">${r ? "A" : "B"}</span>` : ""}
             </button>
           `;
     })}
       </div>
     `);
   }
-  _renderSelector(t, e) {
-    const r = e ? `${e.file}§§${e.theme_name}` : "";
-    return s`
-      <select @change=${(a) => this._onSelect(t, a)}>
-        <option value="">(kein Theme)</option>
+  _renderSelector(e, t) {
+    const r = t ? `${t.file}§§${t.theme_name}` : "";
+    return l`
+      <select @change=${(a) => this._onSelect(e, a)}>
+        <option value="">${s("compare.no_theme")}</option>
         ${this._themes.map(
-      (a) => s`
+      (a) => l`
             <option
               value="${a.file}§§${a.theme_name}"
               ?selected=${r === `${a.file}§§${a.theme_name}`}
@@ -6483,85 +7218,99 @@ let $ = class extends v {
     `;
   }
   _renderBody() {
-    const t = this._sideA, e = this._sideB;
-    if (t.loading || e.loading)
-      return s`<div class="loading">Lade Theme-Inhalt…</div>`;
-    if (t.error || e.error)
-      return s`<div class="error">
-        ${t.error ? `A: ${t.error}` : ""} ${e.error ? `B: ${e.error}` : ""}
+    const e = this._sideA, t = this._sideB;
+    if (e.loading || t.loading)
+      return l`<div class="loading">${s("compare.loading_theme")}</div>`;
+    if (e.error || t.error)
+      return l`<div class="error">
+        ${e.error ? `A: ${e.error}` : ""} ${t.error ? `B: ${t.error}` : ""}
       </div>`;
-    if (!t.selection || !e.selection)
-      return s`<div class="empty">Wähle beide Themes oben aus.</div>`;
-    const r = this._activeMode, a = t.scalarsByMode[r] ?? {}, o = e.scalarsByMode[r] ?? {}, i = r === f || t.modes.includes(r), n = r === f || e.modes.includes(r), c = this._modeLabel(r), l = Array.from(
+    if (!e.selection || !t.selection)
+      return l`<div class="empty">${s("compare.pick_both")}</div>`;
+    const r = this._activeMode, a = e.scalarsByMode[r] ?? {}, o = t.scalarsByMode[r] ?? {}, i = r === y || e.modes.includes(r), n = r === y || t.modes.includes(r), d = this._modeLabel(r), c = Array.from(
       /* @__PURE__ */ new Set([...Object.keys(a), ...Object.keys(o)])
-    ).sort(), d = l.map((m) => ({
-      key: m,
-      valA: a[m] ?? null,
-      valB: o[m] ?? null
-    })).filter((m) => !this._diffOnly || m.valA === null || m.valB === null ? !0 : m.valA !== m.valB), u = l.reduce((m, b) => {
-      const x = a[b] ?? null, j = o[b] ?? null;
-      return x === null || j === null ? m + 1 : m + (x !== j ? 1 : 0);
-    }, 0), p = r === f ? "" : !i || !n ? s` <em>
-              · ${i ? e.selection.theme_name : t.selection.theme_name}
-              hat keine ${c}-Mode (Copy würde sie anlegen).
+    ).sort(), u = c.map((h) => ({
+      key: h,
+      valA: a[h] ?? null,
+      valB: o[h] ?? null
+    })).filter((h) => !this._diffOnly || h.valA === null || h.valB === null ? !0 : h.valA !== h.valB), p = c.reduce((h, g) => {
+      const w = a[g] ?? null, j = o[g] ?? null;
+      return w === null || j === null ? h + 1 : h + (w !== j ? 1 : 0);
+    }, 0), m = r === y ? "" : !i || !n ? l` <em>
+              ·
+              ${s("compare.mode_missing_hint", void 0, {
+      theme: i ? t.selection.theme_name : e.selection.theme_name,
+      mode: d
+    })}
             </em>` : "";
-    return s`
+    return l`
       <div class="summary">
-        <strong>${c}-Mode:</strong>
-        ${t.selection.theme_name} hat ${Object.keys(a).length} Vars,
-        ${e.selection.theme_name} hat ${Object.keys(o).length}.
-        Insgesamt <strong>${u} Unterschiede</strong> oder einseitige
-        Einträge.${p}
+        <strong>${s("compare.mode_label", void 0, { mode: d })}:</strong>
+        ${s("compare.summary", void 0, {
+      themeA: e.selection.theme_name,
+      countA: Object.keys(a).length,
+      themeB: t.selection.theme_name,
+      countB: Object.keys(o).length
+    })}
+        <strong
+          >${s("compare.summary_diffs", void 0, { n: p })}</strong
+        >${m}
       </div>
-      ${d.length === 0 ? s`<div class="empty">
-            Keine Unterschiede zwischen den Themes in der ${c}-Mode.
-          </div>` : s`
+      ${u.length === 0 ? l`<div class="empty">
+            ${s("compare.no_diffs", void 0, { mode: d })}
+          </div>` : l`
             <table>
               <thead>
                 <tr>
-                  <th class="var-cell">Variable</th>
-                  <th class="val-cell">${t.selection.theme_name}</th>
-                  <th class="actions">Aktion</th>
+                  <th class="var-cell">${s("compare.col_variable")}</th>
                   <th class="val-cell">${e.selection.theme_name}</th>
+                  <th class="actions">${s("compare.col_action")}</th>
+                  <th class="val-cell">${t.selection.theme_name}</th>
                 </tr>
               </thead>
               <tbody>
-                ${d.map((m) => this._renderRow(m.key, m.valA, m.valB))}
+                ${u.map((h) => this._renderRow(h.key, h.valA, h.valB))}
               </tbody>
             </table>
           `}
     `;
   }
-  _renderRow(t, e, r) {
-    const a = t.startsWith("--") ? t : `--${t}`, o = pe(a, e ?? r ?? void 0), i = e !== null && r === null, n = r !== null && e === null, l = [
+  _renderRow(e, t, r) {
+    const a = e.startsWith("--") ? e : `--${e}`, o = fe(a, t ?? r ?? void 0), i = t !== null && r === null, n = r !== null && t === null, c = [
       "row",
       i ? "only-a" : "",
       n ? "only-b" : "",
-      !i && !n && e !== r ? "diff" : ""
-    ].filter(Boolean).join(" "), d = e !== null && e !== r, u = r !== null && r !== e;
-    return s`
-      <tr class=${l}>
+      !i && !n && t !== r ? "diff" : ""
+    ].filter(Boolean).join(" "), u = t !== null && t !== r, p = r !== null && r !== t;
+    return l`
+      <tr class=${c}>
         <td class="var-cell">
           ${a}
-          ${o.description ? s`<div class="description">${o.description}</div>` : ""}
+          ${o.description ? l`<div class="description">${o.description}</div>` : ""}
         </td>
-        <td class=${`val-cell ${e === null ? "missing" : ""}`}>
-          ${this._renderValue(e)}
+        <td class=${`val-cell ${t === null ? "missing" : ""}`}>
+          ${this._renderValue(t)}
         </td>
         <td class="actions">
           <button
             class="copy-btn"
-            ?disabled=${!u || this._busyCopy}
-            title=${r === null ? "B hat keinen Wert" : `Wert von B nach A kopieren (${this._sideB.selection?.theme_name} → ${this._sideA.selection?.theme_name})`}
-            @click=${() => this._copy("B", "A", t, r)}
+            ?disabled=${!p || this._busyCopy}
+            title=${r === null ? s("compare.copy_no_value", void 0, { side: "B" }) : s("compare.copy_tooltip", void 0, {
+      from: this._sideB.selection?.theme_name ?? "",
+      to: this._sideA.selection?.theme_name ?? ""
+    })}
+            @click=${() => this._copy("B", "A", e, r)}
           >
             ←
           </button>
           <button
             class="copy-btn"
-            ?disabled=${!d || this._busyCopy}
-            title=${e === null ? "A hat keinen Wert" : `Wert von A nach B kopieren (${this._sideA.selection?.theme_name} → ${this._sideB.selection?.theme_name})`}
-            @click=${() => this._copy("A", "B", t, e)}
+            ?disabled=${!u || this._busyCopy}
+            title=${t === null ? s("compare.copy_no_value", void 0, { side: "A" }) : s("compare.copy_tooltip", void 0, {
+      from: this._sideA.selection?.theme_name ?? "",
+      to: this._sideB.selection?.theme_name ?? ""
+    })}
+            @click=${() => this._copy("A", "B", e, t)}
           >
             →
           </button>
@@ -6572,37 +7321,41 @@ let $ = class extends v {
       </tr>
     `;
   }
-  _renderValue(t) {
-    return t === null ? s`(nicht im Theme)` : /^#[0-9a-f]{3,8}$/i.test(t) || /^(rgba?|hsla?)\(/i.test(t) ? s`<span class="swatch" style="background: ${t}"></span>${t}` : s`${t}`;
+  _renderValue(e) {
+    return e === null ? l`${s("compare.not_in_theme")}` : /^#[0-9a-f]{3,8}$/i.test(e) || /^(rgba?|hsla?)\(/i.test(e) ? l`<span class="swatch" style="background: ${e}"></span>${e}` : l`${e}`;
   }
-  async _copy(t, e, r, a) {
-    const o = t === "A" ? this._sideA : this._sideB, i = e === "A" ? this._sideA : this._sideB;
+  async _copy(e, t, r, a) {
+    const o = e === "A" ? this._sideA : this._sideB, i = t === "A" ? this._sideA : this._sideB;
     if (!o.selection || !i.selection) return;
-    const n = this._activeMode, c = this._modeLabel(n), d = !(n === f) && !i.modes.includes(n), u = `Kopieren: '${r}' = '${a}' von ${o.selection.theme_name} nach ${i.selection.theme_name} (${i.selection.file})
-Mode: ${c}${d ? " — wird neu angelegt" : ""}
-
-Ein Backup von ${i.selection.file} wird automatisch angelegt.`;
-    if (!confirm(u)) return;
+    const n = this._activeMode, d = this._modeLabel(n), u = !(n === y) && !i.modes.includes(n), p = s("compare.copy_confirm", void 0, {
+      key: r,
+      value: a,
+      from: o.selection.theme_name,
+      to: i.selection.theme_name,
+      file: i.selection.file,
+      mode: d + (u ? ` ${s("compare.copy_confirm_new_mode")}` : "")
+    });
+    if (!confirm(p)) return;
     this._copyStatus = { state: "copying" };
-    const p = this._mergeValue(i.full, n, r, a);
+    const m = this._mergeValue(i.full, n, r, a);
     try {
-      const m = await this.hass.connection.sendMessagePromise({
+      const h = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/save_theme",
         file: i.selection.file,
         theme_name: i.selection.theme_name,
-        variables: p
+        variables: m
       });
-      this._setSide(e, i.selection), this._copyStatus = {
+      this._setSide(t, i.selection), this._copyStatus = {
         state: "success",
         yamlKey: r,
         themeName: i.selection.theme_name,
-        modeLabel: c,
-        backup: m.backup
+        modeLabel: d,
+        backup: h.backup
       };
-    } catch (m) {
+    } catch (h) {
       this._copyStatus = {
         state: "error",
-        msg: m instanceof Error ? m.message : String(m)
+        msg: h instanceof Error ? h.message : String(h)
       };
     }
   }
@@ -6612,15 +7365,15 @@ Ein Backup von ${i.selection.file} wird automatisch angelegt.`;
    * - sonst → modes.<mode>.<yamlKey>, modes/Submode werden bei Bedarf angelegt
    * Original-Key-Form (mit/ohne `--`-Prefix) bleibt erhalten falls schon da.
    */
-  _mergeValue(t, e, r, a) {
-    const o = { ...t }, i = (u) => Object.keys(u).find((m) => (m.startsWith("--") ? m.slice(2) : m) === r) ?? r;
-    if (e === f)
+  _mergeValue(e, t, r, a) {
+    const o = { ...e }, i = (p) => Object.keys(p).find((h) => (h.startsWith("--") ? h.slice(2) : h) === r) ?? r;
+    if (t === y)
       return o[i(o)] = a, o;
-    const n = o.modes, c = n && typeof n == "object" && !Array.isArray(n) ? { ...n } : {}, l = c[e], d = l && typeof l == "object" && !Array.isArray(l) ? { ...l } : {};
-    return d[i(d)] = a, c[e] = d, o.modes = c, o;
+    const n = o.modes, d = n && typeof n == "object" && !Array.isArray(n) ? { ...n } : {}, c = d[t], u = c && typeof c == "object" && !Array.isArray(c) ? { ...c } : {};
+    return u[i(u)] = a, d[t] = u, o.modes = d, o;
   }
 };
-$.styles = C`
+S.styles = B`
     :host {
       display: block;
       max-width: 1200px;
@@ -6827,47 +7580,47 @@ $.styles = C`
       font-size: 0.85rem;
     }
   `;
-A([
-  g({ attribute: !1 })
-], $.prototype, "hass", 2);
-A([
-  h()
-], $.prototype, "_themes", 2);
-A([
-  h()
-], $.prototype, "_themesError", 2);
-A([
-  h()
-], $.prototype, "_themesLoading", 2);
-A([
-  h()
-], $.prototype, "_sideA", 2);
-A([
-  h()
-], $.prototype, "_sideB", 2);
-A([
-  h()
-], $.prototype, "_diffOnly", 2);
-A([
-  h()
-], $.prototype, "_copyStatus", 2);
-A([
-  h()
-], $.prototype, "_activeMode", 2);
-$ = A([
+T([
+  f({ attribute: !1 })
+], S.prototype, "hass", 2);
+T([
+  b()
+], S.prototype, "_themes", 2);
+T([
+  b()
+], S.prototype, "_themesError", 2);
+T([
+  b()
+], S.prototype, "_themesLoading", 2);
+T([
+  b()
+], S.prototype, "_sideA", 2);
+T([
+  b()
+], S.prototype, "_sideB", 2);
+T([
+  b()
+], S.prototype, "_diffOnly", 2);
+T([
+  b()
+], S.prototype, "_copyStatus", 2);
+T([
+  b()
+], S.prototype, "_activeMode", 2);
+S = T([
   M("ts-compare-view")
-], $);
-var to = Object.defineProperty, ro = Object.getOwnPropertyDescriptor, Ct = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? ro(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && to(e, r, o), o;
+], S);
+var po = Object.defineProperty, mo = Object.getOwnPropertyDescriptor, Tt = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? mo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && po(t, r, o), o;
 };
-let ge = class extends v {
+let xe = class extends v {
   constructor() {
     super(...arguments), this._log = [];
   }
   render() {
-    return s`
+    return l`
       <h2>Controls Demo (Step 5 — Smoke-Test)</h2>
 
       <section>
@@ -6876,21 +7629,21 @@ let ge = class extends v {
           <label>Hex:</label>
           <ts-color-picker
             value="#03a9f4"
-            @value-changed=${(t) => this._onChange(t, "Hex")}
+            @value-changed=${(e) => this._onChange(e, "Hex")}
           ></ts-color-picker>
         </div>
         <div class="row">
           <label>RGBA mit Alpha:</label>
           <ts-color-picker
             value="rgba(255, 152, 0, 0.5)"
-            @value-changed=${(t) => this._onChange(t, "RGBA")}
+            @value-changed=${(e) => this._onChange(e, "RGBA")}
           ></ts-color-picker>
         </div>
         <div class="row">
           <label>var-Reference:</label>
           <ts-color-picker
             value="var(--primary-color)"
-            @value-changed=${(t) => this._onChange(t, "Var-Ref")}
+            @value-changed=${(e) => this._onChange(e, "Var-Ref")}
           ></ts-color-picker>
         </div>
       </section>
@@ -6905,7 +7658,7 @@ let ge = class extends v {
             max="40"
             step="1"
             .units=${["px"]}
-            @value-changed=${(t) => this._onChange(t, "Radius (px)")}
+            @value-changed=${(e) => this._onChange(e, "Radius (px)")}
           ></ts-length-slider>
         </div>
         <div class="row">
@@ -6916,7 +7669,7 @@ let ge = class extends v {
             max="5"
             step="0.05"
             .units=${["px", "rem"]}
-            @value-changed=${(t) => this._onChange(t, "Spacing (px/rem)")}
+            @value-changed=${(e) => this._onChange(e, "Spacing (px/rem)")}
           ></ts-length-slider>
         </div>
       </section>
@@ -6927,14 +7680,14 @@ let ge = class extends v {
           <label>Box-Shadow:</label>
           <ts-raw-input
             value="0 2px 4px rgba(0, 0, 0, 0.12)"
-            @value-changed=${(t) => this._onChange(t, "Shadow")}
+            @value-changed=${(e) => this._onChange(e, "Shadow")}
           ></ts-raw-input>
         </div>
         <div class="row">
           <label>Kurzer Wert:</label>
           <ts-raw-input
             value="bold"
-            @value-changed=${(t) => this._onChange(t, "Raw kurz")}
+            @value-changed=${(e) => this._onChange(e, "Raw kurz")}
           ></ts-raw-input>
         </div>
       </section>
@@ -6942,14 +7695,14 @@ let ge = class extends v {
       <section>
         <h3>Event-Log (value-changed)</h3>
         <div class="log">
-          ${this._log.length === 0 ? s`<div class="empty">
+          ${this._log.length === 0 ? l`<div class="empty">
                 Noch keine Events — interagiere mit den Controls oben.
               </div>` : this._log.map(
-      (t) => s`
+      (e) => l`
                   <div class="log-entry">
-                    <span class="at">${t.at}</span>
-                    <span class="tag">${t.label}</span>
-                    <span class="value">${t.value}</span>
+                    <span class="at">${e.at}</span>
+                    <span class="tag">${e.label}</span>
+                    <span class="value">${e.value}</span>
                   </div>
                 `
     )}
@@ -6958,9 +7711,9 @@ let ge = class extends v {
       </section>
     `;
   }
-  _onChange(t, e) {
-    const r = t.target.tagName.toLowerCase(), a = (/* @__PURE__ */ new Date()).toLocaleTimeString();
-    this._log = [{ tag: r, label: e, value: t.detail.value, at: a }, ...this._log].slice(
+  _onChange(e, t) {
+    const r = e.target.tagName.toLowerCase(), a = (/* @__PURE__ */ new Date()).toLocaleTimeString();
+    this._log = [{ tag: r, label: t, value: e.detail.value, at: a }, ...this._log].slice(
       0,
       30
     );
@@ -6969,7 +7722,7 @@ let ge = class extends v {
     this._log = [];
   }
 };
-ge.styles = C`
+xe.styles = B`
     :host {
       display: block;
       max-width: 720px;
@@ -7042,51 +7795,51 @@ ge.styles = C`
       font-size: 0.85rem;
     }
   `;
-Ct([
-  h()
-], ge.prototype, "_log", 2);
-ge = Ct([
+Tt([
+  b()
+], xe.prototype, "_log", 2);
+xe = Tt([
   M("ts-controls-demo")
-], ge);
-var oo = Object.defineProperty, ao = Object.getOwnPropertyDescriptor, T = (t, e, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? ao(e, r) : e, i = t.length - 1, n; i >= 0; i--)
-    (n = t[i]) && (o = (a ? n(e, r, o) : n(o)) || o);
-  return a && o && oo(e, r, o), o;
+], xe);
+var ho = Object.defineProperty, bo = Object.getOwnPropertyDescriptor, P = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? bo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+    (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
+  return a && o && ho(t, r, o), o;
 };
-const ke = "themes", $e = "modules", Se = "compare";
-let S = class extends v {
+const $e = "themes", Be = "modules", Me = "compare";
+let $ = class extends v {
   constructor() {
-    super(...arguments), this.narrow = !1, this._selectedTheme = null, this._selectedModule = null, this._topTab = ke, this._demoMode = !1, this._hacsError = null, this._hacsErrorDismissed = !1, this._onHashChange = () => {
+    super(...arguments), this.narrow = !1, this._selectedTheme = null, this._selectedModule = null, this._topTab = $e, this._demoMode = !1, this._hacsError = null, this._hacsErrorDismissed = !1, this._onHashChange = () => {
       this._demoMode = window.location.hash === "#demo";
     };
   }
   connectedCallback() {
-    super.connectedCallback(), console.info("[theme-studio] registry (initial):", je()), this._demoMode = window.location.hash === "#demo", window.addEventListener("hashchange", this._onHashChange), this._unsubRegistry = wt(() => this.requestUpdate()), this._loadHacsRepos();
+    super.connectedCallback(), vr(this.hass?.language), console.info("[theme-studio] registry (initial):", Ke()), this._demoMode = window.location.hash === "#demo", window.addEventListener("hashchange", this._onHashChange), this._unsubRegistry = Bt(() => this.requestUpdate()), this._loadHacsRepos();
   }
   async _loadHacsRepos() {
     try {
-      const t = await this.hass.connection.sendMessagePromise({ type: "theme_studio/list_hacs_repos" });
-      t.found ? (Br(t.repos), console.info(
+      const e = await this.hass.connection.sendMessagePromise({ type: "theme_studio/list_hacs_repos" });
+      e.found ? (Hr(e.repos), console.info(
         "[theme-studio] HACS-Filter aktiv:",
-        t.repos.length,
+        e.repos.length,
         "installierte Repos →",
-        je()
+        Ke()
       )) : console.info(
         "[theme-studio] keine HACS-Storage gefunden — alle Plugins geladen"
       );
-    } catch (t) {
-      const e = t instanceof Error ? t.message : String(t);
+    } catch (e) {
+      const t = e instanceof Error ? e.message : String(e);
       console.warn(
         "[theme-studio] HACS-Detection fehlgeschlagen, alle Plugins geladen:",
-        t
-      ), this._hacsError = e;
+        e
+      ), this._hacsError = t;
     }
   }
   disconnectedCallback() {
     super.disconnectedCallback(), window.removeEventListener("hashchange", this._onHashChange), this._unsubRegistry?.(), this._unsubRegistry = void 0;
   }
   render() {
-    return s`
+    return l`
       <header>
         <ha-icon icon="mdi:palette"></ha-icon>
         <h1>Theme Studio</h1>
@@ -7095,17 +7848,15 @@ let S = class extends v {
     `;
   }
   _renderHacsWarn() {
-    return !this._hacsError || this._hacsErrorDismissed ? "" : s`
+    return !this._hacsError || this._hacsErrorDismissed ? "" : l`
       <div class="hacs-warn">
         <span class="hacs-warn-msg">
-          HACS-Detection fehlgeschlagen — Plugin-Filter ist inaktiv, alle
-          Plugins werden gezeigt (auch wenn das zugehörige Custom-Repo gar
-          nicht installiert ist).
+          ${s("panel.hacs_warn")}
           <span class="hacs-warn-detail">${this._hacsError}</span>
         </span>
         <button
           @click=${() => this._hacsErrorDismissed = !0}
-          title="Hinweis ausblenden"
+          title=${s("panel.hacs_warn_dismiss")}
         >
           ×
         </button>
@@ -7113,80 +7864,80 @@ let S = class extends v {
     `;
   }
   _renderBody() {
-    return this._demoMode ? s`<ts-controls-demo></ts-controls-demo>` : this._selectedTheme ? s`
+    return this._demoMode ? l`<ts-controls-demo></ts-controls-demo>` : this._selectedTheme ? l`
         <ts-editor-view
           .hass=${this.hass}
           .file=${this._selectedTheme.file}
           .themeName=${this._selectedTheme.theme_name}
           @back-to-picker=${this._backToPicker}
         ></ts-editor-view>
-      ` : this._selectedModule ? s`
+      ` : this._selectedModule ? l`
         <ts-module-editor
           .hass=${this.hass}
           .file=${this._selectedModule.file}
           .moduleId=${this._selectedModule.module_id}
           @back-to-picker=${this._backToPicker}
         ></ts-module-editor>
-      ` : s`
+      ` : l`
       ${this._renderTopTabs()} ${this._renderPickerForTab()}
     `;
   }
   _renderTopTabs() {
-    const t = te().some(
-      (e) => e.manifest.id === "bubble-card"
+    const e = oe().some(
+      (t) => t.manifest.id === "bubble-card"
     );
-    return s`
+    return l`
       <div class="top-tabs">
         <button
-          class="top-tab ${this._topTab === ke ? "active" : ""}"
-          @click=${() => this._setTopTab(ke)}
+          class="top-tab ${this._topTab === $e ? "active" : ""}"
+          @click=${() => this._setTopTab($e)}
         >
-          Themes
+          ${s("panel.tab_themes")}
         </button>
-        ${t ? s`
+        ${e ? l`
               <button
-                class="top-tab ${this._topTab === $e ? "active" : ""}"
-                @click=${() => this._setTopTab($e)}
+                class="top-tab ${this._topTab === Be ? "active" : ""}"
+                @click=${() => this._setTopTab(Be)}
               >
-                Bubble Card Module
+                ${s("panel.tab_modules")}
               </button>
             ` : ""}
         <button
-          class="top-tab ${this._topTab === Se ? "active" : ""}"
-          @click=${() => this._setTopTab(Se)}
+          class="top-tab ${this._topTab === Me ? "active" : ""}"
+          @click=${() => this._setTopTab(Me)}
         >
-          Vergleichen
+          ${s("panel.tab_compare")}
         </button>
       </div>
     `;
   }
   _renderPickerForTab() {
-    return this._topTab === $e ? s`
+    return this._topTab === Be ? l`
         <ts-module-picker
           .hass=${this.hass}
           @module-selected=${this._onModuleSelect}
         ></ts-module-picker>
-      ` : this._topTab === Se ? s`<ts-compare-view .hass=${this.hass}></ts-compare-view>` : s`
+      ` : this._topTab === Me ? l`<ts-compare-view .hass=${this.hass}></ts-compare-view>` : l`
       <theme-picker
         .hass=${this.hass}
         @theme-selected=${this._onThemeSelect}
       ></theme-picker>
     `;
   }
-  _setTopTab(t) {
-    this._topTab = t;
+  _setTopTab(e) {
+    this._topTab = e;
   }
-  _onThemeSelect(t) {
-    this._selectedTheme = t.detail;
+  _onThemeSelect(e) {
+    this._selectedTheme = e.detail;
   }
-  _onModuleSelect(t) {
-    this._selectedModule = t.detail;
+  _onModuleSelect(e) {
+    this._selectedModule = e.detail;
   }
   _backToPicker() {
     this._selectedTheme = null, this._selectedModule = null;
   }
 };
-S.styles = C`
+$.styles = B`
     :host {
       display: block;
       height: 100%;
@@ -7289,34 +8040,34 @@ S.styles = C`
       color: var(--primary-text-color);
     }
   `;
-T([
-  g({ attribute: !1 })
-], S.prototype, "hass", 2);
-T([
-  g({ type: Boolean })
-], S.prototype, "narrow", 2);
-T([
-  g({ attribute: !1 })
-], S.prototype, "route", 2);
-T([
-  h()
-], S.prototype, "_selectedTheme", 2);
-T([
-  h()
-], S.prototype, "_selectedModule", 2);
-T([
-  h()
-], S.prototype, "_topTab", 2);
-T([
-  h()
-], S.prototype, "_demoMode", 2);
-T([
-  h()
-], S.prototype, "_hacsError", 2);
-T([
-  h()
-], S.prototype, "_hacsErrorDismissed", 2);
-S = T([
+P([
+  f({ attribute: !1 })
+], $.prototype, "hass", 2);
+P([
+  f({ type: Boolean })
+], $.prototype, "narrow", 2);
+P([
+  f({ attribute: !1 })
+], $.prototype, "route", 2);
+P([
+  b()
+], $.prototype, "_selectedTheme", 2);
+P([
+  b()
+], $.prototype, "_selectedModule", 2);
+P([
+  b()
+], $.prototype, "_topTab", 2);
+P([
+  b()
+], $.prototype, "_demoMode", 2);
+P([
+  b()
+], $.prototype, "_hacsError", 2);
+P([
+  b()
+], $.prototype, "_hacsErrorDismissed", 2);
+$ = P([
   M("theme-studio-panel")
-], S);
+], $);
 //# sourceMappingURL=theme-studio-panel.js.map

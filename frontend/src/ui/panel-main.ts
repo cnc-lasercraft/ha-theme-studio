@@ -6,6 +6,7 @@ import {
   onActivePluginsChanged,
   setInstalledHacsRepos,
 } from "../core/schema-registry";
+import { setLocale, t } from "../core/i18n";
 import type { HomeAssistant, PanelRoute } from "../types";
 import "./theme-picker";
 import "./editor-view";
@@ -55,6 +56,7 @@ export class ThemeStudioPanel extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
+    setLocale(this.hass?.language);
     console.info("[theme-studio] registry (initial):", getRegistryStats());
     this._demoMode = window.location.hash === "#demo";
     window.addEventListener("hashchange", this._onHashChange);
@@ -223,14 +225,12 @@ export class ThemeStudioPanel extends LitElement {
     return html`
       <div class="hacs-warn">
         <span class="hacs-warn-msg">
-          HACS-Detection fehlgeschlagen — Plugin-Filter ist inaktiv, alle
-          Plugins werden gezeigt (auch wenn das zugehörige Custom-Repo gar
-          nicht installiert ist).
+          ${t("panel.hacs_warn")}
           <span class="hacs-warn-detail">${this._hacsError}</span>
         </span>
         <button
           @click=${() => (this._hacsErrorDismissed = true)}
-          title="Hinweis ausblenden"
+          title=${t("panel.hacs_warn_dismiss")}
         >
           ×
         </button>
@@ -277,7 +277,7 @@ export class ThemeStudioPanel extends LitElement {
           class="top-tab ${this._topTab === TAB_THEMES ? "active" : ""}"
           @click=${() => this._setTopTab(TAB_THEMES)}
         >
-          Themes
+          ${t("panel.tab_themes")}
         </button>
         ${showModules
           ? html`
@@ -287,7 +287,7 @@ export class ThemeStudioPanel extends LitElement {
                   : ""}"
                 @click=${() => this._setTopTab(TAB_MODULES)}
               >
-                Bubble Card Module
+                ${t("panel.tab_modules")}
               </button>
             `
           : ""}
@@ -295,7 +295,7 @@ export class ThemeStudioPanel extends LitElement {
           class="top-tab ${this._topTab === TAB_COMPARE ? "active" : ""}"
           @click=${() => this._setTopTab(TAB_COMPARE)}
         >
-          Vergleichen
+          ${t("panel.tab_compare")}
         </button>
       </div>
     `;

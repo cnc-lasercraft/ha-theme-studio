@@ -13,6 +13,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import { t } from "../core/i18n";
 import { getVariableMeta } from "../core/schema-registry";
 import type { HomeAssistant } from "../types";
 
@@ -424,7 +425,7 @@ export class TsCompareView extends LitElement {
   }
 
   private _modeLabel(mode: string): string {
-    if (mode === DEFAULT_MODE) return "Default";
+    if (mode === DEFAULT_MODE) return t("compare.mode_default");
     return mode.charAt(0).toUpperCase() + mode.slice(1);
   }
 
@@ -445,16 +446,19 @@ export class TsCompareView extends LitElement {
 
   override render() {
     if (this._themesLoading) {
-      return html`<div class="loading">Lade Themes…</div>`;
+      return html`<div class="loading">${t("picker.loading")}</div>`;
     }
     if (this._themesError) {
-      return html`<div class="error">Fehler: ${this._themesError}</div>`;
+      return html`<div class="error">
+        ${t("common.error_prefix")}: ${this._themesError}
+      </div>`;
     }
     if (this._themes.length < 2) {
       return html`
         <div class="empty">
-          Theme-Switcher braucht mindestens 2 Themes im
-          <code>themes/</code>-Verzeichnis (aktuell ${this._themes.length}).
+          ${t("compare.need_two_themes", undefined, {
+            count: this._themes.length,
+          })}
         </div>
       `;
     }
@@ -462,11 +466,11 @@ export class TsCompareView extends LitElement {
     return html`
       <div class="header">
         <div class="selector">
-          <label>Theme A</label>
+          <label>${t("compare.theme_a")}</label>
           ${this._renderSelector("A", this._sideA.selection)}
         </div>
         <div class="selector">
-          <label>Theme B</label>
+          <label>${t("compare.theme_b")}</label>
           ${this._renderSelector("B", this._sideB.selection)}
         </div>
         <div class="filter">
@@ -477,7 +481,7 @@ export class TsCompareView extends LitElement {
             @change=${(e: Event) =>
               (this._diffOnly = (e.target as HTMLInputElement).checked)}
           />
-          <label for="diff-only">Nur Unterschiede</label>
+          <label for="diff-only">${t("compare.diff_only")}</label>
         </div>
       </div>
       ${this._renderModeSelector()} ${this._renderCopyStatus()}
@@ -491,16 +495,21 @@ export class TsCompareView extends LitElement {
     if (s.state === "success") {
       return html`
         <div class="status-banner success">
-          ✓ <code>${s.yamlKey}</code> kopiert nach ${s.themeName}
-          (${s.modeLabel})${s.backup
-            ? html` &middot; Backup: <code>${s.backup}</code>`
+          ✓
+          ${t("compare.copy_success", undefined, {
+            key: s.yamlKey,
+            theme: s.themeName,
+            mode: s.modeLabel,
+          })}${s.backup
+            ? html` &middot; ${t("common.backup")}:
+                <code>${s.backup}</code>`
             : ""}
         </div>
       `;
     }
     return html`
       <div class="status-banner error">
-        ✗ Kopieren fehlgeschlagen: ${s.msg}
+        ✗ ${t("compare.copy_failed")}: ${s.msg}
       </div>
     `;
   }
@@ -524,7 +533,9 @@ export class TsCompareView extends LitElement {
               class=${m === this._activeMode ? "active" : ""}
               @click=${() => (this._activeMode = m)}
               title=${onlyOne
-                ? `Nur in ${inA ? "A" : "B"} vorhanden`
+                ? t("compare.mode_only_in", undefined, {
+                    side: inA ? "A" : "B",
+                  })
                 : ""}
             >
               ${label}${onlyOne
@@ -543,14 +554,14 @@ export class TsCompareView extends LitElement {
       : "";
     return html`
       <select @change=${(e: Event) => this._onSelect(side, e)}>
-        <option value="">(kein Theme)</option>
+        <option value="">${t("compare.no_theme")}</option>
         ${this._themes.map(
-          (t) => html`
+          (theme) => html`
             <option
-              value="${t.file}§§${t.theme_name}"
-              ?selected=${value === `${t.file}§§${t.theme_name}`}
+              value="${theme.file}§§${theme.theme_name}"
+              ?selected=${value === `${theme.file}§§${theme.theme_name}`}
             >
-              ${t.theme_name} (${t.file})
+              ${theme.theme_name} (${theme.file})
             </option>
           `,
         )}
@@ -562,7 +573,7 @@ export class TsCompareView extends LitElement {
     const a = this._sideA;
     const b = this._sideB;
     if (a.loading || b.loading) {
-      return html`<div class="loading">Lade Theme-Inhalt…</div>`;
+      return html`<div class="loading">${t("compare.loading_theme")}</div>`;
     }
     if (a.error || b.error) {
       return html`<div class="error">
@@ -570,7 +581,7 @@ export class TsCompareView extends LitElement {
       </div>`;
     }
     if (!a.selection || !b.selection) {
-      return html`<div class="empty">Wähle beide Themes oben aus.</div>`;
+      return html`<div class="empty">${t("compare.pick_both")}</div>`;
     }
 
     const mode = this._activeMode;
@@ -608,30 +619,38 @@ export class TsCompareView extends LitElement {
         ? ""
         : !aHasMode || !bHasMode
           ? html` <em>
-              · ${aHasMode ? b.selection.theme_name : a.selection.theme_name}
-              hat keine ${modeLabel}-Mode (Copy würde sie anlegen).
+              ·
+              ${t("compare.mode_missing_hint", undefined, {
+                theme: aHasMode ? b.selection.theme_name : a.selection.theme_name,
+                mode: modeLabel,
+              })}
             </em>`
           : "";
 
     return html`
       <div class="summary">
-        <strong>${modeLabel}-Mode:</strong>
-        ${a.selection.theme_name} hat ${Object.keys(scalarsA).length} Vars,
-        ${b.selection.theme_name} hat ${Object.keys(scalarsB).length}.
-        Insgesamt <strong>${totalDiffs} Unterschiede</strong> oder einseitige
-        Einträge.${modeHint}
+        <strong>${t("compare.mode_label", undefined, { mode: modeLabel })}:</strong>
+        ${t("compare.summary", undefined, {
+          themeA: a.selection.theme_name,
+          countA: Object.keys(scalarsA).length,
+          themeB: b.selection.theme_name,
+          countB: Object.keys(scalarsB).length,
+        })}
+        <strong
+          >${t("compare.summary_diffs", undefined, { n: totalDiffs })}</strong
+        >${modeHint}
       </div>
       ${rows.length === 0
         ? html`<div class="empty">
-            Keine Unterschiede zwischen den Themes in der ${modeLabel}-Mode.
+            ${t("compare.no_diffs", undefined, { mode: modeLabel })}
           </div>`
         : html`
             <table>
               <thead>
                 <tr>
-                  <th class="var-cell">Variable</th>
+                  <th class="var-cell">${t("compare.col_variable")}</th>
                   <th class="val-cell">${a.selection.theme_name}</th>
-                  <th class="actions">Aktion</th>
+                  <th class="actions">${t("compare.col_action")}</th>
                   <th class="val-cell">${b.selection.theme_name}</th>
                 </tr>
               </thead>
@@ -675,8 +694,11 @@ export class TsCompareView extends LitElement {
             class="copy-btn"
             ?disabled=${!canCopyBtoA || this._busyCopy}
             title=${valB === null
-              ? "B hat keinen Wert"
-              : `Wert von B nach A kopieren (${this._sideB.selection?.theme_name} → ${this._sideA.selection?.theme_name})`}
+              ? t("compare.copy_no_value", undefined, { side: "B" })
+              : t("compare.copy_tooltip", undefined, {
+                  from: this._sideB.selection?.theme_name ?? "",
+                  to: this._sideA.selection?.theme_name ?? "",
+                })}
             @click=${() => this._copy("B", "A", key, valB!)}
           >
             ←
@@ -685,8 +707,11 @@ export class TsCompareView extends LitElement {
             class="copy-btn"
             ?disabled=${!canCopyAtoB || this._busyCopy}
             title=${valA === null
-              ? "A hat keinen Wert"
-              : `Wert von A nach B kopieren (${this._sideA.selection?.theme_name} → ${this._sideB.selection?.theme_name})`}
+              ? t("compare.copy_no_value", undefined, { side: "A" })
+              : t("compare.copy_tooltip", undefined, {
+                  from: this._sideA.selection?.theme_name ?? "",
+                  to: this._sideB.selection?.theme_name ?? "",
+                })}
             @click=${() => this._copy("A", "B", key, valA!)}
           >
             →
@@ -700,7 +725,7 @@ export class TsCompareView extends LitElement {
   }
 
   private _renderValue(v: string | null) {
-    if (v === null) return html`(nicht im Theme)`;
+    if (v === null) return html`${t("compare.not_in_theme")}`;
     const isColor = /^#[0-9a-f]{3,8}$/i.test(v) || /^(rgba?|hsla?)\(/i.test(v);
     return isColor
       ? html`<span class="swatch" style="background: ${v}"></span>${v}`
@@ -722,15 +747,16 @@ export class TsCompareView extends LitElement {
     const isDefault = mode === DEFAULT_MODE;
     const targetMissingMode = !isDefault && !target.modes.includes(mode);
 
-    const confirmMsg =
-      `Kopieren: '${yamlKey}' = '${value}' ` +
-      `von ${source.selection.theme_name} ` +
-      `nach ${target.selection.theme_name} ` +
-      `(${target.selection.file})\n` +
-      `Mode: ${modeLabel}${
-        targetMissingMode ? " — wird neu angelegt" : ""
-      }\n\n` +
-      `Ein Backup von ${target.selection.file} wird automatisch angelegt.`;
+    const confirmMsg = t("compare.copy_confirm", undefined, {
+      key: yamlKey,
+      value,
+      from: source.selection.theme_name,
+      to: target.selection.theme_name,
+      file: target.selection.file,
+      mode:
+        modeLabel +
+        (targetMissingMode ? ` ${t("compare.copy_confirm_new_mode")}` : ""),
+    });
     if (!confirm(confirmMsg)) return;
 
     this._copyStatus = { state: "copying" };

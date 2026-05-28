@@ -6,8 +6,10 @@
 // beiden JSON-Files. Kein Code-Change hier nötig — Vite picked es beim
 // nächsten Build auf.
 
+import { getLocale } from "./i18n";
 import { inferHint, inferType } from "./heuristic";
 import type {
+  Category,
   LoadedPlugin,
   PluginManifest,
   PluginSchema,
@@ -131,7 +133,12 @@ export function getPlugins(): readonly LoadedPlugin[] {
 export function getVariableMeta(name: string, value?: string): VariableMeta {
   const hit = VAR_INDEX.get(name);
   if (hit) {
-    return { ...hit.def, source: "schema", plugin: hit.pluginId };
+    return {
+      ...hit.def,
+      description: localizedDescription(hit.def),
+      source: "schema",
+      plugin: hit.pluginId,
+    };
   }
   const type = inferType(name, value);
   return {
@@ -140,6 +147,25 @@ export function getVariableMeta(name: string, value?: string): VariableMeta {
     description: inferHint(name, type),
     source: "heuristic",
   };
+}
+
+/**
+ * Liefert die description in der aktiven Locale.
+ * EN: description_en (wenn vorhanden), sonst DE-Fallback.
+ * DE: description.
+ */
+function localizedDescription(def: VariableDef): string | undefined {
+  if (getLocale() === "en" && def.description_en) return def.description_en;
+  return def.description;
+}
+
+/**
+ * Liefert die Category-Label in der aktiven Locale (analog zu Variablen).
+ * Exportiert für UI-Code, der direkt mit Plugin-Schemas arbeitet.
+ */
+export function getCategoryLabel(cat: Category): string {
+  if (getLocale() === "en" && cat.label_en) return cat.label_en;
+  return cat.label;
 }
 
 /** Diagnose-Helper für DevTools-Console. */
