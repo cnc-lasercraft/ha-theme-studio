@@ -9,6 +9,7 @@
 | **v0.3** | iframe-Dashboard-Preview + Modes (light/dark) + Background-Picker + Variable-Remove + Tag v0.3.0 | ~3 Tage | ✓ **fertig** (2026-05-25, Tag `v0.3.0`) |
 | **v0.4** | Bubble-Card-Module-Editor + Theme-Switcher (side-by-side Diff mit Copy-Pfeilen) | ~4 Tage | ✓ **fertig** (2026-05-25, Tag `v0.4.0`) |
 | **v1.0** | HACS-Packaging (Bundle ins custom_components, hacs.json, LICENSE), Doku-Pass, manifest version-bump | ~3 Tage | ✓ **fertig** (2026-05-25, Tag `v1.0.0`) |
+| **v1.1** | Fork-Guard / Eigenes Theme ableiten (Copy-on-write gegen HACS-Überschreiben) | ~2 Tage | 📋 **geplant** |
 
 ## v0.1 – Schritte im Detail
 
@@ -81,6 +82,7 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 - ~~Sauberes Error-Handling-Audit~~ → v1.0.3 (Quick-Wins; vollständiges Audit dokumentiert)
 - ~~i18n (DE/EN) vorbereiten~~ → v1.0.4
 - Aufnahme in HACS-Default-Katalog (PR an HACS-Repo)
+- Fork-Guard / Eigenes Theme ableiten → ausgelagert in eigene Minor `v1.1` (siehe unten)
 
 ## v1.0.1 – Post-Release-Polish
 
@@ -125,3 +127,23 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 - Weitere Sprachen (FR/IT/ES/…). Architektur ist offen — neue Sprache = neue `frontend/src/i18n/<lang>.ts` + Catalog-Eintrag in `i18n.ts`. Schema-Felder bekommen `*_<lang>`-Variante.
 - User-Sprach-Override im Panel-Header (nur `hass.language`-Auto-Detection).
 - Live-Switching der Locale ohne Reload (Locale wird beim Mount fixiert).
+
+## v1.1 – Fork-Guard / Eigenes Theme ableiten (Copy-on-write)
+
+**Problem.** HACS-Themes überschreiben beim Update ihre eigenen Dateien. Studio editiert und speichert aktuell in *dieselbe* Datei zurück — auch in eine HACS-verwaltete (D3: „editiert jedes Theme im `themes/`-Verzeichnis", Save-Flow Schritt 8). Folge: Anpassungen am HACS-Theme gehen beim nächsten Update verloren. **Real eingetreten am 2026-06-09**: HACS-Update des Nezz-visionOS-Themes überschrieb `themes/visionos/visionos.yaml` und entfernte den eigenen Hintergrund (`/local/backgrounds/huegel-nebel-sw.jpg`), `accent-color: #f77102` sowie die Bubble-Variablen. Recovery nur dank Studio-Timestamp-Backup möglich.
+
+**Lösung.** Studio schreibt nie unbemerkt in ein HACS-verwaltetes Theme zurück, sondern bietet das **Ableiten in ein eigenes Theme** (eigene Datei, eigener Name) an. Die HACS-Detection (v0.2), der Background-Picker (v0.3) und die Compare-View mit Copy-Pfeilen (v0.4 / v1.0.2) sind die bereits vorhandenen Bausteine; es fehlt nur die Fork-Aktion plus ein Schreib-Guard.
+
+| Feature | Status | Commit |
+|---|---|---|
+| **Fork-Guard im Save-Flow:** Beim Speichern in ein als HACS-verwaltet erkanntes Theme (Detection existiert seit v0.2) statt Direct-Write ein Bestätigungs-Dialog: „Dieses Theme gehört HACS — Änderungen werden beim nächsten Update überschrieben. Als eigenes Theme ableiten?" mit Default-Aktion „Ableiten". Kein stilles Zurückschreiben mehr. | 📋 geplant | — |
+| **Aktion „Als eigenes Theme ableiten":** Kopiert die Theme-Datei nach `themes/<slug>/<slug>.yaml`, benennt den obersten YAML-Key eindeutig um (Default-Vorschlag z. B. `<name>-custom`), Kollisions-Check gegen alle bestehenden Theme-Namen. Editier-Ziel schaltet auf den Fork. Timestamp-Backup wie gehabt. | 📋 geplant | — |
+| **Backend WS-Command `fork_theme`:** Args `source_path` + `new_slug`. Validiert Slug (kebab-case, kein Space/Pfad), prüft Ziel-Kollision, kopiert Datei in eigenes Subdir, ersetzt den Top-Level-Theme-Key, gibt neuen Pfad + Namen zurück. Reversibel (kein Überschreiben bestehender Files). | 📋 geplant | — |
+| **Picker-Kennzeichnung:** HACS-verwaltete Themes bekommen ein Badge „HACS · Updates überschreiben", eigene/abgeleitete Themes ein Badge „Eigen". Nutzt vorhandene HACS-Detection, analog zu den Plugin-Badges. | 📋 geplant | — |
+| **Upstream-Merge-Pfad:** Shortcut „In Vergleichen öffnen (Fork ↔ Upstream)" — nach einem HACS-Update werden Fork und aktualisiertes Upstream-Theme in der Compare-View nebeneinandergelegt; Neuerungen zieht man selektiv per Copy-Pfeil in den Fork. Die v0.4/v1.0.2-Compare-View wird damit zum Fork-Wartungs-Werkzeug. | 📋 geplant | — |
+
+**Nicht in v1.1:**
+- Automatischer 3-Way-Merge bei Upstream-Updates — bleibt bewusst manuell über die Compare-View (kein Konflikt-Resolver erfinden).
+- Auto-Umschalten des aktiven Themes im HA-Frontend — der User wählt das abgeleitete Theme weiterhin selbst im HA-Profil / per Dashboard.
+- Rückkanal „Fork-Änderungen upstream beitragen" (PR an das HACS-Repo) — out of scope.
+- Verschieben/Löschen von HACS-Originaldateien — Studio fasst die HACS-Quelle nie an, nur lesen + ableiten.
