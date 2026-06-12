@@ -7,6 +7,9 @@ interface ThemeEntry {
   file: string;
   theme_name: string;
   variable_count: number;
+  // Backend-Heuristik: Datei liegt in einem Unterordner von themes/ →
+  // potenziell HACS-verwaltet (HACS installiert Themes immer in Subdir).
+  hacs_managed: boolean;
 }
 
 interface ThemeError {
@@ -74,6 +77,25 @@ export class ThemePicker extends LitElement {
     .name {
       font-weight: 500;
       font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+    .badge.hacs {
+      background: rgba(255, 152, 0, 0.16);
+      color: var(--warning-color, #ff9800);
+    }
+    .badge.own {
+      background: rgba(67, 160, 71, 0.14);
+      color: var(--success-color, #43a047);
     }
     .meta {
       color: var(--secondary-text-color);
@@ -164,7 +186,18 @@ export class ThemePicker extends LitElement {
                     title=${theme.file}
                   >
                     <div class="info">
-                      <div class="name">${theme.theme_name}</div>
+                      <div class="name">
+                        ${theme.theme_name}
+                        ${theme.hacs_managed
+                          ? html`<span
+                              class="badge hacs"
+                              title=${t("picker.badge_hacs_title")}
+                              >${t("picker.badge_hacs")}</span
+                            >`
+                          : html`<span class="badge own"
+                              >${t("picker.badge_own")}</span
+                            >`}
+                      </div>
                       <div class="meta">
                         ${theme.file} ·
                         ${t("picker.var_count", undefined, {
@@ -196,7 +229,11 @@ export class ThemePicker extends LitElement {
   private _select(theme: ThemeEntry) {
     this.dispatchEvent(
       new CustomEvent("theme-selected", {
-        detail: { file: theme.file, theme_name: theme.theme_name },
+        detail: {
+          file: theme.file,
+          theme_name: theme.theme_name,
+          hacs_managed: theme.hacs_managed,
+        },
         bubbles: true,
         composed: true,
       }),

@@ -124,6 +124,8 @@ export class TsEditorView extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
   @property({ type: String }) file = "";
   @property({ type: String }) themeName = "";
+  // Theme stammt aus einem HACS-Subdir → Save löst Fork-Guard aus (v1.1).
+  @property({ type: Boolean }) hacsManaged = false;
 
   @state() private _loading = true;
   @state() private _error: string | null = null;

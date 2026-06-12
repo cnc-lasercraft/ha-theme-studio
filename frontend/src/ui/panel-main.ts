@@ -34,6 +34,7 @@ export class ThemeStudioPanel extends LitElement {
   @state() private _selectedTheme: {
     file: string;
     theme_name: string;
+    hacs_managed: boolean;
   } | null = null;
   @state() private _selectedModule: {
     file: string;
@@ -248,6 +249,8 @@ export class ThemeStudioPanel extends LitElement {
           .hass=${this.hass}
           .file=${this._selectedTheme.file}
           .themeName=${this._selectedTheme.theme_name}
+          .hacsManaged=${this._selectedTheme.hacs_managed}
+          @theme-forked=${this._onThemeForked}
           @back-to-picker=${this._backToPicker}
         ></ts-editor-view>
       `;
@@ -326,9 +329,21 @@ export class ThemeStudioPanel extends LitElement {
   }
 
   private _onThemeSelect(
-    e: CustomEvent<{ file: string; theme_name: string }>,
+    e: CustomEvent<{ file: string; theme_name: string; hacs_managed: boolean }>,
   ) {
     this._selectedTheme = e.detail;
+  }
+
+  // Editor hat ein HACS-Theme in ein eigenes Top-Level-Theme abgeleitet —
+  // Editier-Ziel auf den Fork umschalten (eigene Datei, hacs_managed=false).
+  private _onThemeForked(
+    e: CustomEvent<{ file: string; theme_name: string }>,
+  ) {
+    this._selectedTheme = {
+      file: e.detail.file,
+      theme_name: e.detail.theme_name,
+      hacs_managed: false,
+    };
   }
 
   private _onModuleSelect(

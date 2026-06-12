@@ -20,6 +20,10 @@ export const messages: Record<string, string> = {
     "No themes found. Drop a YAML file into themes/ to get started.",
   "picker.var_count": "{n} variables",
   "picker.yaml_errors_heading": "YAML errors in these files:",
+  "picker.badge_hacs": "HACS",
+  "picker.badge_hacs_title":
+    "HACS-managed — updates overwrite your changes. On save, Studio offers to derive your own theme.",
+  "picker.badge_own": "Own",
 
   // module-picker
   "module_picker.loading": "Loading modules…",

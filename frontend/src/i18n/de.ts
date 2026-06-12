@@ -21,6 +21,10 @@ export const messages: Record<string, string> = {
     "Keine Themes gefunden. Lege eine YAML-Datei in themes/ an.",
   "picker.var_count": "{n} Variablen",
   "picker.yaml_errors_heading": "YAML-Fehler in folgenden Dateien:",
+  "picker.badge_hacs": "HACS",
+  "picker.badge_hacs_title":
+    "HACS-verwaltet — Updates überschreiben deine Änderungen. Studio bietet beim Speichern an, ein eigenes Theme abzuleiten.",
+  "picker.badge_own": "Eigen",
 
   // module-picker
   "module_picker.loading": "Lade Module…",
