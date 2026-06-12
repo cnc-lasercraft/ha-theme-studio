@@ -31,6 +31,7 @@ from .const import (
     MODULES_BACKUPS_DIR,
     MODULES_DIR,
     THEMES_DIR,
+    WS_FORK_THEME,
     WS_GET_MODULE,
     WS_GET_THEME,
     WS_LIST_HACS_REPOS,
@@ -65,6 +66,26 @@ def _validate_path(name: str) -> str:
         if segment.startswith("."):
             raise vol.Invalid(f"hidden segment {segment!r} not allowed in {name!r}")
     return name
+
+
+def _slugify(name: str) -> str:
+    """Macht aus einem freien Theme-Namen einen dateisystem-sicheren Slug.
+
+    `"visionOS Custom"` → `"visionos-custom"`. Kleinbuchstaben, jede Folge von
+    Nicht-[a-z0-9] wird zu einem einzelnen `-`, führende/abschliessende `-`
+    entfernt. Liefert `""` wenn nichts Verwertbares übrigbleibt (Caller behandelt
+    das als Fehler).
+    """
+    out: list[str] = []
+    prev_dash = False
+    for ch in name.lower():
+        if "a" <= ch <= "z" or "0" <= ch <= "9":
+            out.append(ch)
+            prev_dash = False
+        elif not prev_dash:
+            out.append("-")
+            prev_dash = True
+    return "".join(out).strip("-")
 
 
 def _themes_root(hass: HomeAssistant) -> Path:
@@ -106,6 +127,12 @@ def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
             errors.append({"file": str(rel), "error": "top-level is not a mapping"})
             continue
 
+        # HACS installiert Themes immer in einen Unterordner von themes/
+        # (nie direkt als themes/x.yaml). Eine Datei in einem Subdir gilt
+        # daher als potenziell HACS-verwaltet → Frontend zeigt Badge +
+        # Fork-Guard. Eigene/abgeleitete Themes leben top-level.
+        hacs_managed = len(rel.parts) > 1
+
         for theme_name, theme_data in data.items():
             if not isinstance(theme_data, dict):
                 continue
@@ -114,6 +141,7 @@ def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
                     "file": str(rel),
                     "theme_name": theme_name,
                     "variable_count": len(theme_data),
+                    "hacs_managed": hacs_managed,
                 }
             )
 
@@ -285,6 +313,92 @@ async def ws_save_theme(
             "theme_name": theme_name,
             "backup": backup_rel,
         },
+    )
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_FORK_THEME,
+        vol.Required("source_file"): vol.All(str, _validate_path),
+        vol.Required("source_theme_name"): str,
+        vol.Required("new_name"): str,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_fork_theme(
+    hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]
+) -> None:
+    """Leitet ein (HACS-verwaltetes) Theme in eine eigene Top-Level-Datei ab.
+
+    Kopiert NUR das angefragte Theme (nicht Geschwister-Themes derselben
+    Quelldatei) nach `themes/<slug>.yaml` mit `new_name` als Top-Level-Key.
+    Fasst die HACS-Quelle nie an, überschreibt keine bestehende Datei und
+    lehnt Namens-Kollisionen ab — vollständig reversibel (nur ein neues File).
+    """
+    root = _themes_root(hass)
+    source_file: str = msg["source_file"]
+    source_theme_name: str = msg["source_theme_name"]
+    new_name: str = msg["new_name"].strip()
+
+    slug = _slugify(new_name)
+    if not new_name or not slug:
+        connection.send_error(
+            msg["id"], "invalid_name", f"cannot derive a slug from {new_name!r}"
+        )
+        return
+
+    target_rel = f"{slug}.yaml"
+
+    try:
+        source_path = _safe_join(root, source_file)
+        target_path = _safe_join(root, target_rel)
+    except ValueError as exc:
+        connection.send_error(msg["id"], "invalid_path", str(exc))
+        return
+
+    def _do_fork() -> None:
+        existing, _ = _scan_themes(root)
+        # Namens-Kollision gegen alle bestehenden Theme-Keys (HA-weit eindeutig).
+        if any(e["theme_name"] == new_name for e in existing):
+            raise FileExistsError(f"theme name {new_name!r} already exists")
+        if target_path.exists():
+            raise FileExistsError(f"file {target_rel!r} already exists")
+        source = _load_file(source_path)
+        theme = source.get(source_theme_name)
+        if not isinstance(theme, dict):
+            raise KeyError(
+                f"theme {source_theme_name!r} not in {source_file!r}"
+            )
+        _dump_file(target_path, {new_name: dict(theme)})
+
+    try:
+        await hass.async_add_executor_job(_do_fork)
+    except FileExistsError as exc:
+        connection.send_error(msg["id"], "name_collision", str(exc))
+        return
+    except KeyError as exc:
+        connection.send_error(msg["id"], "not_found", str(exc))
+        return
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        _LOGGER.exception(
+            "fork_theme failed: %s / %s → %s",
+            source_file,
+            source_theme_name,
+            target_rel,
+        )
+        connection.send_error(msg["id"], "fork_failed", str(exc))
+        return
+
+    # Neues Theme HA bekanntmachen.
+    try:
+        await hass.services.async_call("frontend", "reload_themes", blocking=False)
+    except Exception:  # noqa: BLE001 — Reload-Fehler darf den Fork nicht versenken
+        _LOGGER.exception("frontend.reload_themes failed after fork")
+
+    connection.send_result(
+        msg["id"],
+        {"file": target_rel, "theme_name": new_name},
     )
 
 
@@ -532,6 +646,7 @@ def async_register_websocket_api(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_list_themes)
     websocket_api.async_register_command(hass, ws_get_theme)
     websocket_api.async_register_command(hass, ws_save_theme)
+    websocket_api.async_register_command(hass, ws_fork_theme)
     websocket_api.async_register_command(hass, ws_list_hacs_repos)
     websocket_api.async_register_command(hass, ws_list_modules)
     websocket_api.async_register_command(hass, ws_get_module)
