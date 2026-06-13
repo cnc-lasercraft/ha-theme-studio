@@ -18,11 +18,7 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
-
-  hassfest:
-    name: hassfest
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: hassfest validation
-        uses: home-assistant/actions/hassfest@master
+    # hassfest absichtlich nicht hier: es scannt auch die Frontend-Plugin-
+    # manifests (frontend/src/plugins/*/manifest.json), die keine HA-
+    # Integrationen sind (kein codeowners) → False-Positive. hassfest ist
+    # keine HACS-Default-Voraussetzung; die manifest-Prüfung deckt HACS ab.
