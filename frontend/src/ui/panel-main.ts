@@ -44,6 +44,13 @@ export class ThemeStudioPanel extends LitElement {
   // Top-Level-Tab: zwischen Theme- und Modul-Verwaltung (v0.4).
   @state() private _topTab: TopTab = TAB_THEMES;
 
+  // Vorauswahl für die Compare-View, wenn vom Picker aus „⇄ Upstream"
+  // geöffnet (A=Fork, B=Upstream). null = normaler Auto-Select.
+  @state() private _comparePreset: {
+    fork: { file: string; theme_name: string };
+    upstream: { file: string; theme_name: string };
+  } | null = null;
+
   // Demo-Mode via URL-Hash `#demo` — zeigt <ts-controls-demo> statt Picker.
   @state() private _demoMode = false;
 
@@ -314,18 +321,38 @@ export class ThemeStudioPanel extends LitElement {
       `;
     }
     if (this._topTab === TAB_COMPARE) {
-      return html`<ts-compare-view .hass=${this.hass}></ts-compare-view>`;
+      return html`<ts-compare-view
+        .hass=${this.hass}
+        .presetA=${this._comparePreset?.fork ?? null}
+        .presetB=${this._comparePreset?.upstream ?? null}
+      ></ts-compare-view>`;
     }
     return html`
       <theme-picker
         .hass=${this.hass}
         @theme-selected=${this._onThemeSelect}
+        @compare-upstream=${this._onCompareUpstream}
       ></theme-picker>
     `;
   }
 
   private _setTopTab(tab: TopTab) {
+    // Manueller Tab-Wechsel → Compare-Vorauswahl verwerfen (normaler
+    // Auto-Select). Der „⇄ Upstream"-Weg setzt Preset + Tab separat.
+    this._comparePreset = null;
     this._topTab = tab;
+  }
+
+  // Picker hat „⇄ Upstream vergleichen" auf einem Fork ausgelöst — auf den
+  // Vergleichen-Tab wechseln und Fork/Upstream vorwählen.
+  private _onCompareUpstream(
+    e: CustomEvent<{
+      fork: { file: string; theme_name: string };
+      upstream: { file: string; theme_name: string };
+    }>,
+  ) {
+    this._comparePreset = e.detail;
+    this._topTab = TAB_COMPARE;
   }
 
   private _onThemeSelect(

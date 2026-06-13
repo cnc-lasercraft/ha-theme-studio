@@ -13,6 +13,9 @@ interface ThemeEntry {
   // In der Fork-Registry verzeichnet (= per Theme Studio abgeleitet).
   // Nur solche Themes sind löschbar.
   is_fork: boolean;
+  // Herkunft eines Forks (für Upstream-Merge) — null bei Nicht-Forks.
+  source_file?: string | null;
+  source_theme?: string | null;
 }
 
 interface DeleteThemeResult {
@@ -100,6 +103,26 @@ export class ThemePicker extends LitElement {
     }
     .delete-btn:focus-visible {
       outline: 2px solid var(--error-color, #db4437);
+      outline-offset: 2px;
+    }
+    .compare-btn {
+      flex-shrink: 0;
+      width: 48px;
+      border: none;
+      border-radius: var(--ha-card-border-radius, 12px);
+      background: var(--card-background-color);
+      box-shadow: var(--ha-card-box-shadow, 0 2px 4px rgba(0, 0, 0, 0.08));
+      color: var(--secondary-text-color);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.1s ease, background 0.1s ease;
+    }
+    .compare-btn:hover {
+      color: var(--primary-color);
+      background: rgba(3, 169, 244, 0.08);
+    }
+    .compare-btn:focus-visible {
+      outline: 2px solid var(--primary-color);
       outline-offset: 2px;
     }
     .action-error {
@@ -273,6 +296,15 @@ export class ThemePicker extends LitElement {
                       </div>
                       <div class="arrow">→</div>
                     </button>
+                    ${theme.is_fork && this._upstreamFor(theme)
+                      ? html`<button
+                          class="compare-btn"
+                          title=${t("picker.compare_upstream_tooltip")}
+                          @click=${() => this._compareUpstream(theme)}
+                        >
+                          ⇄
+                        </button>`
+                      : ""}
                     ${theme.is_fork
                       ? html`<button
                           class="delete-btn"
@@ -341,6 +373,44 @@ export class ThemePicker extends LitElement {
     } finally {
       this._deleting = null;
     }
+  }
+
+  /**
+   * Sucht das Upstream-Theme eines Forks (aus source_file/source_theme) in der
+   * aktuellen Liste. null, wenn die Quelle nicht (mehr) existiert — dann kein
+   * ⇄-Button (z.B. HACS-Theme deinstalliert).
+   */
+  private _upstreamFor(theme: ThemeEntry): ThemeEntry | null {
+    if (!theme.source_file || !theme.source_theme) return null;
+    return (
+      this._themes.find(
+        (e) =>
+          e.file === theme.source_file &&
+          e.theme_name === theme.source_theme,
+      ) ?? null
+    );
+  }
+
+  /**
+   * Öffnet Fork ↔ Upstream im Vergleichen-Tab (A=Fork, B=Upstream). panel-main
+   * hört darauf, wechselt den Tab und reicht die Vorauswahl an die Compare-View.
+   */
+  private _compareUpstream(theme: ThemeEntry) {
+    const upstream = this._upstreamFor(theme);
+    if (!upstream) return;
+    this.dispatchEvent(
+      new CustomEvent("compare-upstream", {
+        detail: {
+          fork: { file: theme.file, theme_name: theme.theme_name },
+          upstream: {
+            file: upstream.file,
+            theme_name: upstream.theme_name,
+          },
+        },
+        bubbles: true,
+        composed: true,
+      }),
+    );
   }
 }
 

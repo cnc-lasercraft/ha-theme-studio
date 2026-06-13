@@ -27,6 +27,8 @@ export const messages: Record<string, string> = {
   "picker.badge_own": "Eigen",
   "picker.badge_default": "Default",
   "picker.badge_default_title": "Globales Standard-Theme von Home Assistant",
+  "picker.compare_upstream_tooltip":
+    "Mit Upstream vergleichen (Fork ↔ HACS-Quelle) — Updates per ←-Pfeil in den Fork ziehen",
   "picker.delete_tooltip": "Dieses abgeleitete Theme löschen (Backup bleibt)",
   "picker.delete_confirm":
     "Abgeleitetes Theme '{theme}' löschen?\n\nEine Sicherung wird unter themes/.backups/ angelegt — der Schritt ist reversibel.",
@@ -62,6 +64,10 @@ export const messages: Record<string, string> = {
     "{themeA} hat {countA} Vars, {themeB} hat {countB}. Insgesamt",
   "compare.summary_diffs": "{n} Unterschiede oder einseitige Einträge.",
   "compare.no_diffs": "Keine Unterschiede zwischen den Themes in der {mode}-Mode.",
+  "compare.mode_selector_label": "Modus:",
+  "compare.mode_diff_badge_title": "{n} Unterschiede in diesem Modus",
+  "compare.no_diffs_here": "Keine Unterschiede im {mode}-Modus.",
+  "compare.diffs_elsewhere": "Aber Unterschiede in:",
   "compare.col_variable": "Variable",
   "compare.col_action": "Aktion",
   "compare.not_in_theme": "(nicht im Theme)",

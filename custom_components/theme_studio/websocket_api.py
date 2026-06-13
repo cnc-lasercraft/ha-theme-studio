@@ -174,6 +174,10 @@ def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
         # Fork-Guard. Eigene/abgeleitete Themes leben top-level.
         hacs_managed = len(rel.parts) > 1
         is_fork = len(rel.parts) == 1 and str(rel) in forks
+        # Herkunft eines Forks (für Upstream-Merge) — None bei Nicht-Forks.
+        fork_meta = forks.get(str(rel), {}) if is_fork else {}
+        source_file = fork_meta.get("source_file")
+        source_theme = fork_meta.get("source_theme")
 
         for theme_name, theme_data in data.items():
             if not isinstance(theme_data, dict):
@@ -185,6 +189,8 @@ def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
                     "variable_count": len(theme_data),
                     "hacs_managed": hacs_managed,
                     "is_fork": is_fork,
+                    "source_file": source_file,
+                    "source_theme": source_theme,
                 }
             )
 

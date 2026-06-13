@@ -78,6 +78,16 @@ const EMPTY_SIDE: SideState = {
 @customElement("ts-compare-view")
 export class TsCompareView extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
+  // Vorauswahl (vom Picker „⇄ Upstream"): A=Fork, B=Upstream. null =
+  // normaler Auto-Select der ersten beiden Themes.
+  @property({ attribute: false }) presetA: {
+    file: string;
+    theme_name: string;
+  } | null = null;
+  @property({ attribute: false }) presetB: {
+    file: string;
+    theme_name: string;
+  } | null = null;
 
   @state() private _themes: ThemeEntry[] = [];
   @state() private _themesError: string | null = null;
@@ -185,6 +195,46 @@ export class TsCompareView extends LitElement {
       border-radius: 3px;
       letter-spacing: 0;
       text-transform: none;
+    }
+    .mode-selector .label {
+      padding: 0 8px 0 6px;
+      color: var(--secondary-text-color);
+      font-size: 0.8rem;
+    }
+    /* Diff-Zähler pro Mode — macht sofort sichtbar, wo Unterschiede sind. */
+    .diff-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--warning-color, #ff9800);
+      color: #fff;
+      border-radius: 9px;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .cross-mode-hint {
+      margin: 12px 0;
+      padding: 14px 18px;
+      border-radius: 6px;
+      background: rgba(255, 152, 0, 0.12);
+      border-left: 4px solid var(--warning-color, #ff9800);
+      font-size: 0.95rem;
+    }
+    .cross-mode-hint .jump {
+      margin-left: 8px;
+      padding: 4px 12px;
+      border: 1px solid var(--warning-color, #ff9800);
+      border-radius: 14px;
+      background: var(--card-background-color);
+      color: var(--primary-text-color);
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .cross-mode-hint .jump:hover {
+      background: rgba(255, 152, 0, 0.12);
     }
     .empty,
     .error,
@@ -324,18 +374,40 @@ export class TsCompareView extends LitElement {
           type: "theme_studio/list_themes",
         });
       this._themes = result.themes;
-      // Auto-select first two themes wenn vorhanden — quick start
-      if (this._themes.length >= 1 && !this._sideA.selection) {
-        await this._setSide("A", this._themes[0]);
-      }
-      if (this._themes.length >= 2 && !this._sideB.selection) {
-        await this._setSide("B", this._themes[1]);
+      // Vorauswahl (⇄ Upstream) hat Vorrang vor dem Auto-Select. Da hier
+      // bereits ein await gelaufen ist, sind die Preset-Properties sicher
+      // gesetzt (initiales Render längst committed).
+      if (this.presetA || this.presetB) {
+        const a = this._findEntry(this.presetA);
+        const b = this._findEntry(this.presetB);
+        if (a) await this._setSide("A", a);
+        if (b) await this._setSide("B", b);
+      } else {
+        // Auto-select first two themes wenn vorhanden — quick start
+        if (this._themes.length >= 1 && !this._sideA.selection) {
+          await this._setSide("A", this._themes[0]);
+        }
+        if (this._themes.length >= 2 && !this._sideB.selection) {
+          await this._setSide("B", this._themes[1]);
+        }
       }
     } catch (err) {
       this._themesError = err instanceof Error ? err.message : String(err);
     } finally {
       this._themesLoading = false;
     }
+  }
+
+  /** Findet ein Theme in der geladenen Liste anhand file + theme_name. */
+  private _findEntry(
+    sel: { file: string; theme_name: string } | null,
+  ): ThemeEntry | null {
+    if (!sel) return null;
+    return (
+      this._themes.find(
+        (e) => e.file === sel.file && e.theme_name === sel.theme_name,
+      ) ?? null
+    );
   }
 
   private async _setSide(side: Side, entry: ThemeEntry | null) {
@@ -413,6 +485,20 @@ export class TsCompareView extends LitElement {
       out[DEFAULT_MODE][k] = String(v);
     }
     return out;
+  }
+
+  /** Anzahl unterschiedlicher Scalars in einem Mode (für Mode-Badges/Hinweis). */
+  private _diffCountForMode(mode: string): number {
+    const sa = this._sideA.scalarsByMode[mode] ?? {};
+    const sb = this._sideB.scalarsByMode[mode] ?? {};
+    const keys = new Set([...Object.keys(sa), ...Object.keys(sb)]);
+    let n = 0;
+    for (const k of keys) {
+      const av = sa[k] ?? null;
+      const bv = sb[k] ?? null;
+      if (av === null || bv === null || av !== bv) n++;
+    }
+    return n;
   }
 
   /** Union der Modes aus A und B, "default" zuerst, Rest alphabetisch. */
@@ -521,13 +607,16 @@ export class TsCompareView extends LitElement {
     if (!modes.includes(this._activeMode)) {
       this._activeMode = DEFAULT_MODE;
     }
+    const bothSelected = !!this._sideA.selection && !!this._sideB.selection;
     return html`
       <div class="mode-selector">
+        <span class="label">${t("compare.mode_selector_label")}</span>
         ${modes.map((m) => {
           const inA = this._sideA.modes.includes(m);
           const inB = this._sideB.modes.includes(m);
           const onlyOne = m !== DEFAULT_MODE && (!inA || !inB);
           const label = this._modeLabel(m);
+          const diffs = bothSelected ? this._diffCountForMode(m) : 0;
           return html`
             <button
               class=${m === this._activeMode ? "active" : ""}
@@ -540,6 +629,8 @@ export class TsCompareView extends LitElement {
             >
               ${label}${onlyOne
                 ? html`<span class="badge-only">${inA ? "A" : "B"}</span>`
+                : ""}${diffs > 0
+                ? html`<span class="diff-badge" title=${t("compare.mode_diff_badge_title", undefined, { n: diffs })}>${diffs}</span>`
                 : ""}
             </button>
           `;
@@ -641,9 +732,7 @@ export class TsCompareView extends LitElement {
         >${modeHint}
       </div>
       ${rows.length === 0
-        ? html`<div class="empty">
-            ${t("compare.no_diffs", undefined, { mode: modeLabel })}
-          </div>`
+        ? this._renderNoDiffs(modeLabel)
         : html`
             <table>
               <thead>
@@ -659,6 +748,40 @@ export class TsCompareView extends LitElement {
               </tbody>
             </table>
           `}
+    `;
+  }
+
+  /**
+   * Wenn der aktive Mode keine Unterschiede hat: prüfen, ob ANDERE Modes
+   * welche haben, und sie als klickbare Sprung-Buttons anbieten — sonst denkt
+   * der User, die Themes seien identisch (häufige Falle bei mode-spezifischen
+   * Vars wie background-image).
+   */
+  private _renderNoDiffs(modeLabel: string) {
+    const others = this._availableModes()
+      .filter((m) => m !== this._activeMode)
+      .map((m) => ({ mode: m, n: this._diffCountForMode(m) }))
+      .filter((x) => x.n > 0);
+
+    if (others.length === 0) {
+      return html`<div class="empty">
+        ${t("compare.no_diffs", undefined, { mode: modeLabel })}
+      </div>`;
+    }
+    return html`
+      <div class="cross-mode-hint">
+        ${t("compare.no_diffs_here", undefined, { mode: modeLabel })}
+        ${t("compare.diffs_elsewhere")}
+        ${others.map(
+          (x) => html`<button
+            class="jump"
+            @click=${() => (this._activeMode = x.mode)}
+          >
+            ${this._modeLabel(x.mode)}
+            <span class="diff-badge">${x.n}</span>
+          </button>`,
+        )}
+      </div>
     `;
   }
 
