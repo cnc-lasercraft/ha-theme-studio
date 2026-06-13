@@ -161,6 +161,22 @@ export const messages: Record<string, string> = {
   "editor.remove_row_disabled_tooltip":
     "Not in theme — nothing to remove",
 
+  // editor — fork guard (v1.1)
+  "editor.hacs_notice_strong": "HACS-managed theme",
+  "editor.hacs_notice_body":
+    "This theme belongs to a HACS repo — an update overwrites direct changes. Studio therefore won't write back; on save it derives your own theme (own file, update-safe).",
+  "editor.save_as_own": "Save as own theme",
+  "editor.fork_btn": "Derive",
+  "editor.fork_btn_tooltip":
+    "Derive this theme into your own, HACS-update-safe theme at themes/<name>.yaml",
+  "editor.forking": "Deriving…",
+  "editor.fork_default": "{theme} Theme Studio",
+  "editor.fork_prompt":
+    "Derive '{theme}' into your own theme (own file, HACS-update-safe).\n\nName of the new theme:",
+  "editor.fork_prompt_save":
+    "'{theme}' is HACS-managed — a direct save would be overwritten by the next HACS update.\n\nYour changes are derived into your own theme instead. Name of the new theme:",
+  "editor.fork_success": "Derived into your own theme: '{theme}'",
+
   // preview-pane
   "preview.label": "Preview",
   "preview.reload_tooltip": "Reload iframe",

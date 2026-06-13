@@ -61,10 +61,17 @@ interface SaveThemeResult {
   backup: string | null;
 }
 
+interface ForkThemeResult {
+  file: string;
+  theme_name: string;
+}
+
 type SaveStatus =
   | { state: "idle" }
   | { state: "saving" }
   | { state: "success"; backup: string | null }
+  | { state: "forking" }
+  | { state: "forked"; file: string; theme: string }
   | { state: "error"; msg: string };
 
 interface EditorRow {
@@ -493,6 +500,10 @@ export class TsEditorView extends LitElement {
       padding: 1px 4px;
       border-radius: 3px;
     }
+    .notice.hacs-notice {
+      background: rgba(255, 152, 0, 0.1);
+      border-left-color: var(--warning-color, #ff9800);
+    }
     .status-banner {
       padding: 10px 16px;
       border-radius: 4px;
@@ -688,6 +699,14 @@ export class TsEditorView extends LitElement {
     const dirty = this._dirtyCount();
     if (dirty === 0 || this._saveStatus.state === "saving") return;
 
+    // Fork-Guard (v1.1): HACS-verwaltete Themes werden NIE direkt
+    // zurückgeschrieben — der nächste HACS-Update würde es überschreiben.
+    // Stattdessen die Edits in ein eigenes Top-Level-Theme ableiten.
+    if (this.hacsManaged) {
+      await this._forkFlow("save");
+      return;
+    }
+
     const adding = this._rows.filter(
       (r) =>
         !r.inTheme &&
@@ -776,6 +795,66 @@ export class TsEditorView extends LitElement {
         this._ensurePluginRows(this._activeTab, this._activeMode);
       }
       this._saveStatus = { state: "success", backup: result.backup };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this._saveStatus = { state: "error", msg };
+    }
+  }
+
+  /**
+   * Fork-Flow (v1.1): leitet das aktuelle (ggf. editierte) Theme in eine
+   * eigene Top-Level-Datei `themes/<slug>.yaml` ab. `trigger` steuert nur
+   * den Erklärungstext im Prompt:
+   *   - "save"      — vom Save-Button eines HACS-Themes (Fork-Guard)
+   *   - "proactive" — vom expliziten "Ableiten"-Button
+   * Der mitgelieferte Merge-State enthält evtl. ungespeicherte Änderungen,
+   * sodass beim Fork-on-Save nichts verloren geht.
+   */
+  private async _forkFlow(trigger: "save" | "proactive") {
+    if (
+      this._saveStatus.state === "saving" ||
+      this._saveStatus.state === "forking"
+    ) {
+      return;
+    }
+
+    const defaultName = t("editor.fork_default", undefined, {
+      theme: this.themeName,
+    });
+    const promptMsg = t(
+      trigger === "save" ? "editor.fork_prompt_save" : "editor.fork_prompt",
+      undefined,
+      { theme: this.themeName },
+    );
+    const newName = window.prompt(promptMsg, defaultName);
+    if (newName === null) return; // abgebrochen
+    const trimmed = newName.trim();
+    if (trimmed === "") return;
+
+    this._saveStatus = { state: "forking" };
+    const merged = this._buildSaveMerge();
+
+    try {
+      const result =
+        await this.hass.connection.sendMessagePromise<ForkThemeResult>({
+          type: "theme_studio/fork_theme",
+          new_name: trimmed,
+          variables: merged,
+        });
+      this._saveStatus = {
+        state: "forked",
+        file: result.file,
+        theme: result.theme_name,
+      };
+      // Editier-Ziel auf den Fork umschalten (panel-main hört darauf und
+      // setzt file/themeName/hacsManaged neu → Editor lädt die Fork-Datei).
+      this.dispatchEvent(
+        new CustomEvent("theme-forked", {
+          detail: { file: result.file, theme_name: result.theme_name },
+          bubbles: true,
+          composed: true,
+        }),
+      );
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       this._saveStatus = { state: "error", msg };
@@ -1010,6 +1089,13 @@ export class TsEditorView extends LitElement {
     );
   }
 
+  private _busy(): boolean {
+    return (
+      this._saveStatus.state === "saving" ||
+      this._saveStatus.state === "forking"
+    );
+  }
+
   private _modeDirtyCount(mode: string): number {
     return this._rows.reduce(
       (sum, r) => sum + (r.mode === mode && this._isRowDirty(r) ? 1 : 0),
@@ -1086,24 +1172,37 @@ export class TsEditorView extends LitElement {
         <button
           class="danger-btn"
           ?disabled=${this._dirtyCount() === 0 ||
-          this._saveStatus.state === "saving"}
+          this._busy()}
           @click=${this._resetAll}
         >
           ${t("editor.discard_all")}
         </button>
+        ${this.hacsManaged
+          ? html`<button
+              class="primary-btn"
+              ?disabled=${this._busy()}
+              @click=${() => this._forkFlow("proactive")}
+              title=${t("editor.fork_btn_tooltip")}
+            >
+              ⑂ ${t("editor.fork_btn")}
+            </button>`
+          : ""}
         <button
           class="primary-btn"
-          ?disabled=${this._dirtyCount() === 0 ||
-          this._saveStatus.state === "saving"}
+          ?disabled=${this._dirtyCount() === 0 || this._busy()}
           @click=${this._save}
         >
           ${this._saveStatus.state === "saving"
             ? t("common.saving")
-            : t("common.save")}
+            : this._saveStatus.state === "forking"
+              ? t("editor.forking")
+              : this.hacsManaged
+                ? t("editor.save_as_own")
+                : t("common.save")}
         </button>
       </div>
-      ${this._renderModeBar()} ${this._renderTabs()}
-      ${this._renderSaveStatus()}
+      ${this._renderHacsNotice()} ${this._renderModeBar()}
+      ${this._renderTabs()} ${this._renderSaveStatus()}
       <div class="body-grid ${this._showPreview ? "with-preview" : ""}">
         <div class="editor-col">${this._renderBody()}</div>
         ${this._showPreview
@@ -1203,15 +1302,34 @@ export class TsEditorView extends LitElement {
     `;
   }
 
+  private _renderHacsNotice() {
+    if (this._loading || this._error || !this.hacsManaged) return "";
+    return html`
+      <div class="notice hacs-notice">
+        <strong>${t("editor.hacs_notice_strong")}:</strong>
+        ${t("editor.hacs_notice_body")}
+      </div>
+    `;
+  }
+
   private _renderSaveStatus() {
     const s = this._saveStatus;
-    if (s.state === "idle" || s.state === "saving") return "";
+    if (s.state === "idle" || s.state === "saving" || s.state === "forking")
+      return "";
     if (s.state === "success") {
       return html`
         <div class="status-banner success">
           ✓ ${t("editor.save_success")}${s.backup
             ? html` &middot; ${t("common.backup")}: <code>${s.backup}</code>`
             : ""}
+        </div>
+      `;
+    }
+    if (s.state === "forked") {
+      return html`
+        <div class="status-banner success">
+          ✓ ${t("editor.fork_success", undefined, { theme: s.theme })}
+          &middot; <code>themes/${s.file}</code>
         </div>
       `;
     }

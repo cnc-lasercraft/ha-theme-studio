@@ -161,6 +161,22 @@ export const messages: Record<string, string> = {
     "Variable beim nächsten Speichern aus dem Theme entfernen",
   "editor.remove_row_disabled_tooltip": "Nicht im Theme — nichts zu entfernen",
 
+  // editor — Fork-Guard (v1.1)
+  "editor.hacs_notice_strong": "HACS-verwaltetes Theme",
+  "editor.hacs_notice_body":
+    "Dieses Theme gehört einem HACS-Repo — ein Update überschreibt direkte Änderungen. Studio schreibt deshalb nicht zurück, sondern leitet beim Speichern ein eigenes Theme ab (eigene Datei, update-sicher).",
+  "editor.save_as_own": "Als eigenes Theme speichern",
+  "editor.fork_btn": "Ableiten",
+  "editor.fork_btn_tooltip":
+    "Dieses Theme als eigenes, HACS-update-sicheres Theme in themes/<name>.yaml ableiten",
+  "editor.forking": "Leite ab…",
+  "editor.fork_default": "{theme} Theme Studio",
+  "editor.fork_prompt":
+    "'{theme}' als eigenes Theme ableiten (eigene Datei, HACS-update-sicher).\n\nName des neuen Themes:",
+  "editor.fork_prompt_save":
+    "'{theme}' ist HACS-verwaltet — direktes Speichern würde beim nächsten HACS-Update überschrieben.\n\nDeine Änderungen werden stattdessen in ein eigenes Theme abgeleitet. Name des neuen Themes:",
+  "editor.fork_success": "Als eigenes Theme abgeleitet: '{theme}'",
+
   // preview-pane
   "preview.label": "Preview",
   "preview.reload_tooltip": "iframe neu laden",

@@ -319,9 +319,10 @@ async def ws_save_theme(
 @websocket_api.websocket_command(
     {
         vol.Required("type"): WS_FORK_THEME,
-        vol.Required("source_file"): vol.All(str, _validate_path),
-        vol.Required("source_theme_name"): str,
         vol.Required("new_name"): str,
+        # Vollständiger Theme-Inhalt der in die neue Datei geschrieben wird
+        # (vom Frontend gemergter Editier-Stand). Werte frei wie bei save_theme.
+        vol.Required("variables"): dict,
     }
 )
 @websocket_api.require_admin
@@ -331,15 +332,16 @@ async def ws_fork_theme(
 ) -> None:
     """Leitet ein (HACS-verwaltetes) Theme in eine eigene Top-Level-Datei ab.
 
-    Kopiert NUR das angefragte Theme (nicht Geschwister-Themes derselben
-    Quelldatei) nach `themes/<slug>.yaml` mit `new_name` als Top-Level-Key.
-    Fasst die HACS-Quelle nie an, überschreibt keine bestehende Datei und
-    lehnt Namens-Kollisionen ab — vollständig reversibel (nur ein neues File).
+    Schreibt den mitgelieferten `variables`-Stand (= aktueller Editier-Merge,
+    inkl. evtl. Änderungen) nach `themes/<slug>.yaml` mit `new_name` als
+    Top-Level-Key. Fasst die HACS-Quelle nie an, überschreibt keine bestehende
+    Datei und lehnt Namens-Kollisionen ab — vollständig reversibel (nur ein
+    neues File). Deckt Proaktiv-Fork (Stand = Original) und Fork-on-Save
+    (Stand = mit Edits) mit demselben Contract ab.
     """
     root = _themes_root(hass)
-    source_file: str = msg["source_file"]
-    source_theme_name: str = msg["source_theme_name"]
     new_name: str = msg["new_name"].strip()
+    variables: dict[str, Any] = msg["variables"]
 
     slug = _slugify(new_name)
     if not new_name or not slug:
@@ -351,7 +353,6 @@ async def ws_fork_theme(
     target_rel = f"{slug}.yaml"
 
     try:
-        source_path = _safe_join(root, source_file)
         target_path = _safe_join(root, target_rel)
     except ValueError as exc:
         connection.send_error(msg["id"], "invalid_path", str(exc))
@@ -364,29 +365,16 @@ async def ws_fork_theme(
             raise FileExistsError(f"theme name {new_name!r} already exists")
         if target_path.exists():
             raise FileExistsError(f"file {target_rel!r} already exists")
-        source = _load_file(source_path)
-        theme = source.get(source_theme_name)
-        if not isinstance(theme, dict):
-            raise KeyError(
-                f"theme {source_theme_name!r} not in {source_file!r}"
-            )
-        _dump_file(target_path, {new_name: dict(theme)})
+        root.mkdir(parents=True, exist_ok=True)
+        _dump_file(target_path, {new_name: dict(variables)})
 
     try:
         await hass.async_add_executor_job(_do_fork)
     except FileExistsError as exc:
         connection.send_error(msg["id"], "name_collision", str(exc))
         return
-    except KeyError as exc:
-        connection.send_error(msg["id"], "not_found", str(exc))
-        return
     except (OSError, ValueError, yaml.YAMLError) as exc:
-        _LOGGER.exception(
-            "fork_theme failed: %s / %s → %s",
-            source_file,
-            source_theme_name,
-            target_rel,
-        )
+        _LOGGER.exception("fork_theme failed: → %s", target_rel)
         connection.send_error(msg["id"], "fork_failed", str(exc))
         return
 

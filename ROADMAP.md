@@ -136,10 +136,10 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 
 | Feature | Status | Commit |
 |---|---|---|
-| **Fork-Guard im Save-Flow:** Beim Speichern in ein als HACS-verwaltet erkanntes Theme (Detection existiert seit v0.2) statt Direct-Write ein Bestätigungs-Dialog: „Dieses Theme gehört HACS — Änderungen werden beim nächsten Update überschrieben. Als eigenes Theme ableiten?" mit Default-Aktion „Ableiten". Kein stilles Zurückschreiben mehr. | 📋 geplant | — |
-| **Aktion „Als eigenes Theme ableiten":** Kopiert die Theme-Datei nach `themes/<slug>/<slug>.yaml`, benennt den obersten YAML-Key eindeutig um (Default-Vorschlag z. B. `<name>-custom`), Kollisions-Check gegen alle bestehenden Theme-Namen. Editier-Ziel schaltet auf den Fork. Timestamp-Backup wie gehabt. | 📋 geplant | — |
-| **Backend WS-Command `fork_theme`:** Args `source_path` + `new_slug`. Validiert Slug (kebab-case, kein Space/Pfad), prüft Ziel-Kollision, kopiert Datei in eigenes Subdir, ersetzt den Top-Level-Theme-Key, gibt neuen Pfad + Namen zurück. Reversibel (kein Überschreiben bestehender Files). | 📋 geplant | — |
-| **Picker-Kennzeichnung:** HACS-verwaltete Themes bekommen ein Badge „HACS · Updates überschreiben", eigene/abgeleitete Themes ein Badge „Eigen". Nutzt vorhandene HACS-Detection, analog zu den Plugin-Badges. | 📋 geplant | — |
+| **Fork-Guard im Save-Flow:** Beim Speichern in ein als HACS-verwaltet erkanntes Theme (Detection existiert seit v0.2) statt Direct-Write ein Fork-Flow: HACS-Notice-Banner + „⑂ Ableiten"-Button, Save-Button heißt „Als eigenes Theme speichern". Prompt erklärt den Fork. Kein stilles Zurückschreiben mehr. | ✓ erledigt (B5) | — |
+| **Aktion „Als eigenes Theme ableiten":** Schreibt den aktuellen (ggf. editierten) Merge-Stand nach `themes/<slug>.yaml` (Top-Level), `new_name` als YAML-Key, Default-Vorschlag `<name> Theme Studio`, Kollisions-Check gegen Namen + Datei. Editier-Ziel schaltet via `theme-forked`-Event auf den Fork (`hacs_managed: false`). | ✓ erledigt (B5) | — |
+| **Backend WS-Command `fork_theme`:** Args `new_name` + `variables` (Frontend-Merge inkl. Edits — deckt Proaktiv-Fork *und* Fork-on-Save ab). Schreibt `themes/<slug>.yaml`, prüft Namens-/Datei-Kollision, fasst die HACS-Quelle nie an. Reversibel (nur ein neues File). | ✓ erledigt (B5) | — |
+| **Picker-Kennzeichnung:** HACS-verwaltete Themes bekommen ein Badge „HACS", eigene/abgeleitete Themes ein Badge „Eigen". Nutzt vorhandene HACS-Detection, analog zu den Plugin-Badges. | ✓ erledigt (B4) | 96ce8d1 |
 | **Upstream-Merge-Pfad:** Shortcut „In Vergleichen öffnen (Fork ↔ Upstream)" — nach einem HACS-Update werden Fork und aktualisiertes Upstream-Theme in der Compare-View nebeneinandergelegt; Neuerungen zieht man selektiv per Copy-Pfeil in den Fork. Die v0.4/v1.0.2-Compare-View wird damit zum Fork-Wartungs-Werkzeug. | 📋 geplant | — |
 
 **Nicht in v1.1:**
@@ -147,3 +147,19 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 - Auto-Umschalten des aktiven Themes im HA-Frontend — der User wählt das abgeleitete Theme weiterhin selbst im HA-Profil / per Dashboard.
 - Rückkanal „Fork-Änderungen upstream beitragen" (PR an das HACS-Repo) — out of scope.
 - Verschieben/Löschen von HACS-Originaldateien — Studio fasst die HACS-Quelle nie an, nur lesen + ableiten.
+
+## v1.x – Default-Theme aus dem Panel setzen (geplant)
+
+**Problem.** HA hat **keine UI** zum Setzen des *globalen* Default-Themes (`frontend_default_theme` in `.storage/frontend_theme`). Das Profil-Dropdown ändert nur die Theme-Präferenz des eingeloggten Users, nicht den globalen Default. Wer im Studio ein (ggf. abgeleitetes) Theme baut, muss den Default-Wechsel aktuell über den Service `frontend.set_theme` in den Entwicklerwerkzeugen machen. Siehe `ha_quirks.md` → „Globales Default-Theme hat keine UI".
+
+**Lösung.** Ein „Als Default setzen"-Button im Theme-Editor, der `frontend.set_theme` mit dem Theme-Namen callt — und ein Default-Marker im Picker.
+
+| Feature | Status | Commit |
+|---|---|---|
+| **„★ Als Default setzen"-Button** im Editor-Header: ruft `hass.callService("frontend", "set_theme", { name: <themeName> })`. Optional `mode: "dark"` für das Dark-Default. Kein eigener WS-Command nötig (HA-Service existiert). | 📋 geplant | — |
+| **Default-Marker im Picker:** aktuellen Default aus `.storage/frontend_theme` lesen (kleiner WS-Read im Backend, analog `list_themes`) und das aktive Default-Theme mit „★ Default" markieren. | 📋 geplant | — |
+| **Fork-Guard-Verzahnung:** Nach „Ableiten" optionaler Hinweis „Jetzt als Default aktivieren?" — so wird direkt das eigene, update-sichere Theme zum Default. | 📋 geplant | — |
+
+**Hinweis:** Steht bewusst im Kontrast zum v1.1-Ausschluss „Auto-Umschalten des aktiven Themes". Hier geht es nicht um automatisches Umschalten, sondern um eine **explizite, vom User ausgelöste** Default-Setzung, die HA selbst per UI nicht anbietet.
+
+**Notiert 2026-06-13** auf User-Wunsch — Reihenfolge: erst v1.1 Fork-Guard fertig, dann dieser Punkt.

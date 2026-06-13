@@ -3,7 +3,7 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const ce = globalThis, Te = ce.ShadowRoot && (ce.ShadyCSS === void 0 || ce.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Pe = Symbol(), He = /* @__PURE__ */ new WeakMap();
+const ce = globalThis, ze = ce.ShadowRoot && (ce.ShadyCSS === void 0 || ce.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Pe = Symbol(), He = /* @__PURE__ */ new WeakMap();
 let Ze = class {
   constructor(t, r, a) {
     if (this._$cssResult$ = !0, a !== Pe) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
@@ -12,7 +12,7 @@ let Ze = class {
   get styleSheet() {
     let t = this.o;
     const r = this.t;
-    if (Te && t === void 0) {
+    if (ze && t === void 0) {
       const a = r !== void 0 && r.length === 1;
       a && (t = He.get(r)), t === void 0 && ((this.o = t = new CSSStyleSheet()).replaceSync(this.cssText), a && He.set(r, t));
     }
@@ -22,7 +22,7 @@ let Ze = class {
     return this.cssText;
   }
 };
-const Dt = (e) => new Ze(typeof e == "string" ? e : e + "", void 0, Pe), B = (e, ...t) => {
+const Et = (e) => new Ze(typeof e == "string" ? e : e + "", void 0, Pe), B = (e, ...t) => {
   const r = e.length === 1 ? e[0] : t.reduce((a, o, i) => a + ((n) => {
     if (n._$cssResult$ === !0) return n.cssText;
     if (typeof n == "number") return n;
@@ -30,15 +30,15 @@ const Dt = (e) => new Ze(typeof e == "string" ? e : e + "", void 0, Pe), B = (e,
   })(o) + e[i + 1], e[0]);
   return new Ze(r, e, Pe);
 }, Ht = (e, t) => {
-  if (Te) e.adoptedStyleSheets = t.map((r) => r instanceof CSSStyleSheet ? r : r.styleSheet);
+  if (ze) e.adoptedStyleSheets = t.map((r) => r instanceof CSSStyleSheet ? r : r.styleSheet);
   else for (const r of t) {
     const a = document.createElement("style"), o = ce.litNonce;
     o !== void 0 && a.setAttribute("nonce", o), a.textContent = r.cssText, e.appendChild(a);
   }
-}, Re = Te ? (e) => e : (e) => e instanceof CSSStyleSheet ? ((t) => {
+}, Re = ze ? (e) => e : (e) => e instanceof CSSStyleSheet ? ((t) => {
   let r = "";
   for (const a of t.cssRules) r += a.cssText;
-  return Dt(r);
+  return Et(r);
 })(e) : e;
 /**
  * @license
@@ -73,7 +73,7 @@ const { is: Rt, defineProperty: Ft, getOwnPropertyDescriptor: Ot, getOwnProperty
       }
   }
   return r;
-} }, Ee = (e, t) => !Rt(e, t), Oe = { attribute: !0, type: String, converter: me, reflect: !1, useDefault: !1, hasChanged: Ee };
+} }, De = (e, t) => !Rt(e, t), Oe = { attribute: !0, type: String, converter: me, reflect: !1, useDefault: !1, hasChanged: De };
 Symbol.metadata ?? (Symbol.metadata = Symbol("metadata")), R.litPropertyMetadata ?? (R.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
 let V = class extends HTMLElement {
   static addInitializer(t) {
@@ -188,7 +188,7 @@ let V = class extends HTMLElement {
   requestUpdate(t, r, a, o = !1, i) {
     if (t !== void 0) {
       const n = this.constructor;
-      if (o === !1 && (i = this[t]), a ?? (a = n.getPropertyOptions(t)), !((a.hasChanged ?? Ee)(i, r) || a.useDefault && a.reflect && i === this._$Ej?.get(t) && !this.hasAttribute(n._$Eu(t, a)))) return;
+      if (o === !1 && (i = this[t]), a ?? (a = n.getPropertyOptions(t)), !((a.hasChanged ?? De)(i, r) || a.useDefault && a.reflect && i === this._$Ej?.get(t) && !this.hasAttribute(n._$Eu(t, a)))) return;
       this.C(t, r, a);
     }
     this.isUpdatePending === !1 && (this._$ES = this._$EP());
@@ -262,11 +262,11 @@ V.elementStyles = [], V.shadowRootOptions = { mode: "open" }, V[Q("elementProper
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const ee = globalThis, Le = (e) => e, he = ee.trustedTypes, Ge = he ? he.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, Ye = "$lit$", H = `lit$${Math.random().toFixed(9).slice(2)}$`, qe = "?" + H, jt = `<${qe}>`, U = document, ae = () => U.createComment(""), ie = (e) => e === null || typeof e != "object" && typeof e != "function", De = Array.isArray, Vt = (e) => De(e) || typeof e?.[Symbol.iterator] == "function", ke = `[ 	
+const ee = globalThis, Le = (e) => e, he = ee.trustedTypes, Ge = he ? he.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, Ye = "$lit$", H = `lit$${Math.random().toFixed(9).slice(2)}$`, qe = "?" + H, jt = `<${qe}>`, U = document, ae = () => U.createComment(""), ie = (e) => e === null || typeof e != "object" && typeof e != "function", Ee = Array.isArray, Vt = (e) => Ee(e) || typeof e?.[Symbol.iterator] == "function", ke = `[ 	
 \f\r]`, X = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Ie = /-->/g, Ue = />/g, G = RegExp(`>|${ke}(?:([^\\s"'>=/]+)(${ke}*=${ke}*(?:[^ 	
 \f\r"'\`<>=]|("|')|))|$)`, "g"), Ne = /'/g, je = /"/g, Je = /^(?:script|style|textarea|title)$/i, Wt = (e) => (t, ...r) => ({ _$litType$: e, strings: t, values: r }), l = Wt(1), K = Symbol.for("lit-noChange"), _ = Symbol.for("lit-nothing"), Ve = /* @__PURE__ */ new WeakMap(), I = U.createTreeWalker(U, 129);
 function Xe(e, t) {
-  if (!De(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+  if (!Ee(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return Ge !== void 0 ? Ge.createHTML(t) : t;
 }
 const Kt = (e, t) => {
@@ -274,10 +274,10 @@ const Kt = (e, t) => {
   let o, i = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", n = X;
   for (let d = 0; d < r; d++) {
     const c = e[d];
-    let p, u, m = -1, h = 0;
-    for (; h < c.length && (n.lastIndex = h, u = n.exec(c), u !== null); ) h = n.lastIndex, n === X ? u[1] === "!--" ? n = Ie : u[1] !== void 0 ? n = Ue : u[2] !== void 0 ? (Je.test(u[2]) && (o = RegExp("</" + u[2], "g")), n = G) : u[3] !== void 0 && (n = G) : n === G ? u[0] === ">" ? (n = o ?? X, m = -1) : u[1] === void 0 ? m = -2 : (m = n.lastIndex - u[2].length, p = u[1], n = u[3] === void 0 ? G : u[3] === '"' ? je : Ne) : n === je || n === Ne ? n = G : n === Ie || n === Ue ? n = X : (n = G, o = void 0);
+    let u, p, m = -1, h = 0;
+    for (; h < c.length && (n.lastIndex = h, p = n.exec(c), p !== null); ) h = n.lastIndex, n === X ? p[1] === "!--" ? n = Ie : p[1] !== void 0 ? n = Ue : p[2] !== void 0 ? (Je.test(p[2]) && (o = RegExp("</" + p[2], "g")), n = G) : p[3] !== void 0 && (n = G) : n === G ? p[0] === ">" ? (n = o ?? X, m = -1) : p[1] === void 0 ? m = -2 : (m = n.lastIndex - p[2].length, u = p[1], n = p[3] === void 0 ? G : p[3] === '"' ? je : Ne) : n === je || n === Ne ? n = G : n === Ie || n === Ue ? n = X : (n = G, o = void 0);
     const f = n === G && e[d + 1].startsWith("/>") ? " " : "";
-    i += n === X ? c + jt : m >= 0 ? (a.push(p), c.slice(0, m) + Ye + c.slice(m) + H + f) : c + H + (m === -2 ? d : f);
+    i += n === X ? c + jt : m >= 0 ? (a.push(u), c.slice(0, m) + Ye + c.slice(m) + H + f) : c + H + (m === -2 ? d : f);
   }
   return [Xe(e, i + (e[r] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), a];
 };
@@ -286,15 +286,15 @@ class ne {
     let o;
     this.parts = [];
     let i = 0, n = 0;
-    const d = t.length - 1, c = this.parts, [p, u] = Kt(t, r);
-    if (this.el = ne.createElement(p, a), I.currentNode = this.el.content, r === 2 || r === 3) {
+    const d = t.length - 1, c = this.parts, [u, p] = Kt(t, r);
+    if (this.el = ne.createElement(u, a), I.currentNode = this.el.content, r === 2 || r === 3) {
       const m = this.el.content.firstChild;
       m.replaceWith(...m.childNodes);
     }
     for (; (o = I.nextNode()) !== null && c.length < d; ) {
       if (o.nodeType === 1) {
         if (o.hasAttributes()) for (const m of o.getAttributeNames()) if (m.endsWith(Ye)) {
-          const h = u[n++], f = o.getAttribute(m).split(H), w = /([.?@])?(.*)/.exec(h);
+          const h = p[n++], f = o.getAttribute(m).split(H), w = /([.?@])?(.*)/.exec(h);
           c.push({ type: 1, index: i, name: w[2], strings: f, ctor: w[1] === "." ? Yt : w[1] === "?" ? qt : w[1] === "@" ? Jt : we }), o.removeAttribute(m);
         } else m.startsWith(H) && (c.push({ type: 6, index: i }), o.removeAttribute(m));
         if (Je.test(o.tagName)) {
@@ -340,8 +340,8 @@ class Zt {
     let i = I.nextNode(), n = 0, d = 0, c = a[0];
     for (; c !== void 0; ) {
       if (n === c.index) {
-        let p;
-        c.type === 2 ? p = new se(i, i.nextSibling, this, t) : c.type === 1 ? p = new c.ctor(i, c.name, c.strings, this, t) : c.type === 6 && (p = new Xt(i, this, t)), this._$AV.push(p), c = a[++d];
+        let u;
+        c.type === 2 ? u = new se(i, i.nextSibling, this, t) : c.type === 1 ? u = new c.ctor(i, c.name, c.strings, this, t) : c.type === 6 && (u = new Xt(i, this, t)), this._$AV.push(u), c = a[++d];
       }
       n !== c?.index && (i = I.nextNode(), n++);
     }
@@ -395,7 +395,7 @@ class se {
     return r === void 0 && Ve.set(t.strings, r = new ne(t)), r;
   }
   k(t) {
-    De(this._$AH) || (this._$AH = [], this._$AR());
+    Ee(this._$AH) || (this._$AH = [], this._$AR());
     const r = this._$AH;
     let a, o = 0;
     for (const i of t) o === r.length ? r.push(a = new se(this.O(ae()), this.O(ae()), this, this.options)) : a = r[o], a._$AI(i), o++;
@@ -427,8 +427,8 @@ class we {
     if (i === void 0) t = Z(this, t, r, 0), n = !ie(t) || t !== this._$AH && t !== K, n && (this._$AH = t);
     else {
       const d = t;
-      let c, p;
-      for (t = i[0], c = 0; c < i.length - 1; c++) p = Z(this, d[a + c], r, c), p === K && (p = this._$AH[c]), n || (n = !ie(p) || p !== this._$AH[c]), p === _ ? t = _ : t !== _ && (t += (p ?? "") + i[c + 1]), this._$AH[c] = p;
+      let c, u;
+      for (t = i[0], c = 0; c < i.length - 1; c++) u = Z(this, d[a + c], r, c), u === K && (u = this._$AH[c]), n || (n = !ie(u) || u !== this._$AH[c]), u === _ ? t = _ : t !== _ && (t += (u ?? "") + i[c + 1]), this._$AH[c] = u;
     }
     n && !o && this.j(t);
   }
@@ -535,7 +535,7 @@ const M = (e) => (t, r) => {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const rr = { attribute: !0, type: String, converter: me, reflect: !1, hasChanged: Ee }, or = (e = rr, t, r) => {
+const rr = { attribute: !0, type: String, converter: me, reflect: !1, hasChanged: De }, or = (e = rr, t, r) => {
   const { kind: a, metadata: o } = r;
   let i = globalThis.litPropertyMetadata.get(o);
   if (i === void 0 && globalThis.litPropertyMetadata.set(o, i = /* @__PURE__ */ new Map()), a === "setter" && ((e = Object.create(e)).wrapped = !0), i.set(r.name, e), a === "accessor") {
@@ -626,23 +626,23 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
   name: nt,
   version: st,
   version_supported: lt
-}, Symbol.toStringTag, { value: "Module" })), pt = "mushroom", ut = "Mushroom", mt = "0.1.0", ht = ">=3.0.0", bt = {
+}, Symbol.toStringTag, { value: "Module" })), ut = "mushroom", pt = "Mushroom", mt = "0.1.0", ht = ">=3.0.0", bt = {
   method: "hacs-repo",
   value: "piitaya/lovelace-mushroom"
 }, gt = "CSS-Variablen für Mushroom Cards (piitaya/lovelace-mushroom). Typografie (Title/Subtitle/Card-Primary/Card-Secondary), Icons, Chips, Controls, Material-RGB-Palette und State-spezifische RGB-Farben für Climate/Cover/Lock/Person/etc. Plugin wird nur geladen wenn HACS piitaya/lovelace-mushroom als installiert meldet.", dr = {
-  id: pt,
-  name: ut,
+  id: ut,
+  name: pt,
   version: mt,
   version_supported: ht,
   detect: bt,
   description: gt
-}, pr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, ur = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: dr,
   description: gt,
   detect: bt,
-  id: pt,
-  name: ut,
+  id: ut,
+  name: pt,
   version: mt,
   version_supported: ht
 }, Symbol.toStringTag, { value: "Module" })), ft = "bubble-card", yt = [
@@ -1697,14 +1697,14 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
     description: "Bubble Card · Color-Cursor · Default-Position des Indikators (oben).",
     description_en: "Bubble Card · Color cursor · Default position of the indicator (top)."
   }
-], ur = {
+], pr = {
   id: ft,
   categories: yt,
   variables: _t
 }, mr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   categories: yt,
-  default: ur,
+  default: pr,
   id: ft,
   variables: _t
 }, Symbol.toStringTag, { value: "Module" })), vt = "ha-core", xt = [
@@ -3928,6 +3928,21 @@ Ein Backup wird automatisch unter themes/.backups/ angelegt.`,
   "editor.reset_row_tooltip": "Auf Original zurücksetzen (verwirft auch eine Entfernen-Markierung)",
   "editor.remove_row_tooltip": "Variable beim nächsten Speichern aus dem Theme entfernen",
   "editor.remove_row_disabled_tooltip": "Nicht im Theme — nichts zu entfernen",
+  // editor — Fork-Guard (v1.1)
+  "editor.hacs_notice_strong": "HACS-verwaltetes Theme",
+  "editor.hacs_notice_body": "Dieses Theme gehört einem HACS-Repo — ein Update überschreibt direkte Änderungen. Studio schreibt deshalb nicht zurück, sondern leitet beim Speichern ein eigenes Theme ab (eigene Datei, update-sicher).",
+  "editor.save_as_own": "Als eigenes Theme speichern",
+  "editor.fork_btn": "Ableiten",
+  "editor.fork_btn_tooltip": "Dieses Theme als eigenes, HACS-update-sicheres Theme in themes/<name>.yaml ableiten",
+  "editor.forking": "Leite ab…",
+  "editor.fork_default": "{theme} Theme Studio",
+  "editor.fork_prompt": `'{theme}' als eigenes Theme ableiten (eigene Datei, HACS-update-sicher).
+
+Name des neuen Themes:`,
+  "editor.fork_prompt_save": `'{theme}' ist HACS-verwaltet — direktes Speichern würde beim nächsten HACS-Update überschrieben.
+
+Deine Änderungen werden stattdessen in ein eigenes Theme abgeleitet. Name des neuen Themes:`,
+  "editor.fork_success": "Als eigenes Theme abgeleitet: '{theme}'",
   // preview-pane
   "preview.label": "Preview",
   "preview.reload_tooltip": "iframe neu laden",
@@ -4073,6 +4088,21 @@ A backup will be created automatically at themes/.backups/.`,
   "editor.reset_row_tooltip": "Reset to original (also discards a removal mark)",
   "editor.remove_row_tooltip": "Remove the variable from the theme on next save",
   "editor.remove_row_disabled_tooltip": "Not in theme — nothing to remove",
+  // editor — fork guard (v1.1)
+  "editor.hacs_notice_strong": "HACS-managed theme",
+  "editor.hacs_notice_body": "This theme belongs to a HACS repo — an update overwrites direct changes. Studio therefore won't write back; on save it derives your own theme (own file, update-safe).",
+  "editor.save_as_own": "Save as own theme",
+  "editor.fork_btn": "Derive",
+  "editor.fork_btn_tooltip": "Derive this theme into your own, HACS-update-safe theme at themes/<name>.yaml",
+  "editor.forking": "Deriving…",
+  "editor.fork_default": "{theme} Theme Studio",
+  "editor.fork_prompt": `Derive '{theme}' into your own theme (own file, HACS-update-safe).
+
+Name of the new theme:`,
+  "editor.fork_prompt_save": `'{theme}' is HACS-managed — a direct save would be overwritten by the next HACS update.
+
+Your changes are derived into your own theme instead. Name of the new theme:`,
+  "editor.fork_success": "Derived into your own theme: '{theme}'",
   // preview-pane
   "preview.label": "Preview",
   "preview.reload_tooltip": "Reload iframe",
@@ -4133,7 +4163,7 @@ function Ar(e, t) {
   }
   return "raw";
 }
-const zr = [
+const Tr = [
   // Third-party Custom Cards
   { re: /^--bubble-/, label: "Bubble Card" },
   { re: /^--mush-/, label: "Mushroom" },
@@ -4168,7 +4198,7 @@ const zr = [
   { re: /^--code-editor-/, label: "HA Code-Editor" },
   { re: /^--codemirror-/, label: "CodeMirror-Syntax-Highlight" },
   { re: /^--markdown-/, label: "Markdown-Rendering" }
-], Tr = {
+], zr = {
   color: "Farbe",
   length: "Länge / Größe",
   shadow: "Schatten",
@@ -4179,22 +4209,22 @@ const zr = [
   raw: "freier Text-Wert"
 };
 function Pr(e, t) {
-  const a = zr.find(({ re: i }) => i.test(e))?.label ?? "Quelle unbekannt", o = Tr[t];
+  const a = Tr.find(({ re: i }) => i.test(e))?.label ?? "Quelle unbekannt", o = zr[t];
   return `${a} · vermutlich ${o} (Heuristik).`;
 }
-const Er = /* @__PURE__ */ Object.assign({
+const Dr = /* @__PURE__ */ Object.assign({
   "../plugins/bubble-card/manifest.json": sr,
   "../plugins/ha-core/manifest.json": cr,
-  "../plugins/mushroom/manifest.json": pr
-}), Dr = /* @__PURE__ */ Object.assign({
+  "../plugins/mushroom/manifest.json": ur
+}), Er = /* @__PURE__ */ Object.assign({
   "../plugins/bubble-card/schema.json": mr,
   "../plugins/ha-core/schema.json": br,
   "../plugins/mushroom/schema.json": fr
 });
 function Hr() {
   const e = [];
-  for (const [t, r] of Object.entries(Er)) {
-    const a = t.replace(/\/manifest\.json$/, "/schema.json"), o = Dr[a];
+  for (const [t, r] of Object.entries(Dr)) {
+    const a = t.replace(/\/manifest\.json$/, "/schema.json"), o = Er[a];
     if (!o) {
       console.warn(
         `[theme-studio] Plugin at ${t} has no schema.json — skipping.`
@@ -4207,17 +4237,17 @@ function Hr() {
 }
 const re = Object.freeze(Hr());
 let be = null;
-const ze = /* @__PURE__ */ new Set();
+const Te = /* @__PURE__ */ new Set();
 function Rr(e) {
   be = e === null ? null : new Set(e);
-  for (const t of ze)
+  for (const t of Te)
     try {
       t();
     } catch {
     }
 }
 function Bt(e) {
-  return ze.add(e), () => ze.delete(e);
+  return Te.add(e), () => Te.delete(e);
 }
 const We = ["ha-core"];
 function Fr(e) {
@@ -4789,7 +4819,7 @@ At([
 _e = At([
   M("ts-raw-input")
 ], _e);
-var Zr = Object.defineProperty, Yr = Object.getOwnPropertyDescriptor, zt = (e, t, r, a) => {
+var Zr = Object.defineProperty, Yr = Object.getOwnPropertyDescriptor, Tt = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? Yr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && Zr(t, r, o), o;
@@ -4995,10 +5025,10 @@ ve.styles = B`
       border-color: var(--error-color, #db4437);
     }
   `;
-zt([
+Tt([
   g({ type: String })
 ], ve.prototype, "value", 2);
-ve = zt([
+ve = Tt([
   M("ts-background-picker")
 ], ve);
 var Xr = Object.defineProperty, Qr = Object.getOwnPropertyDescriptor, J = (e, t, r, a) => {
@@ -5160,24 +5190,24 @@ var eo = Object.defineProperty, to = Object.getOwnPropertyDescriptor, C = (e, t,
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && eo(t, r, o), o;
 };
-const pe = {
+const ue = {
   id: "_unknown",
   label: "_unknown_placeholder",
   icon: "mdi:help-circle-outline"
-}, ue = {
+}, pe = {
   id: "_other",
   label: "_other_placeholder",
   icon: "mdi:dots-horizontal"
-}, z = "in-theme", k = "default";
+}, T = "in-theme", k = "default";
 function Se(e) {
   return e === k ? s("editor.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
 }
 function ro(e) {
-  return e === pe ? s("editor.cat_unknown") : e === ue ? s("editor.cat_other") : Lr(e);
+  return e === ue ? s("editor.cat_unknown") : e === pe ? s("editor.cat_other") : Lr(e);
 }
 let v = class extends x {
   constructor() {
-    super(...arguments), this.file = "", this.themeName = "", this.hacsManaged = !1, this._loading = !0, this._error = null, this._rows = [], this._skippedKeys = [], this._saveStatus = { state: "idle" }, this._activeTab = z, this._activeMode = k, this._modes = [k], this._showPreview = !1, this._previewSrc = "/lovelace/0", this._appliedVars = /* @__PURE__ */ new Set(), this._originalFullTheme = {}, this._onBeforeUnload = (e) => {
+    super(...arguments), this.file = "", this.themeName = "", this.hacsManaged = !1, this._loading = !0, this._error = null, this._rows = [], this._skippedKeys = [], this._saveStatus = { state: "idle" }, this._activeTab = T, this._activeMode = k, this._modes = [k], this._showPreview = !1, this._previewSrc = "/lovelace/0", this._appliedVars = /* @__PURE__ */ new Set(), this._originalFullTheme = {}, this._onBeforeUnload = (e) => {
       this._dirtyCount() !== 0 && (e.preventDefault(), e.returnValue = "");
     };
   }
@@ -5189,7 +5219,7 @@ let v = class extends x {
   }
   updated(e) {
     const t = e.has("file") && e.get("file") !== void 0, r = e.has("themeName") && e.get("themeName") !== void 0;
-    (t || r) && (this._revertAll(), this._rows = [], this._activeTab = z, this._activeMode = k, this._modes = [k], this._load());
+    (t || r) && (this._revertAll(), this._rows = [], this._activeTab = T, this._activeMode = k, this._modes = [k], this._load());
   }
   async _load() {
     this._loading = !0, this._error = null, this._saveStatus = { state: "idle" };
@@ -5218,24 +5248,24 @@ let v = class extends x {
     for (const [o, i] of Object.entries(e)) {
       if (i == null) continue;
       if (o === "modes" && typeof i == "object") {
-        for (const [u, m] of Object.entries(
+        for (const [p, m] of Object.entries(
           i
         ))
           if (!(typeof m != "object" || m === null)) {
-            a.includes(u) || a.push(u);
+            a.includes(p) || a.push(p);
             for (const [h, f] of Object.entries(
               m
             )) {
               if (f == null || typeof f == "object") continue;
-              const w = String(f), j = h.startsWith("--") ? h : `--${h}`, Pt = j.slice(2), Et = fe(j, w);
+              const w = String(f), j = h.startsWith("--") ? h : `--${h}`, Pt = j.slice(2), Dt = fe(j, w);
               t.push({
                 varName: j,
                 yamlKey: Pt,
-                meta: Et,
+                meta: Dt,
                 original: w,
                 current: w,
                 inTheme: !0,
-                mode: u
+                mode: p
               });
             }
           }
@@ -5245,11 +5275,11 @@ let v = class extends x {
         r.push(o);
         continue;
       }
-      const n = String(i), d = o.startsWith("--") ? o : `--${o}`, c = d.slice(2), p = fe(d, n);
+      const n = String(i), d = o.startsWith("--") ? o : `--${o}`, c = d.slice(2), u = fe(d, n);
       t.push({
         varName: d,
         yamlKey: c,
-        meta: p,
+        meta: u,
         original: n,
         current: n,
         inTheme: !0,
@@ -5291,6 +5321,10 @@ let v = class extends x {
   // ─── Save-Flow ──────────────────────────────────────────────────────
   async _save() {
     if (this._dirtyCount() === 0 || this._saveStatus.state === "saving") return;
+    if (this.hacsManaged) {
+      await this._forkFlow("save");
+      return;
+    }
     const t = this._rows.filter(
       (c) => !c.inTheme && !c.markedForRemoval && c.current !== c.original && c.current !== ""
     ).length, r = this._rows.filter(
@@ -5330,10 +5364,56 @@ let v = class extends x {
         theme_name: this.themeName,
         variables: d
       });
-      this._originalFullTheme = d, this._rows = this._rows.filter((p) => !p.markedForRemoval).map((p) => p.inTheme ? { ...p, original: p.current } : p.current !== p.original && p.current !== "" ? { ...p, original: p.current, inTheme: !0 } : p), this._activeTab !== z && this._ensurePluginRows(this._activeTab, this._activeMode), this._saveStatus = { state: "success", backup: c.backup };
+      this._originalFullTheme = d, this._rows = this._rows.filter((u) => !u.markedForRemoval).map((u) => u.inTheme ? { ...u, original: u.current } : u.current !== u.original && u.current !== "" ? { ...u, original: u.current, inTheme: !0 } : u), this._activeTab !== T && this._ensurePluginRows(this._activeTab, this._activeMode), this._saveStatus = { state: "success", backup: c.backup };
     } catch (c) {
-      const p = c instanceof Error ? c.message : String(c);
-      this._saveStatus = { state: "error", msg: p };
+      const u = c instanceof Error ? c.message : String(c);
+      this._saveStatus = { state: "error", msg: u };
+    }
+  }
+  /**
+   * Fork-Flow (v1.1): leitet das aktuelle (ggf. editierte) Theme in eine
+   * eigene Top-Level-Datei `themes/<slug>.yaml` ab. `trigger` steuert nur
+   * den Erklärungstext im Prompt:
+   *   - "save"      — vom Save-Button eines HACS-Themes (Fork-Guard)
+   *   - "proactive" — vom expliziten "Ableiten"-Button
+   * Der mitgelieferte Merge-State enthält evtl. ungespeicherte Änderungen,
+   * sodass beim Fork-on-Save nichts verloren geht.
+   */
+  async _forkFlow(e) {
+    if (this._saveStatus.state === "saving" || this._saveStatus.state === "forking")
+      return;
+    const t = s("editor.fork_default", void 0, {
+      theme: this.themeName
+    }), r = s(
+      e === "save" ? "editor.fork_prompt_save" : "editor.fork_prompt",
+      void 0,
+      { theme: this.themeName }
+    ), a = window.prompt(r, t);
+    if (a === null) return;
+    const o = a.trim();
+    if (o === "") return;
+    this._saveStatus = { state: "forking" };
+    const i = this._buildSaveMerge();
+    try {
+      const n = await this.hass.connection.sendMessagePromise({
+        type: "theme_studio/fork_theme",
+        new_name: o,
+        variables: i
+      });
+      this._saveStatus = {
+        state: "forked",
+        file: n.file,
+        theme: n.theme_name
+      }, this.dispatchEvent(
+        new CustomEvent("theme-forked", {
+          detail: { file: n.file, theme_name: n.theme_name },
+          bubbles: !0,
+          composed: !0
+        })
+      );
+    } catch (n) {
+      const d = n instanceof Error ? n.message : String(n);
+      this._saveStatus = { state: "error", msg: d };
     }
   }
   /**
@@ -5369,26 +5449,26 @@ let v = class extends x {
         ...a
       ]);
       for (const n of i) {
-        const d = t[n] || {}, c = {}, p = /* @__PURE__ */ new Set();
-        for (const [u, m] of Object.entries(d)) {
+        const d = t[n] || {}, c = {}, u = /* @__PURE__ */ new Set();
+        for (const [p, m] of Object.entries(d)) {
           if (typeof m == "object" && m !== null) {
-            c[u] = m;
+            c[p] = m;
             continue;
           }
-          const h = u.startsWith("--") ? u.slice(2) : u, f = this._rows.find(
+          const h = p.startsWith("--") ? p.slice(2) : p, f = this._rows.find(
             (w) => w.mode === n && w.inTheme && w.yamlKey === h
           );
           if (f) {
             if (f.markedForRemoval) {
-              p.add(f.varName);
+              u.add(f.varName);
               continue;
             }
-            c[u] = f.current, p.add(f.varName);
+            c[p] = f.current, u.add(f.varName);
           } else
-            c[u] = m;
+            c[p] = m;
         }
-        for (const u of this._rows)
-          u.mode === n && (u.inTheme || u.markedForRemoval || u.current !== u.original && u.current !== "" && (p.has(u.varName) || (c[u.yamlKey] = u.current)));
+        for (const p of this._rows)
+          p.mode === n && (p.inTheme || p.markedForRemoval || p.current !== p.original && p.current !== "" && (u.has(p.varName) || (c[p.yamlKey] = p.current)));
         Object.keys(c).length > 0 && (o[n] = c);
       }
       Object.keys(o).length > 0 && (e.modes = o);
@@ -5404,7 +5484,7 @@ let v = class extends x {
     const r = /* @__PURE__ */ new Map();
     for (const n of e) {
       let d;
-      n.meta.source === "heuristic" ? d = pe.id : n.meta.category && t.has(n.meta.category) ? d = n.meta.category : d = ue.id;
+      n.meta.source === "heuristic" ? d = ue.id : n.meta.category && t.has(n.meta.category) ? d = n.meta.category : d = pe.id;
       const c = r.get(d) ?? [];
       c.push(n), r.set(d, c);
     }
@@ -5413,10 +5493,10 @@ let v = class extends x {
       const c = r.get(n);
       c && c.length > 0 && a.push({ ...d, rows: c });
     }
-    const o = r.get(pe.id);
-    o && o.length > 0 && a.push({ ...pe, rows: o });
-    const i = r.get(ue.id);
-    return i && i.length > 0 && a.push({ ...ue, rows: i }), a;
+    const o = r.get(ue.id);
+    o && o.length > 0 && a.push({ ...ue, rows: o });
+    const i = r.get(pe.id);
+    return i && i.length > 0 && a.push({ ...pe, rows: i }), a;
   }
   // ─── CSS-Variable-Anwendung ─────────────────────────────────────────
   _setCssVar(e, t) {
@@ -5463,6 +5543,9 @@ let v = class extends x {
       0
     );
   }
+  _busy() {
+    return this._saveStatus.state === "saving" || this._saveStatus.state === "forking";
+  }
   _modeDirtyCount(e) {
     return this._rows.reduce(
       (t, r) => t + (r.mode === e && this._isRowDirty(r) ? 1 : 0),
@@ -5483,14 +5566,14 @@ let v = class extends x {
   }
   // ─── Tab/Mode-Handling ──────────────────────────────────────────────
   _onTabSelect(e) {
-    e !== this._activeTab && (e !== z && this._ensurePluginRows(e, this._activeMode), this._activeTab = e);
+    e !== this._activeTab && (e !== T && this._ensurePluginRows(e, this._activeMode), this._activeTab = e);
   }
   _onModeSelect(e) {
-    e !== this._activeMode && (this._activeTab !== z && this._ensurePluginRows(this._activeTab, e), this._activeMode = e);
+    e !== this._activeMode && (this._activeTab !== T && this._ensurePluginRows(this._activeTab, e), this._activeMode = e);
   }
   _visibleRows() {
     const e = this._rows.filter((t) => t.mode === this._activeMode);
-    return this._activeTab === z ? e.filter((t) => t.inTheme) : e.filter((t) => t.meta.plugin === this._activeTab);
+    return this._activeTab === T ? e.filter((t) => t.inTheme) : e.filter((t) => t.meta.plugin === this._activeTab);
   }
   // ─── Rendering ──────────────────────────────────────────────────────
   render() {
@@ -5513,21 +5596,29 @@ let v = class extends x {
         </button>
         <button
           class="danger-btn"
-          ?disabled=${this._dirtyCount() === 0 || this._saveStatus.state === "saving"}
+          ?disabled=${this._dirtyCount() === 0 || this._busy()}
           @click=${this._resetAll}
         >
           ${s("editor.discard_all")}
         </button>
+        ${this.hacsManaged ? l`<button
+              class="primary-btn"
+              ?disabled=${this._busy()}
+              @click=${() => this._forkFlow("proactive")}
+              title=${s("editor.fork_btn_tooltip")}
+            >
+              ⑂ ${s("editor.fork_btn")}
+            </button>` : ""}
         <button
           class="primary-btn"
-          ?disabled=${this._dirtyCount() === 0 || this._saveStatus.state === "saving"}
+          ?disabled=${this._dirtyCount() === 0 || this._busy()}
           @click=${this._save}
         >
-          ${this._saveStatus.state === "saving" ? s("common.saving") : s("common.save")}
+          ${this._saveStatus.state === "saving" ? s("common.saving") : this._saveStatus.state === "forking" ? s("editor.forking") : this.hacsManaged ? s("editor.save_as_own") : s("common.save")}
         </button>
       </div>
-      ${this._renderModeBar()} ${this._renderTabs()}
-      ${this._renderSaveStatus()}
+      ${this._renderHacsNotice()} ${this._renderModeBar()}
+      ${this._renderTabs()} ${this._renderSaveStatus()}
       <div class="body-grid ${this._showPreview ? "with-preview" : ""}">
         <div class="editor-col">${this._renderBody()}</div>
         ${this._showPreview ? l`<div class="preview-col">
@@ -5580,7 +5671,7 @@ let v = class extends x {
     const e = this._rows.filter(
       (r) => r.inTheme && r.mode === this._activeMode
     ).length, t = [
-      { id: z, label: s("editor.tab_in_theme"), count: e }
+      { id: T, label: s("editor.tab_in_theme"), count: e }
     ];
     for (const r of oe())
       t.push({
@@ -5606,11 +5697,24 @@ let v = class extends x {
       </div>
     `;
   }
+  _renderHacsNotice() {
+    return this._loading || this._error || !this.hacsManaged ? "" : l`
+      <div class="notice hacs-notice">
+        <strong>${s("editor.hacs_notice_strong")}:</strong>
+        ${s("editor.hacs_notice_body")}
+      </div>
+    `;
+  }
   _renderSaveStatus() {
     const e = this._saveStatus;
-    return e.state === "idle" || e.state === "saving" ? "" : e.state === "success" ? l`
+    return e.state === "idle" || e.state === "saving" || e.state === "forking" ? "" : e.state === "success" ? l`
         <div class="status-banner success">
           ✓ ${s("editor.save_success")}${e.backup ? l` &middot; ${s("common.backup")}: <code>${e.backup}</code>` : ""}
+        </div>
+      ` : e.state === "forked" ? l`
+        <div class="status-banner success">
+          ✓ ${s("editor.fork_success", void 0, { theme: e.theme })}
+          &middot; <code>themes/${e.file}</code>
         </div>
       ` : l`
       <div class="status-banner error">
@@ -5641,14 +5745,14 @@ let v = class extends x {
       </div>`;
     const e = this._visibleRows();
     if (e.length === 0) {
-      const r = this._activeTab === z ? this._activeMode === k ? s("editor.empty_default") : s("editor.empty_mode", void 0, {
+      const r = this._activeTab === T ? this._activeMode === k ? s("editor.empty_default") : s("editor.empty_mode", void 0, {
         mode: Se(this._activeMode)
       }) : s("editor.empty_plugin");
       return l`<div class="empty">${r}</div>`;
     }
     const t = this._groupByCategory(e);
     return l`
-      ${this._activeTab === z && this._activeMode === k && this._skippedKeys.length > 0 ? l`<div class="notice">
+      ${this._activeTab === T && this._activeMode === k && this._skippedKeys.length > 0 ? l`<div class="notice">
             ${s("editor.notice_skipped_prefix")}
             ${this._skippedKeys.map(
       (r, a) => l`${a > 0 ? ", " : ""}<code>${r}</code>`
@@ -5660,7 +5764,7 @@ let v = class extends x {
             <code>modes.${this._activeMode}</code>
             ${s("editor.notice_mode_suffix")}
           </div>` : ""}
-      ${this._activeTab !== z ? l`<div class="notice">
+      ${this._activeTab !== T ? l`<div class="notice">
             <strong>${s("editor.notice_plugin_strong")}:</strong>
             ${s("editor.notice_plugin_prefix", void 0, { n: e.length })}
             <span class="row-tag default">${s("editor.tag_default")}</span>${s(
@@ -6114,6 +6218,10 @@ v.styles = B`
       padding: 1px 4px;
       border-radius: 3px;
     }
+    .notice.hacs-notice {
+      background: rgba(255, 152, 0, 0.1);
+      border-left-color: var(--warning-color, #ff9800);
+    }
     .status-banner {
       padding: 10px 16px;
       border-radius: 4px;
@@ -6187,7 +6295,7 @@ var oo = Object.defineProperty, ao = Object.getOwnPropertyDescriptor, N = (e, t,
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && oo(t, r, o), o;
 };
-let E = class extends x {
+let D = class extends x {
   constructor() {
     super(...arguments), this._loading = !0, this._modules = [], this._errors = [], this._rootExists = !0, this._loadError = null;
   }
@@ -6269,7 +6377,7 @@ let E = class extends x {
     );
   }
 };
-E.styles = B`
+D.styles = B`
     :host {
       display: block;
       max-width: 800px;
@@ -6394,26 +6502,26 @@ E.styles = B`
   `;
 N([
   g({ attribute: !1 })
-], E.prototype, "hass", 2);
+], D.prototype, "hass", 2);
 N([
   b()
-], E.prototype, "_loading", 2);
+], D.prototype, "_loading", 2);
 N([
   b()
-], E.prototype, "_modules", 2);
+], D.prototype, "_modules", 2);
 N([
   b()
-], E.prototype, "_errors", 2);
+], D.prototype, "_errors", 2);
 N([
   b()
-], E.prototype, "_rootExists", 2);
+], D.prototype, "_rootExists", 2);
 N([
   b()
-], E.prototype, "_loadError", 2);
-E = N([
+], D.prototype, "_loadError", 2);
+D = N([
   M("ts-module-picker")
-], E);
-var io = Object.defineProperty, no = Object.getOwnPropertyDescriptor, D = (e, t, r, a) => {
+], D);
+var io = Object.defineProperty, no = Object.getOwnPropertyDescriptor, E = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? no(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && io(t, r, o), o;
@@ -6429,16 +6537,16 @@ function so(e) {
     if (e[i] === ",") {
       for (i++; i < e.length && /\s/.test(e[i]); ) i++;
       const c = i;
-      let p = 1;
-      for (; i < e.length && p > 0; ) {
+      let u = 1;
+      for (; i < e.length && u > 0; ) {
         const m = e[i];
-        if (m === "(") p++;
-        else if (m === ")" && (p--, p === 0))
+        if (m === "(") u++;
+        else if (m === ")" && (u--, u === 0))
           break;
         i++;
       }
-      const u = e.slice(c, i).trim();
-      u.length > 0 && (n = u);
+      const p = e.slice(c, i).trim();
+      p.length > 0 && (n = p);
     }
     const d = t.get(o);
     d ? (d.count++, !d.fallback && n && (d.fallback = n)) : t.set(o, { name: o, fallback: n, count: 1 });
@@ -6527,7 +6635,7 @@ let A = class extends x {
       "is_global",
       "code"
     ]), d = Object.keys(this._content).filter(
-      (p) => !n.has(p)
+      (u) => !n.has(u)
     ), c = this._isDirty();
     return l`
       <div class="toolbar">
@@ -6570,7 +6678,7 @@ let A = class extends x {
             id="m-name"
             type="text"
             .value=${e}
-            @input=${(p) => this._setField("name", p.target.value)}
+            @input=${(u) => this._setField("name", u.target.value)}
           />
         </div>
         <div class="field">
@@ -6579,9 +6687,9 @@ let A = class extends x {
             id="m-desc"
             type="text"
             .value=${t}
-            @input=${(p) => this._setField(
+            @input=${(u) => this._setField(
       "description",
-      p.target.value
+      u.target.value
     )}
           />
         </div>
@@ -6591,7 +6699,7 @@ let A = class extends x {
             id="m-version"
             type="text"
             .value=${r}
-            @input=${(p) => this._setField("version", p.target.value)}
+            @input=${(u) => this._setField("version", u.target.value)}
           />
         </div>
         <div class="field">
@@ -6614,16 +6722,16 @@ let A = class extends x {
             id="m-global"
             type="checkbox"
             .checked=${o}
-            @change=${(p) => this._setField(
+            @change=${(u) => this._setField(
       "is_global",
-      p.target.checked
+      u.target.checked
     )}
           />
         </div>
         ${d.length > 0 ? l`<div class="extra-keys">
               ${s("module_editor.extra_keys")}:
               ${d.map(
-      (p, u) => l`${u > 0 ? ", " : ""}<code>${p}</code>`
+      (u, p) => l`${p > 0 ? ", " : ""}<code>${u}</code>`
     )}
             </div>` : ""}
       </div>
@@ -6635,7 +6743,7 @@ let A = class extends x {
             class="code-editor"
             spellcheck="false"
             .value=${i}
-            @input=${(p) => this._setField("code", p.target.value)}
+            @input=${(u) => this._setField("code", u.target.value)}
           ></textarea>
           ${this._renderVarsSidebar(i)}
         </div>
@@ -7014,39 +7122,39 @@ A.styles = B`
       font-size: 0.85rem;
     }
   `;
-D([
+E([
   g({ attribute: !1 })
 ], A.prototype, "hass", 2);
-D([
+E([
   g({ type: String })
 ], A.prototype, "file", 2);
-D([
+E([
   g({ type: String })
 ], A.prototype, "moduleId", 2);
-D([
+E([
   b()
 ], A.prototype, "_loading", 2);
-D([
+E([
   b()
 ], A.prototype, "_error", 2);
-D([
+E([
   b()
 ], A.prototype, "_content", 2);
-D([
+E([
   b()
 ], A.prototype, "_original", 2);
-D([
+E([
   b()
 ], A.prototype, "_saveStatus", 2);
-A = D([
+A = E([
   M("ts-module-editor")
 ], A);
-var lo = Object.defineProperty, co = Object.getOwnPropertyDescriptor, T = (e, t, r, a) => {
+var lo = Object.defineProperty, co = Object.getOwnPropertyDescriptor, z = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? co(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && lo(t, r, o), o;
 };
-const y = "default", po = {
+const y = "default", uo = {
   selection: null,
   full: {},
   scalarsByMode: { [y]: {} },
@@ -7063,7 +7171,7 @@ let S = class extends x {
   }
   _freshSide() {
     return {
-      ...po,
+      ...uo,
       scalarsByMode: { [y]: {} },
       modes: [y]
     };
@@ -7270,11 +7378,11 @@ let S = class extends x {
       return l`<div class="empty">${s("compare.pick_both")}</div>`;
     const r = this._activeMode, a = e.scalarsByMode[r] ?? {}, o = t.scalarsByMode[r] ?? {}, i = r === y || e.modes.includes(r), n = r === y || t.modes.includes(r), d = this._modeLabel(r), c = Array.from(
       /* @__PURE__ */ new Set([...Object.keys(a), ...Object.keys(o)])
-    ).sort(), p = c.map((h) => ({
+    ).sort(), u = c.map((h) => ({
       key: h,
       valA: a[h] ?? null,
       valB: o[h] ?? null
-    })).filter((h) => !this._diffOnly || h.valA === null || h.valB === null ? !0 : h.valA !== h.valB), u = c.reduce((h, f) => {
+    })).filter((h) => !this._diffOnly || h.valA === null || h.valB === null ? !0 : h.valA !== h.valB), p = c.reduce((h, f) => {
       const w = a[f] ?? null, j = o[f] ?? null;
       return w === null || j === null ? h + 1 : h + (w !== j ? 1 : 0);
     }, 0), m = r === y ? "" : !i || !n ? l` <em>
@@ -7294,10 +7402,10 @@ let S = class extends x {
       countB: Object.keys(o).length
     })}
         <strong
-          >${s("compare.summary_diffs", void 0, { n: u })}</strong
+          >${s("compare.summary_diffs", void 0, { n: p })}</strong
         >${m}
       </div>
-      ${p.length === 0 ? l`<div class="empty">
+      ${u.length === 0 ? l`<div class="empty">
             ${s("compare.no_diffs", void 0, { mode: d })}
           </div>` : l`
             <table>
@@ -7310,7 +7418,7 @@ let S = class extends x {
                 </tr>
               </thead>
               <tbody>
-                ${p.map((h) => this._renderRow(h.key, h.valA, h.valB))}
+                ${u.map((h) => this._renderRow(h.key, h.valA, h.valB))}
               </tbody>
             </table>
           `}
@@ -7322,7 +7430,7 @@ let S = class extends x {
       i ? "only-a" : "",
       n ? "only-b" : "",
       !i && !n && t !== r ? "diff" : ""
-    ].filter(Boolean).join(" "), p = t !== null && t !== r, u = r !== null && r !== t;
+    ].filter(Boolean).join(" "), u = t !== null && t !== r, p = r !== null && r !== t;
     return l`
       <tr class=${c}>
         <td class="var-cell">
@@ -7335,7 +7443,7 @@ let S = class extends x {
         <td class="actions">
           <button
             class="copy-btn"
-            ?disabled=${!u || this._busyCopy}
+            ?disabled=${!p || this._busyCopy}
             title=${r === null ? s("compare.copy_no_value", void 0, { side: "B" }) : s("compare.copy_tooltip", void 0, {
       from: this._sideB.selection?.theme_name ?? "",
       to: this._sideA.selection?.theme_name ?? ""
@@ -7346,7 +7454,7 @@ let S = class extends x {
           </button>
           <button
             class="copy-btn"
-            ?disabled=${!p || this._busyCopy}
+            ?disabled=${!u || this._busyCopy}
             title=${t === null ? s("compare.copy_no_value", void 0, { side: "A" }) : s("compare.copy_tooltip", void 0, {
       from: this._sideA.selection?.theme_name ?? "",
       to: this._sideB.selection?.theme_name ?? ""
@@ -7368,15 +7476,15 @@ let S = class extends x {
   async _copy(e, t, r, a) {
     const o = e === "A" ? this._sideA : this._sideB, i = t === "A" ? this._sideA : this._sideB;
     if (!o.selection || !i.selection) return;
-    const n = this._activeMode, d = this._modeLabel(n), p = !(n === y) && !i.modes.includes(n), u = s("compare.copy_confirm", void 0, {
+    const n = this._activeMode, d = this._modeLabel(n), u = !(n === y) && !i.modes.includes(n), p = s("compare.copy_confirm", void 0, {
       key: r,
       value: a,
       from: o.selection.theme_name,
       to: i.selection.theme_name,
       file: i.selection.file,
-      mode: d + (p ? ` ${s("compare.copy_confirm_new_mode")}` : "")
+      mode: d + (u ? ` ${s("compare.copy_confirm_new_mode")}` : "")
     });
-    if (!confirm(u)) return;
+    if (!confirm(p)) return;
     this._copyStatus = { state: "copying" };
     const m = this._mergeValue(i.full, n, r, a);
     try {
@@ -7407,11 +7515,11 @@ let S = class extends x {
    * Original-Key-Form (mit/ohne `--`-Prefix) bleibt erhalten falls schon da.
    */
   _mergeValue(e, t, r, a) {
-    const o = { ...e }, i = (u) => Object.keys(u).find((h) => (h.startsWith("--") ? h.slice(2) : h) === r) ?? r;
+    const o = { ...e }, i = (p) => Object.keys(p).find((h) => (h.startsWith("--") ? h.slice(2) : h) === r) ?? r;
     if (t === y)
       return o[i(o)] = a, o;
-    const n = o.modes, d = n && typeof n == "object" && !Array.isArray(n) ? { ...n } : {}, c = d[t], p = c && typeof c == "object" && !Array.isArray(c) ? { ...c } : {};
-    return p[i(p)] = a, d[t] = p, o.modes = d, o;
+    const n = o.modes, d = n && typeof n == "object" && !Array.isArray(n) ? { ...n } : {}, c = d[t], u = c && typeof c == "object" && !Array.isArray(c) ? { ...c } : {};
+    return u[i(u)] = a, d[t] = u, o.modes = d, o;
   }
 };
 S.styles = B`
@@ -7621,40 +7729,40 @@ S.styles = B`
       font-size: 0.85rem;
     }
   `;
-T([
+z([
   g({ attribute: !1 })
 ], S.prototype, "hass", 2);
-T([
+z([
   b()
 ], S.prototype, "_themes", 2);
-T([
+z([
   b()
 ], S.prototype, "_themesError", 2);
-T([
+z([
   b()
 ], S.prototype, "_themesLoading", 2);
-T([
+z([
   b()
 ], S.prototype, "_sideA", 2);
-T([
+z([
   b()
 ], S.prototype, "_sideB", 2);
-T([
+z([
   b()
 ], S.prototype, "_diffOnly", 2);
-T([
+z([
   b()
 ], S.prototype, "_copyStatus", 2);
-T([
+z([
   b()
 ], S.prototype, "_activeMode", 2);
-S = T([
+S = z([
   M("ts-compare-view")
 ], S);
-var uo = Object.defineProperty, mo = Object.getOwnPropertyDescriptor, Tt = (e, t, r, a) => {
+var po = Object.defineProperty, mo = Object.getOwnPropertyDescriptor, zt = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? mo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
-  return a && o && uo(t, r, o), o;
+  return a && o && po(t, r, o), o;
 };
 let xe = class extends x {
   constructor() {
@@ -7836,10 +7944,10 @@ xe.styles = B`
       font-size: 0.85rem;
     }
   `;
-Tt([
+zt([
   b()
 ], xe.prototype, "_log", 2);
-xe = Tt([
+xe = zt([
   M("ts-controls-demo")
 ], xe);
 var ho = Object.defineProperty, bo = Object.getOwnPropertyDescriptor, P = (e, t, r, a) => {
