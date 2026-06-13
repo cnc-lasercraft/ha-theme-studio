@@ -17,10 +17,18 @@ WS_GET_THEME: Final = "theme_studio/get_theme"
 WS_SAVE_THEME: Final = "theme_studio/save_theme"
 WS_FORK_THEME: Final = "theme_studio/fork_theme"
 WS_DELETE_THEME: Final = "theme_studio/delete_theme"
+WS_LIST_WWW_IMAGES: Final = "theme_studio/list_www_images"
 WS_LIST_HACS_REPOS: Final = "theme_studio/list_hacs_repos"
 WS_LIST_MODULES: Final = "theme_studio/list_modules"
 WS_GET_MODULE: Final = "theme_studio/get_module"
 WS_SAVE_MODULE: Final = "theme_studio/save_module"
+
+# www/-Verzeichnis (von HA unter /local/ serviert) für den HG-Bild-Picker.
+WWW_DIR: Final = "www"
+WWW_IMAGE_EXTS: Final = frozenset(
+    {".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".avif"}
+)
+WWW_IMAGE_LIMIT: Final = 500
 
 # Pfad zur HACS-Storage-Datei (relativ zu hass.config.path()).
 HACS_STORAGE_PATH: Final = ".storage/hacs.repositories"

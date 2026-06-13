@@ -39,8 +39,12 @@ from .const import (
     WS_LIST_HACS_REPOS,
     WS_LIST_MODULES,
     WS_LIST_THEMES,
+    WS_LIST_WWW_IMAGES,
     WS_SAVE_MODULE,
     WS_SAVE_THEME,
+    WWW_DIR,
+    WWW_IMAGE_EXTS,
+    WWW_IMAGE_LIMIT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -759,6 +763,82 @@ async def ws_list_hacs_repos(
     )
 
 
+# ─── www/-Bild-Picker ──────────────────────────────────────────────────
+
+
+def _www_root(hass: HomeAssistant) -> Path:
+    return Path(hass.config.path(WWW_DIR))
+
+
+def _scan_www_images(root: Path) -> tuple[list[dict[str, Any]], bool]:
+    """Listet Bilder unter www/ als /local/-URLs. Liefert (images, truncated).
+
+    HA serviert `<config>/www/` unter dem URL-Prefix `/local/`. Versteckte
+    Ordner/Dateien werden übersprungen, die Anzahl bei WWW_IMAGE_LIMIT gedeckelt
+    (truncated=True signalisiert dem Frontend, dass nicht alles gelistet ist).
+    """
+    found: list[dict[str, Any]] = []
+    truncated = False
+    if not root.exists():
+        return found, truncated
+
+    for path in sorted(root.rglob("*")):
+        if not path.is_file():
+            continue
+        if path.suffix.lower() not in WWW_IMAGE_EXTS:
+            continue
+        try:
+            rel = path.relative_to(root)
+        except ValueError:
+            continue
+        if any(part.startswith(".") for part in rel.parts):
+            continue
+        if len(found) >= WWW_IMAGE_LIMIT:
+            truncated = True
+            break
+        rel_str = str(rel).replace(os.sep, "/")
+        subdir = str(rel.parent).replace(os.sep, "/")
+        try:
+            size = path.stat().st_size
+        except OSError:
+            size = 0
+        found.append(
+            {
+                "url": f"/local/{rel_str}",
+                "name": path.name,
+                "dir": "" if subdir == "." else subdir,
+                "size": size,
+            }
+        )
+
+    return found, truncated
+
+
+@websocket_api.websocket_command({vol.Required("type"): WS_LIST_WWW_IMAGES})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_list_www_images(
+    hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]
+) -> None:
+    root = _www_root(hass)
+    try:
+        images, truncated = await hass.async_add_executor_job(
+            _scan_www_images, root
+        )
+    except Exception as exc:  # noqa: BLE001 — robust gegen FS-Fehler
+        _LOGGER.exception("list_www_images failed")
+        connection.send_error(msg["id"], "scan_failed", str(exc))
+        return
+    connection.send_result(
+        msg["id"],
+        {
+            "images": images,
+            "truncated": truncated,
+            "root_exists": root.exists(),
+        },
+    )
+
+
 @callback
 def async_register_websocket_api(hass: HomeAssistant) -> None:
     """Registriert alle Theme-Studio-WS-Commands."""
@@ -767,6 +847,7 @@ def async_register_websocket_api(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_save_theme)
     websocket_api.async_register_command(hass, ws_fork_theme)
     websocket_api.async_register_command(hass, ws_delete_theme)
+    websocket_api.async_register_command(hass, ws_list_www_images)
     websocket_api.async_register_command(hass, ws_list_hacs_repos)
     websocket_api.async_register_command(hass, ws_list_modules)
     websocket_api.async_register_command(hass, ws_get_module)

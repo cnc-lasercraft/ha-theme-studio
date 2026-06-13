@@ -164,3 +164,17 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 **Hinweis:** Steht bewusst im Kontrast zum v1.1-Ausschluss „Auto-Umschalten des aktiven Themes". Hier geht es nicht um automatisches Umschalten, sondern um eine **explizite, vom User ausgelöste** Default-Setzung, die HA selbst per UI nicht anbietet.
 
 **Erledigt 2026-06-13** (B7). Dark-Default separat setzen + Post-Fork-Hinweis bleiben optional offen.
+
+## v1.1 – HG-Bild File-Picker + var()-Guard (Baustein 8, ✓ erledigt)
+
+**Problem.** Hintergrund-Bilder mussten als `/local/…`-URL von Hand getippt werden — fehleranfällig, kein Überblick über vorhandene Bilder. Zusätzlich erzeugte der Background-Picker auf einer Referenz-Variable (`lovelace-background: var(--background-image)`) beim Bild-Setzen kaputtes CSS (`var(...) url(...)` = zwei Bilder im Shorthand → HA zeigt gar keinen HG).
+
+**Lösung.** Ein File-Picker, der `<config>/www/` (von HA unter `/local/` serviert) nach Bildern scannt, plus ein Guard für Referenz-Variablen.
+
+| Feature | Status | Commit |
+|---|---|---|
+| **Backend `list_www_images`:** scannt `www/` rekursiv nach Bildern (`jpg/jpeg/png/webp/gif/svg/avif`), liefert `/local/…`-URLs + Name + Subdir + Größe. Versteckte Ordner raus, Limit 500 mit `truncated`-Flag. | ✓ erledigt (B8) | — |
+| **🖼 Durchsuchen-Button im Background-Picker:** Thumbnail-Grid der www/-Bilder (lazy geladen), Klick setzt die URL (behält Modifier, Default „cover"). Manuelles URL-Feld + externe URLs bleiben. `hass` wird an den Control durchgereicht. | ✓ erledigt (B8) | — |
+| **var()-Referenz-Guard:** Variablen mit `var(...)`-Wert (z.B. `lovelace-background`) zeigen statt URL/Browse eine Warnung + Raw-Editor — kein blindes Anhängen mehr. Bild gehört an die Ziel-Variable (`background-image` im Mode). | ✓ erledigt (B8) | — |
+
+**Erledigt 2026-06-13** (B8). Live verifiziert (HG huegel-nebel-sw.jpg gesetzt, kaputte `lovelace-background`-Zeile eines Test-Themes repariert).

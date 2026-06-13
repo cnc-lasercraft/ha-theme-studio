@@ -1625,6 +1625,7 @@ export class TsEditorView extends LitElement {
         return html`
           <ts-background-picker
             .value=${row.current}
+            .hass=${this.hass}
             @value-changed=${onChange}
           ></ts-background-picker>
         `;

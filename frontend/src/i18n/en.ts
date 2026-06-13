@@ -210,4 +210,12 @@ export const messages: Record<string, string> = {
   "bg.preset_tile_tooltip": "Repeat image (pattern)",
   "bg.clear": "Clear",
   "bg.clear_tooltip": "Set to 'none' — no background image",
+  "bg.browse": "Browse…",
+  "bg.browse_tooltip": "Pick an image from www/ (served under /local/)",
+  "bg.browse_loading": "Loading images from www/…",
+  "bg.browse_empty": "No images found in www/. Drop images into <config>/www/.",
+  "bg.browse_count": "{n} images in www/",
+  "bg.browse_truncated": "truncated (limit reached)",
+  "bg.var_ref_notice":
+    "This variable references another one (var(...)) — it holds no image. Set the background image on the target variable (e.g. background-image in light/dark mode). Edit here manually only.",
 };
