@@ -14,3 +14,6 @@ __pycache__/
 .idea/
 .vscode/
 ._*
+# Synology NAS Thumbnail-Artefakte (Arbeitsverzeichnis liegt auf NAS-Volume)
+@eaDir/
+*SYNOFILE*
