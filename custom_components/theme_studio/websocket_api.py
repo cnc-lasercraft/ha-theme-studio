@@ -30,7 +30,9 @@ from .const import (
     HACS_STORAGE_PATH,
     MODULES_BACKUPS_DIR,
     MODULES_DIR,
+    REGISTRY_FILE,
     THEMES_DIR,
+    WS_DELETE_THEME,
     WS_FORK_THEME,
     WS_GET_MODULE,
     WS_GET_THEME,
@@ -101,12 +103,47 @@ def _safe_join(root: Path, filename: str) -> Path:
     return candidate
 
 
+def _registry_path(root: Path) -> Path:
+    return root / REGISTRY_FILE
+
+
+def _load_registry(root: Path) -> dict[str, Any]:
+    """Liest die Fork-Registry (`forks`-Mapping). {} bei fehlender/defekter Datei."""
+    path = _registry_path(root)
+    if not path.exists():
+        return {}
+    try:
+        with path.open("r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, json.JSONDecodeError):
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    forks = data.get("forks")
+    return forks if isinstance(forks, dict) else {}
+
+
+def _save_registry(root: Path, forks: dict[str, Any]) -> None:
+    """Schreibt die Fork-Registry atomar (tmp + rename)."""
+    path = _registry_path(root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with tmp.open("w", encoding="utf-8") as fh:
+        json.dump({"forks": forks}, fh, indent=2, ensure_ascii=False)
+    os.replace(tmp, path)
+
+
 def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Walk themes-dir, liefert (themes, errors). Backups-Dir wird übersprungen."""
     found: list[dict[str, Any]] = []
     errors: list[dict[str, Any]] = []
     if not root.exists():
         return found, errors
+
+    # Fork-Registry: nur top-level Dateien, die hier verzeichnet sind, gelten
+    # als echte (löschbare) Forks. Orphan-Einträge (Datei fehlt) tauchen im
+    # Scan gar nicht auf → is_fork bleibt automatisch korrekt.
+    forks = _load_registry(root)
 
     for path in sorted(root.rglob("*.yaml")):
         try:
@@ -132,6 +169,7 @@ def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
         # daher als potenziell HACS-verwaltet → Frontend zeigt Badge +
         # Fork-Guard. Eigene/abgeleitete Themes leben top-level.
         hacs_managed = len(rel.parts) > 1
+        is_fork = len(rel.parts) == 1 and str(rel) in forks
 
         for theme_name, theme_data in data.items():
             if not isinstance(theme_data, dict):
@@ -142,6 +180,7 @@ def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
                     "theme_name": theme_name,
                     "variable_count": len(theme_data),
                     "hacs_managed": hacs_managed,
+                    "is_fork": is_fork,
                 }
             )
 
@@ -323,6 +362,10 @@ async def ws_save_theme(
         # Vollständiger Theme-Inhalt der in die neue Datei geschrieben wird
         # (vom Frontend gemergter Editier-Stand). Werte frei wie bei save_theme.
         vol.Required("variables"): dict,
+        # Herkunft (nur für die Registry / späteren Upstream-Merge — nicht für
+        # den Inhalt). Optional, damit ältere Clients weiter funktionieren.
+        vol.Optional("source_file"): str,
+        vol.Optional("source_theme"): str,
     }
 )
 @websocket_api.require_admin
@@ -342,6 +385,8 @@ async def ws_fork_theme(
     root = _themes_root(hass)
     new_name: str = msg["new_name"].strip()
     variables: dict[str, Any] = msg["variables"]
+    source_file: str | None = msg.get("source_file")
+    source_theme: str | None = msg.get("source_theme")
 
     slug = _slugify(new_name)
     if not new_name or not slug:
@@ -367,6 +412,16 @@ async def ws_fork_theme(
             raise FileExistsError(f"file {target_rel!r} already exists")
         root.mkdir(parents=True, exist_ok=True)
         _dump_file(target_path, {new_name: dict(variables)})
+        # Fork-Marker in der Registry → macht das Theme löschbar und hält die
+        # Herkunft fest (für späteren Upstream-Merge Fork ↔ HACS-Quelle).
+        forks = _load_registry(root)
+        forks[target_rel] = {
+            "new_name": new_name,
+            "source_file": source_file,
+            "source_theme": source_theme,
+            "created": datetime.now().isoformat(timespec="seconds"),
+        }
+        _save_registry(root, forks)
 
     try:
         await hass.async_add_executor_job(_do_fork)
@@ -387,6 +442,82 @@ async def ws_fork_theme(
     connection.send_result(
         msg["id"],
         {"file": target_rel, "theme_name": new_name},
+    )
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_DELETE_THEME,
+        vol.Required("file"): vol.All(str, _validate_path),
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_delete_theme(
+    hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]
+) -> None:
+    """Löscht ein abgeleitetes Theme — NUR echte Forks (in der Registry).
+
+    Doppelt abgesichert: muss eine Top-Level-Datei sein (nie ein HACS-
+    Unterordner) UND in der Fork-Registry stehen. Statt hartem Löschen wird die
+    Datei nach `.backups/` gesichert und dann entfernt → reversibel. Der
+    Registry-Eintrag wird mitentfernt. HACS-Quellen werden nie angefasst.
+    """
+    root = _themes_root(hass)
+    file_rel: str = msg["file"]
+
+    try:
+        target_path = _safe_join(root, file_rel)
+    except ValueError as exc:
+        connection.send_error(msg["id"], "invalid_path", str(exc))
+        return
+
+    def _do_delete() -> str | None:
+        # Guard 1: nur Top-Level — ein Unterordner wäre (potenziell) HACS.
+        if len(Path(file_rel).parts) != 1:
+            raise PermissionError(
+                f"{file_rel!r} is not a top-level theme — refusing"
+            )
+        forks = _load_registry(root)
+        # Guard 2: muss ein verzeichneter Fork sein.
+        if file_rel not in forks:
+            raise PermissionError(
+                f"{file_rel!r} is not a Theme-Studio fork — refusing"
+            )
+        if not target_path.exists():
+            # Registry-Leiche: Datei manuell weg → Eintrag aufräumen.
+            del forks[file_rel]
+            _save_registry(root, forks)
+            raise FileNotFoundError(f"{file_rel!r} does not exist")
+        # Reversibel: erst Backup-Kopie, dann Original entfernen.
+        backup_rel = _backup(root, file_rel)
+        target_path.unlink()
+        del forks[file_rel]
+        _save_registry(root, forks)
+        return backup_rel
+
+    try:
+        backup_rel = await hass.async_add_executor_job(_do_delete)
+    except PermissionError as exc:
+        connection.send_error(msg["id"], "not_a_fork", str(exc))
+        return
+    except FileNotFoundError as exc:
+        connection.send_error(msg["id"], "not_found", str(exc))
+        return
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        _LOGGER.exception("delete_theme failed for %s", file_rel)
+        connection.send_error(msg["id"], "delete_failed", str(exc))
+        return
+
+    # HA bekanntmachen, dass das Theme weg ist.
+    try:
+        await hass.services.async_call("frontend", "reload_themes", blocking=False)
+    except Exception:  # noqa: BLE001 — Reload-Fehler darf das Delete nicht versenken
+        _LOGGER.exception("frontend.reload_themes failed after delete")
+
+    connection.send_result(
+        msg["id"],
+        {"file": file_rel, "backup": backup_rel},
     )
 
 
@@ -635,6 +766,7 @@ def async_register_websocket_api(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_get_theme)
     websocket_api.async_register_command(hass, ws_save_theme)
     websocket_api.async_register_command(hass, ws_fork_theme)
+    websocket_api.async_register_command(hass, ws_delete_theme)
     websocket_api.async_register_command(hass, ws_list_hacs_repos)
     websocket_api.async_register_command(hass, ws_list_modules)
     websocket_api.async_register_command(hass, ws_get_module)

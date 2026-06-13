@@ -24,6 +24,9 @@ export const messages: Record<string, string> = {
   "picker.badge_hacs_title":
     "HACS-managed — updates overwrite your changes. On save, Studio offers to derive your own theme.",
   "picker.badge_own": "Own",
+  "picker.delete_tooltip": "Delete this derived theme (backup kept)",
+  "picker.delete_confirm":
+    "Delete derived theme '{theme}'?\n\nA backup is written to themes/.backups/ — this is reversible.",
 
   // module-picker
   "module_picker.loading": "Loading modules…",

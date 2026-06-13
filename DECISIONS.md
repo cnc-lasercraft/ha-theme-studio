@@ -35,3 +35,9 @@ Modularität ab v0.1 eingebaut, nicht nachgerüstet. Der Core kennt nur Schemas,
 
 ## D10 – Theme-Picker als Start-Flow + Heuristik-Fallback
 Studio öffnet auf einer Theme-Auswahl, nicht einem leeren Editor. Editor funktioniert ab v0.1 für **jedes** Theme im `themes/`-Verzeichnis. Variablen ohne Plugin-Schema bekommen über Namens-Heuristik (`-color`, `-radius`, `-family`, `-shadow`, …) den passenden Control, im Notfall einen Raw-Text-Input. So ist Studio nicht auf visionOS oder bekannte Themes beschränkt.
+
+## D11 – Theme-Löschen: nur echte Forks, via Sidecar-Registry (v1.1, Baustein 6)
+Studio kann abgeleitete Themes löschen — aber **nur per Theme Studio erzeugte Forks**, nie HACS-Themes (Unterordner) und nie handgemachte Top-Level-Themes.
+- **Erkennung über Sidecar-Registry** `themes/.theme_studio.json` (`{forks: {<datei>: {source_file, source_theme, new_name, created}}}`), **nicht** über einen Marker-Key im Theme-YAML. Begründung: HA macht aus jedem Theme-Key automatisch eine CSS-Variable — ein In-YAML-Marker (`_theme_studio_fork`) würde zu `--_theme_studio_fork` und müsste überall ausgeblendet werden. Die Registry hält das Theme-YAML 100 % sauber und speichert zusätzlich die Herkunft → Voraussetzung für den späteren Upstream-Merge (Fork ↔ HACS-Quelle).
+- **Reversibel + doppelt abgesichert** (D5): `delete_theme` verlangt Top-Level **und** Registry-Eintrag, sichert die Datei nach `.backups/` und entfernt erst dann das Original + den Registry-Eintrag. HACS-Quellen werden nie angefasst.
+- **Selbstheilend:** Registry-Einträge ohne existierende Datei werden ignoriert (Scan markiert nur vorhandene Dateien als `is_fork`).

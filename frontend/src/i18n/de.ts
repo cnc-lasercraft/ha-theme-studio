@@ -25,6 +25,9 @@ export const messages: Record<string, string> = {
   "picker.badge_hacs_title":
     "HACS-verwaltet — Updates überschreiben deine Änderungen. Studio bietet beim Speichern an, ein eigenes Theme abzuleiten.",
   "picker.badge_own": "Eigen",
+  "picker.delete_tooltip": "Dieses abgeleitete Theme löschen (Backup bleibt)",
+  "picker.delete_confirm":
+    "Abgeleitetes Theme '{theme}' löschen?\n\nEine Sicherung wird unter themes/.backups/ angelegt — der Schritt ist reversibel.",
 
   // module-picker
   "module_picker.loading": "Lade Module…",

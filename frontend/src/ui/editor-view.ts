@@ -840,6 +840,9 @@ export class TsEditorView extends LitElement {
           type: "theme_studio/fork_theme",
           new_name: trimmed,
           variables: merged,
+          // Herkunft für die Fork-Registry (Marker + späterer Upstream-Merge).
+          source_file: this.file,
+          source_theme: this.themeName,
         });
       this._saveStatus = {
         state: "forked",

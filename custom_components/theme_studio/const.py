@@ -7,11 +7,16 @@ DOMAIN: Final = "theme_studio"
 
 THEMES_DIR: Final = "themes"
 BACKUPS_DIR: Final = ".backups"
+# Sidecar-Registry: hält pro abgeleitetem Theme {source, created}. Nur hier
+# verzeichnete Top-Level-Themes gelten als echte Forks und sind löschbar.
+# Theme-YAMLs bleiben dadurch unangetastet sauber.
+REGISTRY_FILE: Final = ".theme_studio.json"
 
 WS_LIST_THEMES: Final = "theme_studio/list_themes"
 WS_GET_THEME: Final = "theme_studio/get_theme"
 WS_SAVE_THEME: Final = "theme_studio/save_theme"
 WS_FORK_THEME: Final = "theme_studio/fork_theme"
+WS_DELETE_THEME: Final = "theme_studio/delete_theme"
 WS_LIST_HACS_REPOS: Final = "theme_studio/list_hacs_repos"
 WS_LIST_MODULES: Final = "theme_studio/list_modules"
 WS_GET_MODULE: Final = "theme_studio/get_module"

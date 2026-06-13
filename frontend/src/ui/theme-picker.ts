@@ -10,6 +10,14 @@ interface ThemeEntry {
   // Backend-Heuristik: Datei liegt in einem Unterordner von themes/ →
   // potenziell HACS-verwaltet (HACS installiert Themes immer in Subdir).
   hacs_managed: boolean;
+  // In der Fork-Registry verzeichnet (= per Theme Studio abgeleitet).
+  // Nur solche Themes sind löschbar.
+  is_fork: boolean;
+}
+
+interface DeleteThemeResult {
+  file: string;
+  backup: string | null;
 }
 
 interface ThemeError {
@@ -30,6 +38,8 @@ export class ThemePicker extends LitElement {
   @state() private _themes: ThemeEntry[] = [];
   @state() private _errors: ThemeError[] = [];
   @state() private _loadError: string | null = null;
+  @state() private _actionError: string | null = null;
+  @state() private _deleting: string | null = null;
 
   static override styles = css`
     :host {
@@ -46,6 +56,11 @@ export class ThemePicker extends LitElement {
       flex-direction: column;
       gap: 8px;
     }
+    .row {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+    }
     .item {
       display: flex;
       align-items: center;
@@ -56,11 +71,45 @@ export class ThemePicker extends LitElement {
       box-shadow: var(--ha-card-box-shadow, 0 2px 4px rgba(0, 0, 0, 0.08));
       cursor: pointer;
       text-align: left;
-      width: 100%;
+      flex: 1;
+      min-width: 0;
       border: none;
       color: inherit;
       font: inherit;
       transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .delete-btn {
+      flex-shrink: 0;
+      width: 48px;
+      border: none;
+      border-radius: var(--ha-card-border-radius, 12px);
+      background: var(--card-background-color);
+      box-shadow: var(--ha-card-box-shadow, 0 2px 4px rgba(0, 0, 0, 0.08));
+      color: var(--secondary-text-color);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.1s ease, background 0.1s ease;
+    }
+    .delete-btn:hover {
+      color: var(--error-color, #db4437);
+      background: rgba(219, 68, 55, 0.08);
+    }
+    .delete-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .delete-btn:focus-visible {
+      outline: 2px solid var(--error-color, #db4437);
+      outline-offset: 2px;
+    }
+    .action-error {
+      margin-bottom: 12px;
+      padding: 10px 16px;
+      border-radius: 4px;
+      background: rgba(219, 68, 55, 0.1);
+      border-left: 4px solid var(--error-color, #db4437);
+      color: var(--error-color, #db4437);
+      font-size: 0.9rem;
     }
     .item:hover {
       transform: translateY(-1px);
@@ -174,39 +223,56 @@ export class ThemePicker extends LitElement {
     }
     return html`
       <h2>${t("picker.heading")}</h2>
+      ${this._actionError
+        ? html`<div class="action-error">
+            ${t("common.error_prefix")}: ${this._actionError}
+          </div>`
+        : ""}
       ${this._themes.length === 0
         ? html`<div class="empty">${t("picker.empty")}</div>`
         : html`
             <div class="list">
               ${this._themes.map(
                 (theme) => html`
-                  <button
-                    class="item"
-                    @click=${() => this._select(theme)}
-                    title=${theme.file}
-                  >
-                    <div class="info">
-                      <div class="name">
-                        ${theme.theme_name}
-                        ${theme.hacs_managed
-                          ? html`<span
-                              class="badge hacs"
-                              title=${t("picker.badge_hacs_title")}
-                              >${t("picker.badge_hacs")}</span
-                            >`
-                          : html`<span class="badge own"
-                              >${t("picker.badge_own")}</span
-                            >`}
+                  <div class="row">
+                    <button
+                      class="item"
+                      @click=${() => this._select(theme)}
+                      title=${theme.file}
+                    >
+                      <div class="info">
+                        <div class="name">
+                          ${theme.theme_name}
+                          ${theme.hacs_managed
+                            ? html`<span
+                                class="badge hacs"
+                                title=${t("picker.badge_hacs_title")}
+                                >${t("picker.badge_hacs")}</span
+                              >`
+                            : html`<span class="badge own"
+                                >${t("picker.badge_own")}</span
+                              >`}
+                        </div>
+                        <div class="meta">
+                          ${theme.file} ·
+                          ${t("picker.var_count", undefined, {
+                            n: theme.variable_count,
+                          })}
+                        </div>
                       </div>
-                      <div class="meta">
-                        ${theme.file} ·
-                        ${t("picker.var_count", undefined, {
-                          n: theme.variable_count,
-                        })}
-                      </div>
-                    </div>
-                    <div class="arrow">→</div>
-                  </button>
+                      <div class="arrow">→</div>
+                    </button>
+                    ${theme.is_fork
+                      ? html`<button
+                          class="delete-btn"
+                          ?disabled=${this._deleting !== null}
+                          title=${t("picker.delete_tooltip")}
+                          @click=${() => this._deleteFork(theme)}
+                        >
+                          ${this._deleting === theme.file ? "…" : "🗑"}
+                        </button>`
+                      : ""}
+                  </div>
                 `,
               )}
             </div>
@@ -238,6 +304,32 @@ export class ThemePicker extends LitElement {
         composed: true,
       }),
     );
+  }
+
+  /**
+   * Löscht einen abgeleiteten Fork. Backend akzeptiert nur Registry-Forks und
+   * verschiebt die Datei reversibel nach .backups/. Nach Erfolg Liste neu laden.
+   */
+  private async _deleteFork(theme: ThemeEntry) {
+    if (this._deleting !== null) return;
+    const ok = window.confirm(
+      t("picker.delete_confirm", undefined, { theme: theme.theme_name }),
+    );
+    if (!ok) return;
+
+    this._actionError = null;
+    this._deleting = theme.file;
+    try {
+      await this.hass.connection.sendMessagePromise<DeleteThemeResult>({
+        type: "theme_studio/delete_theme",
+        file: theme.file,
+      });
+      await this._load();
+    } catch (err) {
+      this._actionError = err instanceof Error ? err.message : String(err);
+    } finally {
+      this._deleting = null;
+    }
   }
 }
 
