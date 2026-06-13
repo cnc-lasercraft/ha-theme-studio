@@ -116,6 +116,8 @@ Backend lebt unter `custom_components/theme_studio/` (Python). WS-Commands: sieh
 
 Re-Deploy-Cheatsheet (für Tests auf einer Live-HA): [`CLAUDE.md`](./CLAUDE.md) → "Deployment auf den HA-Host".
 
+**HACS-Default-Katalog-Submission:** vollständige Schritt-für-Schritt-Anleitung mit allen Stolperfallen in [`docs/HACS_DEFAULT_SUBMISSION.md`](./docs/HACS_DEFAULT_SUBMISSION.md).
+
 ## Architektur
 
 Lit/TypeScript Custom Panel + Python Custom Integration (Backend für File-I/O + HACS-Detection), erweiterbar via JSON-Schema-Plugins pro Card-Sammlung.
