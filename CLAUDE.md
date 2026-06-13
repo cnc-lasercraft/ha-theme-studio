@@ -26,9 +26,9 @@ Globale HA-Wissensbasis: `/Volumes/Daten/ClaudeCode/ha_quirks.md` – konsultier
 
 Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – konsultieren bei Automation/Helper/Dashboard-Themen.
 
-## Aktueller Stand (Stand: 2026-05-28)
+## Aktueller Stand (Stand: 2026-06-13)
 
-**v1.0.4 live.** Tag `v1.0.4`, HACS-tauglich. Läuft auf der Produktiv-HA des Users.
+**v1.1.4 live.** Tag `v1.1.4`. **HACS-Default-PR `hacs/default#8473` eingereicht** (alle Checks grün, Maintainer-Review pending). Submission-Playbook: [`docs/HACS_DEFAULT_SUBMISSION.md`](./docs/HACS_DEFAULT_SUBMISSION.md). ⚠️ **Prod-HA läuft noch auf Stand vor v1.1.1** (Packaging-Fixes funktional identisch — Host-Deploy v1.1.4 optional offen).
 
 **v1.0 Basis-Featureset:**
 - Custom-Panel "Theme Studio" in der Sidebar (`/theme-studio`)
@@ -46,7 +46,17 @@ Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – 
 - **v1.0.3** — Error-Handling Quick-Wins (`beforeunload`-Schutz, HACS-Detection-Fehler im UI sichtbar, Backend-Logging-Symmetrie, typisierte Compare-Status-Union)
 - **v1.0.4** — i18n DE+EN: `frontend/src/core/i18n.ts` + `frontend/src/i18n/{de,en}.ts`, Locale-Detection aus `hass.language`. Alle UI-Strings + alle Plugin-Schema-Descriptions + Category-Labels über `*_en`-Felder übersetzt (44 label_en + 332 description_en). `getVariableMeta()` + neuer `getCategoryLabel()` locale-aware.
 
-**Offen für v1.0.x / v1.1+:** HACS-Default-Katalog-PR, Audit-Items (Schema-Validation, Backup-Race, Custom-Modal, Retry-Buttons), i18n-Erweiterungen (weitere Sprachen, User-Sprach-Override, Live-Switching). Siehe ROADMAP.md.
+**v1.1 — Fork-Guard / Copy-on-write (Bausteine 4–9, alle live):**
+- **B4** Picker-Badges HACS / Eigen / Default
+- **B5** Fork-on-Save + Proaktiv-Fork — HACS-Themes werden nie still zurückgeschrieben (Update würde überschreiben), sondern in ein eigenes Top-Level-Theme abgeleitet (`themes/<slug>.yaml`, update-sicher). `ws_fork_theme` nimmt `new_name` + `variables` (Frontend-Merge)
+- **B6** Fork löschen via Sidecar-Registry `themes/.theme_studio.json` (nur echte Forks, reversibel nach `.backups/`) — siehe DECISIONS D11
+- **B7** Default-Theme aus dem Panel setzen (`frontend.set_theme`, HA hat dafür keine eigene UI)
+- **B8** HG-Bild File-Picker aus `www/` (`list_www_images`-WS, Thumbnail-Grid) + var()-Guard
+- **B9** Upstream-Merge: ⇄-Button → Compare-View A=Fork/B=Upstream + Mode-Diff-Badges + Cross-Mode-Hinweis
+
+**Packaging-Patches v1.1.1–v1.1.4** (für HACS-Default): Brand-Assets lokal in `custom_components/theme_studio/brand/`, Plugin-Metadaten `manifest.json`→**`plugin.json`** (HACS verlangt repoweit genau 1 `manifest.json`), `http` in dependencies, `CONFIG_SCHEMA`, manifest-Keys sortiert, `validate.yml`.
+
+**Offen:** HACS-PR #8473 verfolgen; Host-Deploy v1.1.4 (optional); Audit-Items (Schema-Validation, Backup-Race, Custom-Modal statt confirm/prompt, Retry-Buttons); i18n-Erweiterungen; optional Dark-Default separat + Post-Fork-„Als Default?"-Hinweis. Siehe ROADMAP.md.
 
 ## Deployment auf den HA-Host
 
