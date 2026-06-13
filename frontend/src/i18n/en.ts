@@ -24,6 +24,8 @@ export const messages: Record<string, string> = {
   "picker.badge_hacs_title":
     "HACS-managed — updates overwrite your changes. On save, Studio offers to derive your own theme.",
   "picker.badge_own": "Own",
+  "picker.badge_default": "Default",
+  "picker.badge_default_title": "Home Assistant's global default theme",
   "picker.delete_tooltip": "Delete this derived theme (backup kept)",
   "picker.delete_confirm":
     "Delete derived theme '{theme}'?\n\nA backup is written to themes/.backups/ — this is reversible.",
@@ -179,6 +181,14 @@ export const messages: Record<string, string> = {
   "editor.fork_prompt_save":
     "'{theme}' is HACS-managed — a direct save would be overwritten by the next HACS update.\n\nYour changes are derived into your own theme instead. Name of the new theme:",
   "editor.fork_success": "Derived into your own theme: '{theme}'",
+  // editor — set default theme (v1.1)
+  "editor.set_default": "Set as default",
+  "editor.set_default_tooltip":
+    "Set this theme as Home Assistant's global default theme (frontend.set_theme)",
+  "editor.setting_default": "Setting…",
+  "editor.is_default": "Default theme",
+  "editor.is_default_tooltip": "This theme is already the global default theme",
+  "editor.set_default_failed": "Setting default failed",
 
   // preview-pane
   "preview.label": "Preview",

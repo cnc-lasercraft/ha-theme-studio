@@ -144,6 +144,11 @@ export class TsEditorView extends LitElement {
   @state() private _modes: string[] = [DEFAULT_MODE];
   @state() private _showPreview = false;
   @state() private _previewSrc = "/lovelace/0";
+  // Default-Theme setzen (frontend.set_theme). _defaultJustSet = optimistisch,
+  // bis hass.themes.default_theme nachzieht; bei Theme-Wechsel zurückgesetzt.
+  @state() private _settingDefault = false;
+  @state() private _defaultJustSet = false;
+  @state() private _defaultError: string | null = null;
 
   private _appliedVars = new Set<string>();
   private _originalFullTheme: Record<string, unknown> = {};
@@ -223,6 +228,34 @@ export class TsEditorView extends LitElement {
     .danger-btn[disabled] {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+    .default-btn {
+      background: none;
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      border-radius: 6px;
+      padding: 8px 14px;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+      font-size: 0.9rem;
+    }
+    .default-btn:hover:not([disabled]) {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+    }
+    .default-btn.is-default {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      opacity: 1;
+      cursor: default;
+    }
+    .default-error {
+      padding: 10px 16px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      background: rgba(219, 68, 55, 0.1);
+      border-left: 4px solid var(--error-color, #db4437);
+      color: var(--error-color, #db4437);
+      font-size: 0.9rem;
     }
     .breadcrumb {
       flex: 1;
@@ -565,6 +598,8 @@ export class TsEditorView extends LitElement {
       this._activeTab = IN_THEME_TAB;
       this._activeMode = DEFAULT_MODE;
       this._modes = [DEFAULT_MODE];
+      this._defaultJustSet = false;
+      this._defaultError = null;
       this._load();
     }
   }
@@ -1152,6 +1187,70 @@ export class TsEditorView extends LitElement {
     return byMode.filter((r) => r.meta.plugin === this._activeTab);
   }
 
+  /** Ist das aktuell editierte Theme das globale Default-Theme? */
+  private _isDefault(): boolean {
+    if (this._defaultJustSet) return true;
+    return (
+      !!this.themeName && this.hass?.themes?.default_theme === this.themeName
+    );
+  }
+
+  /**
+   * Setzt das aktuelle Theme als globales Default (frontend.set_theme).
+   * HA bietet dafür keine eigene UI. Setzt nur das allgemeine Default
+   * (`frontend_default_theme`) — Themes mit eigenen modes.light/dark werden
+   * von HA passend angewandt.
+   */
+  private async _setDefault() {
+    if (this._isDefault() || this._settingDefault || !this.themeName) return;
+    this._settingDefault = true;
+    this._defaultError = null;
+    try {
+      await this.hass.connection.sendMessagePromise({
+        type: "call_service",
+        domain: "frontend",
+        service: "set_theme",
+        service_data: { name: this.themeName },
+      });
+      this._defaultJustSet = true;
+    } catch (err) {
+      this._defaultError = err instanceof Error ? err.message : String(err);
+    } finally {
+      this._settingDefault = false;
+    }
+  }
+
+  private _renderDefaultBtn() {
+    if (this._loading || this._error) return "";
+    const isDefault = this._isDefault();
+    return html`
+      <button
+        class="default-btn ${isDefault ? "is-default" : ""}"
+        ?disabled=${isDefault || this._settingDefault}
+        @click=${this._setDefault}
+        title=${isDefault
+          ? t("editor.is_default_tooltip")
+          : t("editor.set_default_tooltip")}
+      >
+        ${isDefault ? "★" : "☆"}
+        ${this._settingDefault
+          ? t("editor.setting_default")
+          : isDefault
+            ? t("editor.is_default")
+            : t("editor.set_default")}
+      </button>
+    `;
+  }
+
+  private _renderDefaultError() {
+    if (!this._defaultError) return "";
+    return html`
+      <div class="default-error">
+        ✗ ${t("editor.set_default_failed")}: ${this._defaultError}
+      </div>
+    `;
+  }
+
   // ─── Rendering ──────────────────────────────────────────────────────
 
   override render() {
@@ -1164,7 +1263,7 @@ export class TsEditorView extends LitElement {
           <div class="theme-name">${this.themeName}</div>
           <code>${this.file}</code>
         </div>
-        ${this._renderDirtyBadge()}
+        ${this._renderDirtyBadge()} ${this._renderDefaultBtn()}
         <button
           class="preview-toggle ${this._showPreview ? "active" : ""}"
           @click=${this._togglePreview}
@@ -1204,8 +1303,8 @@ export class TsEditorView extends LitElement {
                 : t("common.save")}
         </button>
       </div>
-      ${this._renderHacsNotice()} ${this._renderModeBar()}
-      ${this._renderTabs()} ${this._renderSaveStatus()}
+      ${this._renderDefaultError()} ${this._renderHacsNotice()}
+      ${this._renderModeBar()} ${this._renderTabs()} ${this._renderSaveStatus()}
       <div class="body-grid ${this._showPreview ? "with-preview" : ""}">
         <div class="editor-col">${this._renderBody()}</div>
         ${this._showPreview

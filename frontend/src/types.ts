@@ -14,6 +14,10 @@ export interface HomeAssistant {
   language: string;
   themes: {
     darkMode: boolean;
+    // Globales Default-Theme (HA hat dafür keine eigene UI — nur der
+    // frontend.set_theme-Service). Theme-Name, nicht Dateiname.
+    default_theme?: string;
+    default_dark_theme?: string | null;
   };
 }
 

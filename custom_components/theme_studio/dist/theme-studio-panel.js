@@ -3,7 +3,7 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const ce = globalThis, ze = ce.ShadowRoot && (ce.ShadyCSS === void 0 || ce.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Pe = Symbol(), He = /* @__PURE__ */ new WeakMap();
+const de = globalThis, ze = de.ShadowRoot && (de.ShadyCSS === void 0 || de.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Pe = Symbol(), He = /* @__PURE__ */ new WeakMap();
 let Ze = class {
   constructor(t, r, a) {
     if (this._$cssResult$ = !0, a !== Pe) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
@@ -22,7 +22,7 @@ let Ze = class {
     return this.cssText;
   }
 };
-const Dt = (e) => new Ze(typeof e == "string" ? e : e + "", void 0, Pe), B = (e, ...t) => {
+const Et = (e) => new Ze(typeof e == "string" ? e : e + "", void 0, Pe), B = (e, ...t) => {
   const r = e.length === 1 ? e[0] : t.reduce((a, o, i) => a + ((n) => {
     if (n._$cssResult$ === !0) return n.cssText;
     if (typeof n == "number") return n;
@@ -32,23 +32,23 @@ const Dt = (e) => new Ze(typeof e == "string" ? e : e + "", void 0, Pe), B = (e,
 }, Ht = (e, t) => {
   if (ze) e.adoptedStyleSheets = t.map((r) => r instanceof CSSStyleSheet ? r : r.styleSheet);
   else for (const r of t) {
-    const a = document.createElement("style"), o = ce.litNonce;
+    const a = document.createElement("style"), o = de.litNonce;
     o !== void 0 && a.setAttribute("nonce", o), a.textContent = r.cssText, e.appendChild(a);
   }
 }, Re = ze ? (e) => e : (e) => e instanceof CSSStyleSheet ? ((t) => {
   let r = "";
   for (const a of t.cssRules) r += a.cssText;
-  return Dt(r);
+  return Et(r);
 })(e) : e;
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: Rt, defineProperty: Ft, getOwnPropertyDescriptor: Ot, getOwnPropertyNames: Lt, getOwnPropertySymbols: Gt, getPrototypeOf: It } = Object, F = globalThis, Fe = F.trustedTypes, Ut = Fe ? Fe.emptyScript : "", Nt = F.reactiveElementPolyfillSupport, Q = (e, t) => e, me = { toAttribute(e, t) {
+const { is: Rt, defineProperty: Ft, getOwnPropertyDescriptor: Ot, getOwnPropertyNames: Lt, getOwnPropertySymbols: Gt, getPrototypeOf: It } = Object, F = globalThis, Fe = F.trustedTypes, Nt = Fe ? Fe.emptyScript : "", Ut = F.reactiveElementPolyfillSupport, Q = (e, t) => e, me = { toAttribute(e, t) {
   switch (t) {
     case Boolean:
-      e = e ? Ut : null;
+      e = e ? Nt : null;
       break;
     case Object:
     case Array:
@@ -73,7 +73,7 @@ const { is: Rt, defineProperty: Ft, getOwnPropertyDescriptor: Ot, getOwnProperty
       }
   }
   return r;
-} }, Ee = (e, t) => !Rt(e, t), Oe = { attribute: !0, type: String, converter: me, reflect: !1, useDefault: !1, hasChanged: Ee };
+} }, De = (e, t) => !Rt(e, t), Oe = { attribute: !0, type: String, converter: me, reflect: !1, useDefault: !1, hasChanged: De };
 Symbol.metadata ?? (Symbol.metadata = Symbol("metadata")), F.litPropertyMetadata ?? (F.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
 let W = class extends HTMLElement {
   static addInitializer(t) {
@@ -95,8 +95,8 @@ let W = class extends HTMLElement {
       this[r] = n;
     } };
     return { get: o, set(n) {
-      const d = o?.call(this);
-      i?.call(this, n), this.requestUpdate(t, d, a);
+      const c = o?.call(this);
+      i?.call(this, n), this.requestUpdate(t, c, a);
     }, configurable: !0, enumerable: !0 };
   }
   static getPropertyOptions(t) {
@@ -181,14 +181,14 @@ let W = class extends HTMLElement {
     if (o !== void 0 && this._$Em !== o) {
       const i = a.getPropertyOptions(o), n = typeof i.converter == "function" ? { fromAttribute: i.converter } : i.converter?.fromAttribute !== void 0 ? i.converter : me;
       this._$Em = o;
-      const d = n.fromAttribute(r, i.type);
-      this[o] = d ?? this._$Ej?.get(o) ?? d, this._$Em = null;
+      const c = n.fromAttribute(r, i.type);
+      this[o] = c ?? this._$Ej?.get(o) ?? c, this._$Em = null;
     }
   }
   requestUpdate(t, r, a, o = !1, i) {
     if (t !== void 0) {
       const n = this.constructor;
-      if (o === !1 && (i = this[t]), a ?? (a = n.getPropertyOptions(t)), !((a.hasChanged ?? Ee)(i, r) || a.useDefault && a.reflect && i === this._$Ej?.get(t) && !this.hasAttribute(n._$Eu(t, a)))) return;
+      if (o === !1 && (i = this[t]), a ?? (a = n.getPropertyOptions(t)), !((a.hasChanged ?? De)(i, r) || a.useDefault && a.reflect && i === this._$Ej?.get(t) && !this.hasAttribute(n._$Eu(t, a)))) return;
       this.C(t, r, a);
     }
     this.isUpdatePending === !1 && (this._$ES = this._$EP());
@@ -218,8 +218,8 @@ let W = class extends HTMLElement {
       }
       const a = this.constructor.elementProperties;
       if (a.size > 0) for (const [o, i] of a) {
-        const { wrapped: n } = i, d = this[o];
-        n !== !0 || this._$AL.has(o) || d === void 0 || this.C(o, void 0, i, d);
+        const { wrapped: n } = i, c = this[o];
+        n !== !0 || this._$AL.has(o) || c === void 0 || this.C(o, void 0, i, c);
       }
     }
     let t = !1;
@@ -256,28 +256,28 @@ let W = class extends HTMLElement {
   firstUpdated(t) {
   }
 };
-W.elementStyles = [], W.shadowRootOptions = { mode: "open" }, W[Q("elementProperties")] = /* @__PURE__ */ new Map(), W[Q("finalized")] = /* @__PURE__ */ new Map(), Nt?.({ ReactiveElement: W }), (F.reactiveElementVersions ?? (F.reactiveElementVersions = [])).push("2.1.2");
+W.elementStyles = [], W.shadowRootOptions = { mode: "open" }, W[Q("elementProperties")] = /* @__PURE__ */ new Map(), W[Q("finalized")] = /* @__PURE__ */ new Map(), Ut?.({ ReactiveElement: W }), (F.reactiveElementVersions ?? (F.reactiveElementVersions = [])).push("2.1.2");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const ee = globalThis, Le = (e) => e, he = ee.trustedTypes, Ge = he ? he.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, Ye = "$lit$", R = `lit$${Math.random().toFixed(9).slice(2)}$`, qe = "?" + R, jt = `<${qe}>`, N = document, ae = () => N.createComment(""), ie = (e) => e === null || typeof e != "object" && typeof e != "function", De = Array.isArray, Vt = (e) => De(e) || typeof e?.[Symbol.iterator] == "function", we = `[ 	
-\f\r]`, X = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Ie = /-->/g, Ue = />/g, I = RegExp(`>|${we}(?:([^\\s"'>=/]+)(${we}*=${we}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), Ne = /'/g, je = /"/g, Je = /^(?:script|style|textarea|title)$/i, Wt = (e) => (t, ...r) => ({ _$litType$: e, strings: t, values: r }), l = Wt(1), Z = Symbol.for("lit-noChange"), _ = Symbol.for("lit-nothing"), Ve = /* @__PURE__ */ new WeakMap(), U = N.createTreeWalker(N, 129);
+const ee = globalThis, Le = (e) => e, he = ee.trustedTypes, Ge = he ? he.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, Ye = "$lit$", R = `lit$${Math.random().toFixed(9).slice(2)}$`, Je = "?" + R, jt = `<${Je}>`, U = document, ae = () => U.createComment(""), ie = (e) => e === null || typeof e != "object" && typeof e != "function", Ee = Array.isArray, Vt = (e) => Ee(e) || typeof e?.[Symbol.iterator] == "function", we = `[ 	
+\f\r]`, X = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Ie = /-->/g, Ne = />/g, I = RegExp(`>|${we}(?:([^\\s"'>=/]+)(${we}*=${we}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), Ue = /'/g, je = /"/g, qe = /^(?:script|style|textarea|title)$/i, Wt = (e) => (t, ...r) => ({ _$litType$: e, strings: t, values: r }), l = Wt(1), Z = Symbol.for("lit-noChange"), v = Symbol.for("lit-nothing"), Ve = /* @__PURE__ */ new WeakMap(), N = U.createTreeWalker(U, 129);
 function Xe(e, t) {
-  if (!De(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+  if (!Ee(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return Ge !== void 0 ? Ge.createHTML(t) : t;
 }
 const Kt = (e, t) => {
   const r = e.length - 1, a = [];
   let o, i = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", n = X;
-  for (let d = 0; d < r; d++) {
-    const c = e[d];
+  for (let c = 0; c < r; c++) {
+    const d = e[c];
     let u, p, h = -1, b = 0;
-    for (; b < c.length && (n.lastIndex = b, p = n.exec(c), p !== null); ) b = n.lastIndex, n === X ? p[1] === "!--" ? n = Ie : p[1] !== void 0 ? n = Ue : p[2] !== void 0 ? (Je.test(p[2]) && (o = RegExp("</" + p[2], "g")), n = I) : p[3] !== void 0 && (n = I) : n === I ? p[0] === ">" ? (n = o ?? X, h = -1) : p[1] === void 0 ? h = -2 : (h = n.lastIndex - p[2].length, u = p[1], n = p[3] === void 0 ? I : p[3] === '"' ? je : Ne) : n === je || n === Ne ? n = I : n === Ie || n === Ue ? n = X : (n = I, o = void 0);
-    const f = n === I && e[d + 1].startsWith("/>") ? " " : "";
-    i += n === X ? c + jt : h >= 0 ? (a.push(u), c.slice(0, h) + Ye + c.slice(h) + R + f) : c + R + (h === -2 ? d : f);
+    for (; b < d.length && (n.lastIndex = b, p = n.exec(d), p !== null); ) b = n.lastIndex, n === X ? p[1] === "!--" ? n = Ie : p[1] !== void 0 ? n = Ne : p[2] !== void 0 ? (qe.test(p[2]) && (o = RegExp("</" + p[2], "g")), n = I) : p[3] !== void 0 && (n = I) : n === I ? p[0] === ">" ? (n = o ?? X, h = -1) : p[1] === void 0 ? h = -2 : (h = n.lastIndex - p[2].length, u = p[1], n = p[3] === void 0 ? I : p[3] === '"' ? je : Ue) : n === je || n === Ue ? n = I : n === Ie || n === Ne ? n = X : (n = I, o = void 0);
+    const f = n === I && e[c + 1].startsWith("/>") ? " " : "";
+    i += n === X ? d + jt : h >= 0 ? (a.push(u), d.slice(0, h) + Ye + d.slice(h) + R + f) : d + R + (h === -2 ? c : f);
   }
   return [Xe(e, i + (e[r] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), a];
 };
@@ -286,35 +286,35 @@ class ne {
     let o;
     this.parts = [];
     let i = 0, n = 0;
-    const d = t.length - 1, c = this.parts, [u, p] = Kt(t, r);
-    if (this.el = ne.createElement(u, a), U.currentNode = this.el.content, r === 2 || r === 3) {
+    const c = t.length - 1, d = this.parts, [u, p] = Kt(t, r);
+    if (this.el = ne.createElement(u, a), N.currentNode = this.el.content, r === 2 || r === 3) {
       const h = this.el.content.firstChild;
       h.replaceWith(...h.childNodes);
     }
-    for (; (o = U.nextNode()) !== null && c.length < d; ) {
+    for (; (o = N.nextNode()) !== null && d.length < c; ) {
       if (o.nodeType === 1) {
         if (o.hasAttributes()) for (const h of o.getAttributeNames()) if (h.endsWith(Ye)) {
-          const b = p[n++], f = o.getAttribute(h).split(R), k = /([.?@])?(.*)/.exec(b);
-          c.push({ type: 1, index: i, name: k[2], strings: f, ctor: k[1] === "." ? Yt : k[1] === "?" ? qt : k[1] === "@" ? Jt : ke }), o.removeAttribute(h);
-        } else h.startsWith(R) && (c.push({ type: 6, index: i }), o.removeAttribute(h));
-        if (Je.test(o.tagName)) {
+          const b = p[n++], f = o.getAttribute(h).split(R), w = /([.?@])?(.*)/.exec(b);
+          d.push({ type: 1, index: i, name: w[2], strings: f, ctor: w[1] === "." ? Yt : w[1] === "?" ? Jt : w[1] === "@" ? qt : ke }), o.removeAttribute(h);
+        } else h.startsWith(R) && (d.push({ type: 6, index: i }), o.removeAttribute(h));
+        if (qe.test(o.tagName)) {
           const h = o.textContent.split(R), b = h.length - 1;
           if (b > 0) {
             o.textContent = he ? he.emptyScript : "";
-            for (let f = 0; f < b; f++) o.append(h[f], ae()), U.nextNode(), c.push({ type: 2, index: ++i });
+            for (let f = 0; f < b; f++) o.append(h[f], ae()), N.nextNode(), d.push({ type: 2, index: ++i });
             o.append(h[b], ae());
           }
         }
-      } else if (o.nodeType === 8) if (o.data === qe) c.push({ type: 2, index: i });
+      } else if (o.nodeType === 8) if (o.data === Je) d.push({ type: 2, index: i });
       else {
         let h = -1;
-        for (; (h = o.data.indexOf(R, h + 1)) !== -1; ) c.push({ type: 7, index: i }), h += R.length - 1;
+        for (; (h = o.data.indexOf(R, h + 1)) !== -1; ) d.push({ type: 7, index: i }), h += R.length - 1;
       }
       i++;
     }
   }
   static createElement(t, r) {
-    const a = N.createElement("template");
+    const a = U.createElement("template");
     return a.innerHTML = t, a;
   }
 }
@@ -335,17 +335,17 @@ class Zt {
     return this._$AM._$AU;
   }
   u(t) {
-    const { el: { content: r }, parts: a } = this._$AD, o = (t?.creationScope ?? N).importNode(r, !0);
-    U.currentNode = o;
-    let i = U.nextNode(), n = 0, d = 0, c = a[0];
-    for (; c !== void 0; ) {
-      if (n === c.index) {
+    const { el: { content: r }, parts: a } = this._$AD, o = (t?.creationScope ?? U).importNode(r, !0);
+    N.currentNode = o;
+    let i = N.nextNode(), n = 0, c = 0, d = a[0];
+    for (; d !== void 0; ) {
+      if (n === d.index) {
         let u;
-        c.type === 2 ? u = new se(i, i.nextSibling, this, t) : c.type === 1 ? u = new c.ctor(i, c.name, c.strings, this, t) : c.type === 6 && (u = new Xt(i, this, t)), this._$AV.push(u), c = a[++d];
+        d.type === 2 ? u = new se(i, i.nextSibling, this, t) : d.type === 1 ? u = new d.ctor(i, d.name, d.strings, this, t) : d.type === 6 && (u = new Xt(i, this, t)), this._$AV.push(u), d = a[++c];
       }
-      n !== c?.index && (i = U.nextNode(), n++);
+      n !== d?.index && (i = N.nextNode(), n++);
     }
-    return U.currentNode = N, o;
+    return N.currentNode = U, o;
   }
   p(t) {
     let r = 0;
@@ -357,7 +357,7 @@ class se {
     return this._$AM?._$AU ?? this._$Cv;
   }
   constructor(t, r, a, o) {
-    this.type = 2, this._$AH = _, this._$AN = void 0, this._$AA = t, this._$AB = r, this._$AM = a, this.options = o, this._$Cv = o?.isConnected ?? !0;
+    this.type = 2, this._$AH = v, this._$AN = void 0, this._$AA = t, this._$AB = r, this._$AM = a, this.options = o, this._$Cv = o?.isConnected ?? !0;
   }
   get parentNode() {
     let t = this._$AA.parentNode;
@@ -371,7 +371,7 @@ class se {
     return this._$AB;
   }
   _$AI(t, r = this) {
-    t = Y(this, t, r), ie(t) ? t === _ || t == null || t === "" ? (this._$AH !== _ && this._$AR(), this._$AH = _) : t !== this._$AH && t !== Z && this._(t) : t._$litType$ !== void 0 ? this.$(t) : t.nodeType !== void 0 ? this.T(t) : Vt(t) ? this.k(t) : this._(t);
+    t = Y(this, t, r), ie(t) ? t === v || t == null || t === "" ? (this._$AH !== v && this._$AR(), this._$AH = v) : t !== this._$AH && t !== Z && this._(t) : t._$litType$ !== void 0 ? this.$(t) : t.nodeType !== void 0 ? this.T(t) : Vt(t) ? this.k(t) : this._(t);
   }
   O(t) {
     return this._$AA.parentNode.insertBefore(t, this._$AB);
@@ -380,7 +380,7 @@ class se {
     this._$AH !== t && (this._$AR(), this._$AH = this.O(t));
   }
   _(t) {
-    this._$AH !== _ && ie(this._$AH) ? this._$AA.nextSibling.data = t : this.T(N.createTextNode(t)), this._$AH = t;
+    this._$AH !== v && ie(this._$AH) ? this._$AA.nextSibling.data = t : this.T(U.createTextNode(t)), this._$AH = t;
   }
   $(t) {
     const { values: r, _$litType$: a } = t, o = typeof a == "number" ? this._$AC(t) : (a.el === void 0 && (a.el = ne.createElement(Xe(a.h, a.h[0]), this.options)), a);
@@ -395,7 +395,7 @@ class se {
     return r === void 0 && Ve.set(t.strings, r = new ne(t)), r;
   }
   k(t) {
-    De(this._$AH) || (this._$AH = [], this._$AR());
+    Ee(this._$AH) || (this._$AH = [], this._$AR());
     const r = this._$AH;
     let a, o = 0;
     for (const i of t) o === r.length ? r.push(a = new se(this.O(ae()), this.O(ae()), this, this.options)) : a = r[o], a._$AI(i), o++;
@@ -419,21 +419,21 @@ class ke {
     return this._$AM._$AU;
   }
   constructor(t, r, a, o, i) {
-    this.type = 1, this._$AH = _, this._$AN = void 0, this.element = t, this.name = r, this._$AM = o, this.options = i, a.length > 2 || a[0] !== "" || a[1] !== "" ? (this._$AH = Array(a.length - 1).fill(new String()), this.strings = a) : this._$AH = _;
+    this.type = 1, this._$AH = v, this._$AN = void 0, this.element = t, this.name = r, this._$AM = o, this.options = i, a.length > 2 || a[0] !== "" || a[1] !== "" ? (this._$AH = Array(a.length - 1).fill(new String()), this.strings = a) : this._$AH = v;
   }
   _$AI(t, r = this, a, o) {
     const i = this.strings;
     let n = !1;
     if (i === void 0) t = Y(this, t, r, 0), n = !ie(t) || t !== this._$AH && t !== Z, n && (this._$AH = t);
     else {
-      const d = t;
-      let c, u;
-      for (t = i[0], c = 0; c < i.length - 1; c++) u = Y(this, d[a + c], r, c), u === Z && (u = this._$AH[c]), n || (n = !ie(u) || u !== this._$AH[c]), u === _ ? t = _ : t !== _ && (t += (u ?? "") + i[c + 1]), this._$AH[c] = u;
+      const c = t;
+      let d, u;
+      for (t = i[0], d = 0; d < i.length - 1; d++) u = Y(this, c[a + d], r, d), u === Z && (u = this._$AH[d]), n || (n = !ie(u) || u !== this._$AH[d]), u === v ? t = v : t !== v && (t += (u ?? "") + i[d + 1]), this._$AH[d] = u;
     }
     n && !o && this.j(t);
   }
   j(t) {
-    t === _ ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t ?? "");
+    t === v ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t ?? "");
   }
 }
 class Yt extends ke {
@@ -441,24 +441,24 @@ class Yt extends ke {
     super(...arguments), this.type = 3;
   }
   j(t) {
-    this.element[this.name] = t === _ ? void 0 : t;
+    this.element[this.name] = t === v ? void 0 : t;
   }
 }
-class qt extends ke {
+class Jt extends ke {
   constructor() {
     super(...arguments), this.type = 4;
   }
   j(t) {
-    this.element.toggleAttribute(this.name, !!t && t !== _);
+    this.element.toggleAttribute(this.name, !!t && t !== v);
   }
 }
-class Jt extends ke {
+class qt extends ke {
   constructor(t, r, a, o, i) {
     super(t, r, a, o, i), this.type = 5;
   }
   _$AI(t, r = this) {
-    if ((t = Y(this, t, r, 0) ?? _) === Z) return;
-    const a = this._$AH, o = t === _ && a !== _ || t.capture !== a.capture || t.once !== a.once || t.passive !== a.passive, i = t !== _ && (a === _ || o);
+    if ((t = Y(this, t, r, 0) ?? v) === Z) return;
+    const a = this._$AH, o = t === v && a !== v || t.capture !== a.capture || t.once !== a.once || t.passive !== a.passive, i = t !== v && (a === v || o);
     o && this.element.removeEventListener(this.name, this, a), i && this.element.addEventListener(this.name, this, t), this._$AH = t;
   }
   handleEvent(t) {
@@ -493,7 +493,7 @@ const er = (e, t, r) => {
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const te = globalThis;
-class x extends W {
+class k extends W {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
   }
@@ -516,9 +516,9 @@ class x extends W {
     return Z;
   }
 }
-x._$litElement$ = !0, x.finalized = !0, te.litElementHydrateSupport?.({ LitElement: x });
+k._$litElement$ = !0, k.finalized = !0, te.litElementHydrateSupport?.({ LitElement: k });
 const tr = te.litElementPolyfillSupport;
-tr?.({ LitElement: x });
+tr?.({ LitElement: k });
 (te.litElementVersions ?? (te.litElementVersions = [])).push("4.2.2");
 /**
  * @license
@@ -535,23 +535,23 @@ const M = (e) => (t, r) => {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const rr = { attribute: !0, type: String, converter: me, reflect: !1, hasChanged: Ee }, or = (e = rr, t, r) => {
+const rr = { attribute: !0, type: String, converter: me, reflect: !1, hasChanged: De }, or = (e = rr, t, r) => {
   const { kind: a, metadata: o } = r;
   let i = globalThis.litPropertyMetadata.get(o);
   if (i === void 0 && globalThis.litPropertyMetadata.set(o, i = /* @__PURE__ */ new Map()), a === "setter" && ((e = Object.create(e)).wrapped = !0), i.set(r.name, e), a === "accessor") {
     const { name: n } = r;
-    return { set(d) {
-      const c = t.get.call(this);
-      t.set.call(this, d), this.requestUpdate(n, c, e, !0, d);
-    }, init(d) {
-      return d !== void 0 && this.C(n, void 0, e, d), d;
+    return { set(c) {
+      const d = t.get.call(this);
+      t.set.call(this, c), this.requestUpdate(n, d, e, !0, c);
+    }, init(c) {
+      return c !== void 0 && this.C(n, void 0, e, c), c;
     } };
   }
   if (a === "setter") {
     const { name: n } = r;
-    return function(d) {
-      const c = this[n];
-      t.call(this, d), this.requestUpdate(n, c, e, !0, d);
+    return function(c) {
+      const d = this[n];
+      t.call(this, c), this.requestUpdate(n, d, e, !0, c);
     };
   }
   throw Error("Unsupported decorator location: " + a);
@@ -608,20 +608,20 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
   name: et,
   version: tt,
   version_supported: rt
-}, Symbol.toStringTag, { value: "Module" })), it = "ha-core", nt = "Home Assistant Core", st = "0.1.0", lt = ">=2024.1.0", ct = {
+}, Symbol.toStringTag, { value: "Module" })), it = "ha-core", nt = "Home Assistant Core", st = "0.1.0", lt = ">=2024.1.0", dt = {
   method: "always"
-}, dt = "Grundlegende CSS-Variablen des HA-Frontends. Immer aktiv, keine Erkennung nötig.", lr = {
+}, ct = "Grundlegende CSS-Variablen des HA-Frontends. Immer aktiv, keine Erkennung nötig.", lr = {
   id: it,
   name: nt,
   version: st,
   version_supported: lt,
-  detect: ct,
-  description: dt
-}, cr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  detect: dt,
+  description: ct
+}, dr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: lr,
-  description: dt,
-  detect: ct,
+  description: ct,
+  detect: dt,
   id: it,
   name: nt,
   version: st,
@@ -629,7 +629,7 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
 }, Symbol.toStringTag, { value: "Module" })), ut = "mushroom", pt = "Mushroom", mt = "0.1.0", ht = ">=3.0.0", bt = {
   method: "hacs-repo",
   value: "piitaya/lovelace-mushroom"
-}, gt = "CSS-Variablen für Mushroom Cards (piitaya/lovelace-mushroom). Typografie (Title/Subtitle/Card-Primary/Card-Secondary), Icons, Chips, Controls, Material-RGB-Palette und State-spezifische RGB-Farben für Climate/Cover/Lock/Person/etc. Plugin wird nur geladen wenn HACS piitaya/lovelace-mushroom als installiert meldet.", dr = {
+}, gt = "CSS-Variablen für Mushroom Cards (piitaya/lovelace-mushroom). Typografie (Title/Subtitle/Card-Primary/Card-Secondary), Icons, Chips, Controls, Material-RGB-Palette und State-spezifische RGB-Farben für Climate/Cover/Lock/Person/etc. Plugin wird nur geladen wenn HACS piitaya/lovelace-mushroom als installiert meldet.", cr = {
   id: ut,
   name: pt,
   version: mt,
@@ -638,7 +638,7 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
   description: gt
 }, ur = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: dr,
+  default: cr,
   description: gt,
   detect: bt,
   id: ut,
@@ -2766,7 +2766,7 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
   default: hr,
   id: vt,
   variables: kt
-}, Symbol.toStringTag, { value: "Module" })), wt = "mushroom", Ct = [
+}, Symbol.toStringTag, { value: "Module" })), wt = "mushroom", St = [
   {
     id: "card-primary",
     label: "Card-Primary (Hauptzeile)",
@@ -2839,7 +2839,7 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
     label_en: "Entity states (RGB)",
     icon: "mdi:state-machine"
   }
-], St = [
+], Ct = [
   {
     name: "--mush-card-primary-color",
     type: "color",
@@ -3791,14 +3791,14 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
   }
 ], gr = {
   id: wt,
-  categories: Ct,
-  variables: St
+  categories: St,
+  variables: Ct
 }, fr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  categories: Ct,
+  categories: St,
   default: gr,
   id: wt,
-  variables: St
+  variables: Ct
 }, Symbol.toStringTag, { value: "Module" })), yr = {
   // panel-main
   "panel.tab_themes": "Themes",
@@ -3817,6 +3817,8 @@ const Qe = "bubble-card", et = "Bubble Card", tt = "0.1.0", rt = ">=2.0.0", ot =
   "picker.badge_hacs": "HACS",
   "picker.badge_hacs_title": "HACS-verwaltet — Updates überschreiben deine Änderungen. Studio bietet beim Speichern an, ein eigenes Theme abzuleiten.",
   "picker.badge_own": "Eigen",
+  "picker.badge_default": "Default",
+  "picker.badge_default_title": "Globales Standard-Theme von Home Assistant",
   "picker.delete_tooltip": "Dieses abgeleitete Theme löschen (Backup bleibt)",
   "picker.delete_confirm": `Abgeleitetes Theme '{theme}' löschen?
 
@@ -3947,6 +3949,13 @@ Name des neuen Themes:`,
 
 Deine Änderungen werden stattdessen in ein eigenes Theme abgeleitet. Name des neuen Themes:`,
   "editor.fork_success": "Als eigenes Theme abgeleitet: '{theme}'",
+  // editor — Default-Theme setzen (v1.1)
+  "editor.set_default": "Als Default setzen",
+  "editor.set_default_tooltip": "Dieses Theme als globales Standard-Theme von Home Assistant setzen (frontend.set_theme)",
+  "editor.setting_default": "Setze…",
+  "editor.is_default": "Standard-Theme",
+  "editor.is_default_tooltip": "Dieses Theme ist bereits das globale Standard-Theme",
+  "editor.set_default_failed": "Default setzen fehlgeschlagen",
   // preview-pane
   "preview.label": "Preview",
   "preview.reload_tooltip": "iframe neu laden",
@@ -3981,6 +3990,8 @@ Deine Änderungen werden stattdessen in ein eigenes Theme abgeleitet. Name des n
   "picker.badge_hacs": "HACS",
   "picker.badge_hacs_title": "HACS-managed — updates overwrite your changes. On save, Studio offers to derive your own theme.",
   "picker.badge_own": "Own",
+  "picker.badge_default": "Default",
+  "picker.badge_default_title": "Home Assistant's global default theme",
   "picker.delete_tooltip": "Delete this derived theme (backup kept)",
   "picker.delete_confirm": `Delete derived theme '{theme}'?
 
@@ -4111,6 +4122,13 @@ Name of the new theme:`,
 
 Your changes are derived into your own theme instead. Name of the new theme:`,
   "editor.fork_success": "Derived into your own theme: '{theme}'",
+  // editor — set default theme (v1.1)
+  "editor.set_default": "Set as default",
+  "editor.set_default_tooltip": "Set this theme as Home Assistant's global default theme (frontend.set_theme)",
+  "editor.setting_default": "Setting…",
+  "editor.is_default": "Default theme",
+  "editor.is_default_tooltip": "This theme is already the global default theme",
+  "editor.set_default_failed": "Setting default failed",
   // preview-pane
   "preview.label": "Preview",
   "preview.reload_tooltip": "Reload iframe",
@@ -4127,35 +4145,35 @@ Your changes are derived into your own theme instead. Name of the new theme:`,
   "bg.preset_tile_tooltip": "Repeat image (pattern)",
   "bg.clear": "Clear",
   "bg.clear_tooltip": "Set to 'none' — no background image"
-}, de = { de: yr, en: _r }, Ae = "en";
+}, ce = { de: yr, en: _r }, Ae = "en";
 let K = Ae;
 function vr(e) {
   if (!e)
     return K = Ae, K;
   const t = e.toLowerCase().split(/[-_]/, 1)[0];
-  return K = t in de ? t : Ae, K;
+  return K = t in ce ? t : Ae, K;
 }
 function $t() {
   return K;
 }
 function s(e, t, r) {
-  const a = de[K][e] ?? de.en[e] ?? de.de[e] ?? t ?? e;
+  const a = ce[K][e] ?? ce.en[e] ?? ce.de[e] ?? t ?? e;
   return r ? a.replace(
     /\{(\w+)\}/g,
     (o, i) => i in r ? String(r[i]) : `{${i}}`
   ) : a;
 }
-const xr = /-(radius|size|width|height|padding|margin|gap)$/, kr = /-(color|bg|background)$/, wr = /-(image|background-image)$/, Cr = [
+const xr = /-(radius|size|width|height|padding|margin|gap)$/, kr = /-(color|bg|background)$/, wr = /-(image|background-image)$/, Sr = [
   /^#[0-9a-f]{3,8}$/i,
   // #rgb, #rrggbb, #rrggbbaa
   /^(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\s*\(/i,
   /^(transparent|currentColor|inherit)$/i
-], Sr = /^var\(\s*--[A-Za-z0-9_-]*-(color|bg|background)\b/i, $r = /^-?\d*\.?\d+(px|rem|em|vh|vw|vmin|vmax|%)$/i, Br = /^var\(\s*--[A-Za-z0-9_-]*-(radius|size|width|height|padding|margin|gap)\b/i;
+], Cr = /^var\(\s*--[A-Za-z0-9_-]*-(color|bg|background)\b/i, $r = /^-?\d*\.?\d+(px|rem|em|vh|vw|vmin|vmax|%)$/i, Br = /^var\(\s*--[A-Za-z0-9_-]*-(radius|size|width|height|padding|margin|gap)\b/i;
 function Mr(e) {
   const t = e.trim();
   if (t) {
     if (/url\s*\(/i.test(t) || /gradient\s*\(/i.test(t)) return "background";
-    if (Cr.some((r) => r.test(t)) || Sr.test(t)) return "color";
+    if (Sr.some((r) => r.test(t)) || Cr.test(t)) return "color";
     if ($r.test(t) || Br.test(t)) return "length";
   }
 }
@@ -4220,19 +4238,19 @@ function Pr(e, t) {
   const a = Tr.find(({ re: i }) => i.test(e))?.label ?? "Quelle unbekannt", o = zr[t];
   return `${a} · vermutlich ${o} (Heuristik).`;
 }
-const Er = /* @__PURE__ */ Object.assign({
+const Dr = /* @__PURE__ */ Object.assign({
   "../plugins/bubble-card/manifest.json": sr,
-  "../plugins/ha-core/manifest.json": cr,
+  "../plugins/ha-core/manifest.json": dr,
   "../plugins/mushroom/manifest.json": ur
-}), Dr = /* @__PURE__ */ Object.assign({
+}), Er = /* @__PURE__ */ Object.assign({
   "../plugins/bubble-card/schema.json": mr,
   "../plugins/ha-core/schema.json": br,
   "../plugins/mushroom/schema.json": fr
 });
 function Hr() {
   const e = [];
-  for (const [t, r] of Object.entries(Er)) {
-    const a = t.replace(/\/manifest\.json$/, "/schema.json"), o = Dr[a];
+  for (const [t, r] of Object.entries(Dr)) {
+    const a = t.replace(/\/manifest\.json$/, "/schema.json"), o = Er[a];
     if (!o) {
       console.warn(
         `[theme-studio] Plugin at ${t} has no schema.json — skipping.`
@@ -4317,7 +4335,7 @@ var Gr = Object.defineProperty, Ir = Object.getOwnPropertyDescriptor, G = (e, t,
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && Gr(t, r, o), o;
 };
-let z = class extends x {
+let z = class extends k {
   constructor() {
     super(...arguments), this._loading = !0, this._themes = [], this._errors = [], this._loadError = null, this._actionError = null, this._deleting = null;
   }
@@ -4365,6 +4383,11 @@ let z = class extends x {
                               >` : l`<span class="badge own"
                                 >${s("picker.badge_own")}</span
                               >`}
+                          ${this.hass.themes?.default_theme === e.theme_name ? l`<span
+                                class="badge default"
+                                title=${s("picker.badge_default_title")}
+                                >★ ${s("picker.badge_default")}</span
+                              >` : ""}
                         </div>
                         <div class="meta">
                           ${e.file} ·
@@ -4540,6 +4563,10 @@ z.styles = B`
       background: rgba(67, 160, 71, 0.14);
       color: var(--success-color, #43a047);
     }
+    .badge.default {
+      background: var(--primary-color);
+      color: #fff;
+    }
     .meta {
       color: var(--secondary-text-color);
       font-size: 0.85rem;
@@ -4607,12 +4634,12 @@ G([
 z = G([
   M("theme-picker")
 ], z);
-var Ur = Object.defineProperty, Nr = Object.getOwnPropertyDescriptor, Mt = (e, t, r, a) => {
-  for (var o = a > 1 ? void 0 : a ? Nr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+var Nr = Object.defineProperty, Ur = Object.getOwnPropertyDescriptor, Mt = (e, t, r, a) => {
+  for (var o = a > 1 ? void 0 : a ? Ur(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
-  return a && o && Ur(t, r, o), o;
+  return a && o && Nr(t, r, o), o;
 };
-let ye = class extends x {
+let ye = class extends k {
   constructor() {
     super(...arguments), this.value = "";
   }
@@ -4716,12 +4743,12 @@ Mt([
 ye = Mt([
   M("ts-color-picker")
 ], ye);
-var jr = Object.defineProperty, Vr = Object.getOwnPropertyDescriptor, q = (e, t, r, a) => {
+var jr = Object.defineProperty, Vr = Object.getOwnPropertyDescriptor, J = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? Vr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && jr(t, r, o), o;
 };
-let O = class extends x {
+let O = class extends k {
   constructor() {
     super(...arguments), this.value = "0px", this.units = ["px"], this.min = 0, this.max = 100, this.step = 1;
   }
@@ -4822,22 +4849,22 @@ O.styles = B`
       min-width: 28px;
     }
   `;
-q([
+J([
   g({ type: String })
 ], O.prototype, "value", 2);
-q([
+J([
   g({ type: Array })
 ], O.prototype, "units", 2);
-q([
+J([
   g({ type: Number })
 ], O.prototype, "min", 2);
-q([
+J([
   g({ type: Number })
 ], O.prototype, "max", 2);
-q([
+J([
   g({ type: Number })
 ], O.prototype, "step", 2);
-O = q([
+O = J([
   M("ts-length-slider")
 ], O);
 var Wr = Object.defineProperty, Kr = Object.getOwnPropertyDescriptor, At = (e, t, r, a) => {
@@ -4845,7 +4872,7 @@ var Wr = Object.defineProperty, Kr = Object.getOwnPropertyDescriptor, At = (e, t
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && Wr(t, r, o), o;
 };
-let _e = class extends x {
+let _e = class extends k {
   constructor() {
     super(...arguments), this.value = "";
   }
@@ -4911,7 +4938,7 @@ var Zr = Object.defineProperty, Yr = Object.getOwnPropertyDescriptor, Tt = (e, t
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && Zr(t, r, o), o;
 };
-const qr = [
+const Jr = [
   {
     label: "Cover",
     modifiers: "center / cover no-repeat fixed",
@@ -4936,20 +4963,20 @@ function le(e) {
   const a = r[1].trim(), o = (t.slice(0, r.index) + t.slice(r.index + r[0].length)).trim().replace(/\s+/g, " ");
   return { url: a, modifiers: o };
 }
-function Ce(e, t) {
+function Se(e, t) {
   const r = e.trim(), a = t.trim();
   if (!r && !a) return "none";
   if (!a) return r;
   const o = `url('${a}')`;
   return r ? `${r} ${o}` : o;
 }
-function Jr(e) {
+function qr(e) {
   const t = e.trim();
   if (!t) return "";
   const r = /^\/(homeassistant|config)\/www\/(.+)$/.exec(t);
   return r ? `/local/${r[2]}` : t;
 }
-let ve = class extends x {
+let ve = class extends k {
   constructor() {
     super(...arguments), this.value = "";
   }
@@ -4988,7 +5015,7 @@ let ve = class extends x {
         />
       </div>
       <div class="presets">
-        ${qr.map(
+        ${Jr.map(
       (a) => l`
             <button
               class="preset-btn"
@@ -5010,16 +5037,16 @@ let ve = class extends x {
     `;
   }
   _onUrlChange(e) {
-    const t = e.target.value, r = Jr(t), { modifiers: a } = le(this.value);
-    this._emit(Ce(a, r));
+    const t = e.target.value, r = qr(t), { modifiers: a } = le(this.value);
+    this._emit(Se(a, r));
   }
   _onModsChange(e) {
     const t = e.target.value, { url: r } = le(this.value);
-    this._emit(Ce(t, r));
+    this._emit(Se(t, r));
   }
   _applyPreset(e) {
     const { url: t } = le(this.value);
-    this._emit(Ce(e, t));
+    this._emit(Se(e, t));
   }
   _clear() {
     this._emit("none");
@@ -5118,12 +5145,12 @@ Tt([
 ve = Tt([
   M("ts-background-picker")
 ], ve);
-var Xr = Object.defineProperty, Qr = Object.getOwnPropertyDescriptor, J = (e, t, r, a) => {
+var Xr = Object.defineProperty, Qr = Object.getOwnPropertyDescriptor, q = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? Qr(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && Xr(t, r, o), o;
 };
-let L = class extends x {
+let L = class extends k {
   constructor() {
     super(...arguments), this.src = "/lovelace/0", this.overrides = /* @__PURE__ */ new Map(), this._loaded = !1, this._loadError = null, this._appliedToFrame = /* @__PURE__ */ new Set();
   }
@@ -5254,25 +5281,25 @@ L.styles = B`
       font-size: 0.9rem;
     }
   `;
-J([
+q([
   g({ type: String })
 ], L.prototype, "src", 2);
-J([
+q([
   g({ attribute: !1 })
 ], L.prototype, "overrides", 2);
-J([
+q([
   ir("iframe")
 ], L.prototype, "_iframe", 2);
-J([
+q([
   m()
 ], L.prototype, "_loaded", 2);
-J([
+q([
   m()
 ], L.prototype, "_loadError", 2);
-L = J([
+L = q([
   M("ts-preview-pane")
 ], L);
-var eo = Object.defineProperty, to = Object.getOwnPropertyDescriptor, C = (e, t, r, a) => {
+var eo = Object.defineProperty, to = Object.getOwnPropertyDescriptor, x = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? to(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && eo(t, r, o), o;
@@ -5285,16 +5312,16 @@ const ue = {
   id: "_other",
   label: "_other_placeholder",
   icon: "mdi:dots-horizontal"
-}, T = "in-theme", w = "default";
-function Se(e) {
-  return e === w ? s("editor.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
+}, T = "in-theme", S = "default";
+function Ce(e) {
+  return e === S ? s("editor.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
 }
 function ro(e) {
   return e === ue ? s("editor.cat_unknown") : e === pe ? s("editor.cat_other") : Lr(e);
 }
-let v = class extends x {
+let y = class extends k {
   constructor() {
-    super(...arguments), this.file = "", this.themeName = "", this.hacsManaged = !1, this._loading = !0, this._error = null, this._rows = [], this._skippedKeys = [], this._saveStatus = { state: "idle" }, this._activeTab = T, this._activeMode = w, this._modes = [w], this._showPreview = !1, this._previewSrc = "/lovelace/0", this._appliedVars = /* @__PURE__ */ new Set(), this._originalFullTheme = {}, this._onBeforeUnload = (e) => {
+    super(...arguments), this.file = "", this.themeName = "", this.hacsManaged = !1, this._loading = !0, this._error = null, this._rows = [], this._skippedKeys = [], this._saveStatus = { state: "idle" }, this._activeTab = T, this._activeMode = S, this._modes = [S], this._showPreview = !1, this._previewSrc = "/lovelace/0", this._settingDefault = !1, this._defaultJustSet = !1, this._defaultError = null, this._appliedVars = /* @__PURE__ */ new Set(), this._originalFullTheme = {}, this._onBeforeUnload = (e) => {
       this._dirtyCount() !== 0 && (e.preventDefault(), e.returnValue = "");
     };
   }
@@ -5306,7 +5333,7 @@ let v = class extends x {
   }
   updated(e) {
     const t = e.has("file") && e.get("file") !== void 0, r = e.has("themeName") && e.get("themeName") !== void 0;
-    (t || r) && (this._revertAll(), this._rows = [], this._activeTab = T, this._activeMode = w, this._modes = [w], this._load());
+    (t || r) && (this._revertAll(), this._rows = [], this._activeTab = T, this._activeMode = S, this._modes = [S], this._defaultJustSet = !1, this._defaultError = null, this._load());
   }
   async _load() {
     this._loading = !0, this._error = null, this._saveStatus = { state: "idle" };
@@ -5331,7 +5358,7 @@ let v = class extends x {
    * weiterhin in `_skippedKeys` registriert und beim Save 1:1 erhalten.
    */
   _buildRows(e) {
-    const t = [], r = [], a = [w];
+    const t = [], r = [], a = [S];
     for (const [o, i] of Object.entries(e)) {
       if (i == null) continue;
       if (o === "modes" && typeof i == "object") {
@@ -5344,13 +5371,13 @@ let v = class extends x {
               h
             )) {
               if (f == null || typeof f == "object") continue;
-              const k = String(f), V = b.startsWith("--") ? b : `--${b}`, Pt = V.slice(2), Et = fe(V, k);
+              const w = String(f), V = b.startsWith("--") ? b : `--${b}`, Pt = V.slice(2), Dt = fe(V, w);
               t.push({
                 varName: V,
                 yamlKey: Pt,
-                meta: Et,
-                original: k,
-                current: k,
+                meta: Dt,
+                original: w,
+                current: w,
                 inTheme: !0,
                 mode: p
               });
@@ -5362,15 +5389,15 @@ let v = class extends x {
         r.push(o);
         continue;
       }
-      const n = String(i), d = o.startsWith("--") ? o : `--${o}`, c = d.slice(2), u = fe(d, n);
+      const n = String(i), c = o.startsWith("--") ? o : `--${o}`, d = c.slice(2), u = fe(c, n);
       t.push({
-        varName: d,
-        yamlKey: c,
+        varName: c,
+        yamlKey: d,
         meta: u,
         original: n,
         current: n,
         inTheme: !0,
-        mode: w
+        mode: S
       });
     }
     this._skippedKeys = r, this._rows = t, this._modes = a;
@@ -5392,7 +5419,7 @@ let v = class extends x {
     ), o = [];
     for (const i of r.schema.variables) {
       if (a.has(i.name)) continue;
-      const n = t === w ? i.default ?? "" : "";
+      const n = t === S ? i.default ?? "" : "";
       o.push({
         varName: i.name,
         yamlKey: i.name.startsWith("--") ? i.name.slice(2) : i.name,
@@ -5413,9 +5440,9 @@ let v = class extends x {
       return;
     }
     const t = this._rows.filter(
-      (c) => !c.inTheme && !c.markedForRemoval && c.current !== c.original && c.current !== ""
+      (d) => !d.inTheme && !d.markedForRemoval && d.current !== d.original && d.current !== ""
     ).length, r = this._rows.filter(
-      (c) => c.inTheme && !c.markedForRemoval && c.current !== c.original
+      (d) => d.inTheme && !d.markedForRemoval && d.current !== d.original
     ).length, a = this._removingCount(), o = [];
     r > 0 && o.push(
       s(
@@ -5443,17 +5470,17 @@ let v = class extends x {
     });
     if (!confirm(n)) return;
     this._saveStatus = { state: "saving" };
-    const d = this._buildSaveMerge();
+    const c = this._buildSaveMerge();
     try {
-      const c = await this.hass.connection.sendMessagePromise({
+      const d = await this.hass.connection.sendMessagePromise({
         type: "theme_studio/save_theme",
         file: this.file,
         theme_name: this.themeName,
-        variables: d
+        variables: c
       });
-      this._originalFullTheme = d, this._rows = this._rows.filter((u) => !u.markedForRemoval).map((u) => u.inTheme ? { ...u, original: u.current } : u.current !== u.original && u.current !== "" ? { ...u, original: u.current, inTheme: !0 } : u), this._activeTab !== T && this._ensurePluginRows(this._activeTab, this._activeMode), this._saveStatus = { state: "success", backup: c.backup };
-    } catch (c) {
-      const u = c instanceof Error ? c.message : String(c);
+      this._originalFullTheme = c, this._rows = this._rows.filter((u) => !u.markedForRemoval).map((u) => u.inTheme ? { ...u, original: u.current } : u.current !== u.original && u.current !== "" ? { ...u, original: u.current, inTheme: !0 } : u), this._activeTab !== T && this._ensurePluginRows(this._activeTab, this._activeMode), this._saveStatus = { state: "success", backup: d.backup };
+    } catch (d) {
+      const u = d instanceof Error ? d.message : String(d);
       this._saveStatus = { state: "error", msg: u };
     }
   }
@@ -5502,8 +5529,8 @@ let v = class extends x {
         })
       );
     } catch (n) {
-      const d = n instanceof Error ? n.message : String(n);
-      this._saveStatus = { state: "error", msg: d };
+      const c = n instanceof Error ? n.message : String(n);
+      this._saveStatus = { state: "error", msg: c };
     }
   }
   /**
@@ -5518,48 +5545,48 @@ let v = class extends x {
         e[o] = i;
         continue;
       }
-      const n = o.startsWith("--") ? o.slice(2) : o, d = this._rows.find(
-        (c) => c.mode === w && c.inTheme && c.yamlKey === n
+      const n = o.startsWith("--") ? o.slice(2) : o, c = this._rows.find(
+        (d) => d.mode === S && d.inTheme && d.yamlKey === n
       );
-      if (d) {
-        if (d.markedForRemoval) {
-          r.add(d.varName);
+      if (c) {
+        if (c.markedForRemoval) {
+          r.add(c.varName);
           continue;
         }
-        e[o] = d.current, r.add(d.varName);
+        e[o] = c.current, r.add(c.varName);
       } else
         e[o] = i;
     }
     for (const o of this._rows)
-      o.mode === w && (o.inTheme || o.markedForRemoval || o.current !== o.original && o.current !== "" && (r.has(o.varName) || (e[o.yamlKey] = o.current)));
-    const a = this._modes.filter((o) => o !== w);
+      o.mode === S && (o.inTheme || o.markedForRemoval || o.current !== o.original && o.current !== "" && (r.has(o.varName) || (e[o.yamlKey] = o.current)));
+    const a = this._modes.filter((o) => o !== S);
     if (a.length > 0 || Object.keys(t).length > 0) {
       const o = {}, i = /* @__PURE__ */ new Set([
         ...Object.keys(t),
         ...a
       ]);
       for (const n of i) {
-        const d = t[n] || {}, c = {}, u = /* @__PURE__ */ new Set();
-        for (const [p, h] of Object.entries(d)) {
+        const c = t[n] || {}, d = {}, u = /* @__PURE__ */ new Set();
+        for (const [p, h] of Object.entries(c)) {
           if (typeof h == "object" && h !== null) {
-            c[p] = h;
+            d[p] = h;
             continue;
           }
           const b = p.startsWith("--") ? p.slice(2) : p, f = this._rows.find(
-            (k) => k.mode === n && k.inTheme && k.yamlKey === b
+            (w) => w.mode === n && w.inTheme && w.yamlKey === b
           );
           if (f) {
             if (f.markedForRemoval) {
               u.add(f.varName);
               continue;
             }
-            c[p] = f.current, u.add(f.varName);
+            d[p] = f.current, u.add(f.varName);
           } else
-            c[p] = h;
+            d[p] = h;
         }
         for (const p of this._rows)
-          p.mode === n && (p.inTheme || p.markedForRemoval || p.current !== p.original && p.current !== "" && (u.has(p.varName) || (c[p.yamlKey] = p.current)));
-        Object.keys(c).length > 0 && (o[n] = c);
+          p.mode === n && (p.inTheme || p.markedForRemoval || p.current !== p.original && p.current !== "" && (u.has(p.varName) || (d[p.yamlKey] = p.current)));
+        Object.keys(d).length > 0 && (o[n] = d);
       }
       Object.keys(o).length > 0 && (e.modes = o);
     }
@@ -5569,19 +5596,19 @@ let v = class extends x {
   _groupByCategory(e) {
     const t = /* @__PURE__ */ new Map();
     for (const n of oe())
-      for (const d of n.schema.categories)
-        t.has(d.id) || t.set(d.id, d);
+      for (const c of n.schema.categories)
+        t.has(c.id) || t.set(c.id, c);
     const r = /* @__PURE__ */ new Map();
     for (const n of e) {
-      let d;
-      n.meta.source === "heuristic" ? d = ue.id : n.meta.category && t.has(n.meta.category) ? d = n.meta.category : d = pe.id;
-      const c = r.get(d) ?? [];
-      c.push(n), r.set(d, c);
+      let c;
+      n.meta.source === "heuristic" ? c = ue.id : n.meta.category && t.has(n.meta.category) ? c = n.meta.category : c = pe.id;
+      const d = r.get(c) ?? [];
+      d.push(n), r.set(c, d);
     }
     const a = [];
-    for (const [n, d] of t) {
-      const c = r.get(n);
-      c && c.length > 0 && a.push({ ...d, rows: c });
+    for (const [n, c] of t) {
+      const d = r.get(n);
+      d && d.length > 0 && a.push({ ...c, rows: d });
     }
     const o = r.get(ue.id);
     o && o.length > 0 && a.push({ ...ue, rows: o });
@@ -5665,6 +5692,55 @@ let v = class extends x {
     const e = this._rows.filter((t) => t.mode === this._activeMode);
     return this._activeTab === T ? e.filter((t) => t.inTheme) : e.filter((t) => t.meta.plugin === this._activeTab);
   }
+  /** Ist das aktuell editierte Theme das globale Default-Theme? */
+  _isDefault() {
+    return this._defaultJustSet ? !0 : !!this.themeName && this.hass?.themes?.default_theme === this.themeName;
+  }
+  /**
+   * Setzt das aktuelle Theme als globales Default (frontend.set_theme).
+   * HA bietet dafür keine eigene UI. Setzt nur das allgemeine Default
+   * (`frontend_default_theme`) — Themes mit eigenen modes.light/dark werden
+   * von HA passend angewandt.
+   */
+  async _setDefault() {
+    if (!(this._isDefault() || this._settingDefault || !this.themeName)) {
+      this._settingDefault = !0, this._defaultError = null;
+      try {
+        await this.hass.connection.sendMessagePromise({
+          type: "call_service",
+          domain: "frontend",
+          service: "set_theme",
+          service_data: { name: this.themeName }
+        }), this._defaultJustSet = !0;
+      } catch (e) {
+        this._defaultError = e instanceof Error ? e.message : String(e);
+      } finally {
+        this._settingDefault = !1;
+      }
+    }
+  }
+  _renderDefaultBtn() {
+    if (this._loading || this._error) return "";
+    const e = this._isDefault();
+    return l`
+      <button
+        class="default-btn ${e ? "is-default" : ""}"
+        ?disabled=${e || this._settingDefault}
+        @click=${this._setDefault}
+        title=${s(e ? "editor.is_default_tooltip" : "editor.set_default_tooltip")}
+      >
+        ${e ? "★" : "☆"}
+        ${this._settingDefault ? s("editor.setting_default") : s(e ? "editor.is_default" : "editor.set_default")}
+      </button>
+    `;
+  }
+  _renderDefaultError() {
+    return this._defaultError ? l`
+      <div class="default-error">
+        ✗ ${s("editor.set_default_failed")}: ${this._defaultError}
+      </div>
+    ` : "";
+  }
   // ─── Rendering ──────────────────────────────────────────────────────
   render() {
     return l`
@@ -5676,7 +5752,7 @@ let v = class extends x {
           <div class="theme-name">${this.themeName}</div>
           <code>${this.file}</code>
         </div>
-        ${this._renderDirtyBadge()}
+        ${this._renderDirtyBadge()} ${this._renderDefaultBtn()}
         <button
           class="preview-toggle ${this._showPreview ? "active" : ""}"
           @click=${this._togglePreview}
@@ -5707,8 +5783,8 @@ let v = class extends x {
           ${this._saveStatus.state === "saving" ? s("common.saving") : this._saveStatus.state === "forking" ? s("editor.forking") : this.hacsManaged ? s("editor.save_as_own") : s("common.save")}
         </button>
       </div>
-      ${this._renderHacsNotice()} ${this._renderModeBar()}
-      ${this._renderTabs()} ${this._renderSaveStatus()}
+      ${this._renderDefaultError()} ${this._renderHacsNotice()}
+      ${this._renderModeBar()} ${this._renderTabs()} ${this._renderSaveStatus()}
       <div class="body-grid ${this._showPreview ? "with-preview" : ""}">
         <div class="editor-col">${this._renderBody()}</div>
         ${this._showPreview ? l`<div class="preview-col">
@@ -5748,7 +5824,7 @@ let v = class extends x {
               class="mode-btn ${this._activeMode === e ? "active" : ""}"
               @click=${() => this._onModeSelect(e)}
             >
-              ${Se(e)}
+              ${Ce(e)}
               ${t > 0 ? l`<span class="mode-count">${t} ●</span>` : ""}
             </button>
           `;
@@ -5835,21 +5911,21 @@ let v = class extends x {
       </div>`;
     const e = this._visibleRows();
     if (e.length === 0) {
-      const r = this._activeTab === T ? this._activeMode === w ? s("editor.empty_default") : s("editor.empty_mode", void 0, {
-        mode: Se(this._activeMode)
+      const r = this._activeTab === T ? this._activeMode === S ? s("editor.empty_default") : s("editor.empty_mode", void 0, {
+        mode: Ce(this._activeMode)
       }) : s("editor.empty_plugin");
       return l`<div class="empty">${r}</div>`;
     }
     const t = this._groupByCategory(e);
     return l`
-      ${this._activeTab === T && this._activeMode === w && this._skippedKeys.length > 0 ? l`<div class="notice">
+      ${this._activeTab === T && this._activeMode === S && this._skippedKeys.length > 0 ? l`<div class="notice">
             ${s("editor.notice_skipped_prefix")}
             ${this._skippedKeys.map(
       (r, a) => l`${a > 0 ? ", " : ""}<code>${r}</code>`
     )}${s("editor.notice_skipped_suffix")}
           </div>` : ""}
-      ${this._activeMode !== w ? l`<div class="notice">
-            <strong>${Se(this._activeMode)}-Mode:</strong>
+      ${this._activeMode !== S ? l`<div class="notice">
+            <strong>${Ce(this._activeMode)}-Mode:</strong>
             ${s("editor.notice_mode_prefix")}
             <code>modes.${this._activeMode}</code>
             ${s("editor.notice_mode_suffix")}
@@ -5860,7 +5936,7 @@ let v = class extends x {
             <span class="row-tag default">${s("editor.tag_default")}</span>${s(
       "editor.notice_plugin_middle"
     )}
-            ${this._activeMode === w ? s("editor.notice_plugin_top_level") : l`${s("editor.notice_plugin_override")}
+            ${this._activeMode === S ? s("editor.notice_plugin_top_level") : l`${s("editor.notice_plugin_override")}
                   <code>modes.${this._activeMode}</code>`}${s(
       "editor.notice_plugin_suffix"
     )}
@@ -5957,7 +6033,7 @@ let v = class extends x {
     }
   }
 };
-v.styles = B`
+y.styles = B`
     :host {
       display: block;
       max-width: 1100px;
@@ -6031,6 +6107,34 @@ v.styles = B`
     .danger-btn[disabled] {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+    .default-btn {
+      background: none;
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      border-radius: 6px;
+      padding: 8px 14px;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+      font-size: 0.9rem;
+    }
+    .default-btn:hover:not([disabled]) {
+      background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
+    }
+    .default-btn.is-default {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      opacity: 1;
+      cursor: default;
+    }
+    .default-error {
+      padding: 10px 16px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      background: rgba(219, 68, 55, 0.1);
+      border-left: 4px solid var(--error-color, #db4437);
+      color: var(--error-color, #db4437);
+      font-size: 0.9rem;
     }
     .breadcrumb {
       flex: 1;
@@ -6335,57 +6439,66 @@ v.styles = B`
       border-radius: 3px;
     }
   `;
-C([
+x([
   g({ attribute: !1 })
-], v.prototype, "hass", 2);
-C([
+], y.prototype, "hass", 2);
+x([
   g({ type: String })
-], v.prototype, "file", 2);
-C([
+], y.prototype, "file", 2);
+x([
   g({ type: String })
-], v.prototype, "themeName", 2);
-C([
+], y.prototype, "themeName", 2);
+x([
   g({ type: Boolean })
-], v.prototype, "hacsManaged", 2);
-C([
+], y.prototype, "hacsManaged", 2);
+x([
   m()
-], v.prototype, "_loading", 2);
-C([
+], y.prototype, "_loading", 2);
+x([
   m()
-], v.prototype, "_error", 2);
-C([
+], y.prototype, "_error", 2);
+x([
   m()
-], v.prototype, "_rows", 2);
-C([
+], y.prototype, "_rows", 2);
+x([
   m()
-], v.prototype, "_skippedKeys", 2);
-C([
+], y.prototype, "_skippedKeys", 2);
+x([
   m()
-], v.prototype, "_saveStatus", 2);
-C([
+], y.prototype, "_saveStatus", 2);
+x([
   m()
-], v.prototype, "_activeTab", 2);
-C([
+], y.prototype, "_activeTab", 2);
+x([
   m()
-], v.prototype, "_activeMode", 2);
-C([
+], y.prototype, "_activeMode", 2);
+x([
   m()
-], v.prototype, "_modes", 2);
-C([
+], y.prototype, "_modes", 2);
+x([
   m()
-], v.prototype, "_showPreview", 2);
-C([
+], y.prototype, "_showPreview", 2);
+x([
   m()
-], v.prototype, "_previewSrc", 2);
-v = C([
+], y.prototype, "_previewSrc", 2);
+x([
+  m()
+], y.prototype, "_settingDefault", 2);
+x([
+  m()
+], y.prototype, "_defaultJustSet", 2);
+x([
+  m()
+], y.prototype, "_defaultError", 2);
+y = x([
   M("ts-editor-view")
-], v);
+], y);
 var oo = Object.defineProperty, ao = Object.getOwnPropertyDescriptor, j = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? ao(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && oo(t, r, o), o;
 };
-let D = class extends x {
+let E = class extends k {
   constructor() {
     super(...arguments), this._loading = !0, this._modules = [], this._errors = [], this._rootExists = !0, this._loadError = null;
   }
@@ -6467,7 +6580,7 @@ let D = class extends x {
     );
   }
 };
-D.styles = B`
+E.styles = B`
     :host {
       display: block;
       max-width: 800px;
@@ -6592,25 +6705,25 @@ D.styles = B`
   `;
 j([
   g({ attribute: !1 })
-], D.prototype, "hass", 2);
+], E.prototype, "hass", 2);
 j([
   m()
-], D.prototype, "_loading", 2);
+], E.prototype, "_loading", 2);
 j([
   m()
-], D.prototype, "_modules", 2);
+], E.prototype, "_modules", 2);
 j([
   m()
-], D.prototype, "_errors", 2);
+], E.prototype, "_errors", 2);
 j([
   m()
-], D.prototype, "_rootExists", 2);
+], E.prototype, "_rootExists", 2);
 j([
   m()
-], D.prototype, "_loadError", 2);
-D = j([
+], E.prototype, "_loadError", 2);
+E = j([
   M("ts-module-picker")
-], D);
+], E);
 var io = Object.defineProperty, no = Object.getOwnPropertyDescriptor, H = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? no(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
@@ -6626,7 +6739,7 @@ function so(e) {
     let n;
     if (e[i] === ",") {
       for (i++; i < e.length && /\s/.test(e[i]); ) i++;
-      const c = i;
+      const d = i;
       let u = 1;
       for (; i < e.length && u > 0; ) {
         const h = e[i];
@@ -6635,15 +6748,15 @@ function so(e) {
           break;
         i++;
       }
-      const p = e.slice(c, i).trim();
+      const p = e.slice(d, i).trim();
       p.length > 0 && (n = p);
     }
-    const d = t.get(o);
-    d ? (d.count++, !d.fallback && n && (d.fallback = n)) : t.set(o, { name: o, fallback: n, count: 1 });
+    const c = t.get(o);
+    c ? (c.count++, !c.fallback && n && (c.fallback = n)) : t.set(o, { name: o, fallback: n, count: 1 });
   }
   return [...t.values()].sort((o, i) => o.name.localeCompare(i.name));
 }
-let A = class extends x {
+let A = class extends k {
   constructor() {
     super(...arguments), this.file = "", this.moduleId = "", this._loading = !0, this._error = null, this._content = {}, this._original = {}, this._saveStatus = { state: "idle" }, this._onBeforeUnload = (e) => {
       this._isDirty() && (e.preventDefault(), e.returnValue = "");
@@ -6724,9 +6837,9 @@ let A = class extends x {
       "supported",
       "is_global",
       "code"
-    ]), d = Object.keys(this._content).filter(
+    ]), c = Object.keys(this._content).filter(
       (u) => !n.has(u)
-    ), c = this._isDirty();
+    ), d = this._isDirty();
     return l`
       <div class="toolbar">
         <button class="back-btn" @click=${this._onBack}>
@@ -6736,17 +6849,17 @@ let A = class extends x {
           <div class="module-name">${e}</div>
           <code>${this.file} · ${this.moduleId}</code>
         </div>
-        ${c ? l`<span class="dirty-badge">${s("common.dirty_badge")}</span>` : ""}
+        ${d ? l`<span class="dirty-badge">${s("common.dirty_badge")}</span>` : ""}
         <button
           class="danger-btn"
-          ?disabled=${!c || this._saveStatus.state === "saving"}
+          ?disabled=${!d || this._saveStatus.state === "saving"}
           @click=${this._resetAll}
         >
           ${s("common.discard")}
         </button>
         <button
           class="primary-btn"
-          ?disabled=${!c || this._saveStatus.state === "saving"}
+          ?disabled=${!d || this._saveStatus.state === "saving"}
           @click=${this._save}
         >
           ${this._saveStatus.state === "saving" ? s("common.saving") : s("common.save")}
@@ -6818,9 +6931,9 @@ let A = class extends x {
     )}
           />
         </div>
-        ${d.length > 0 ? l`<div class="extra-keys">
+        ${c.length > 0 ? l`<div class="extra-keys">
               ${s("module_editor.extra_keys")}:
-              ${d.map(
+              ${c.map(
       (u, p) => l`${p > 0 ? ", " : ""}<code>${u}</code>`
     )}
             </div>` : ""}
@@ -7244,17 +7357,17 @@ var lo = Object.defineProperty, co = Object.getOwnPropertyDescriptor, P = (e, t,
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && lo(t, r, o), o;
 };
-const y = "default", uo = {
+const _ = "default", uo = {
   selection: null,
   full: {},
-  scalarsByMode: { [y]: {} },
-  modes: [y],
+  scalarsByMode: { [_]: {} },
+  modes: [_],
   loading: !1,
   error: null
 };
-let S = class extends x {
+let C = class extends k {
   constructor() {
-    super(...arguments), this._themes = [], this._themesError = null, this._themesLoading = !0, this._sideA = this._freshSide(), this._sideB = this._freshSide(), this._diffOnly = !0, this._copyStatus = { state: "idle" }, this._activeMode = y;
+    super(...arguments), this._themes = [], this._themesError = null, this._themesLoading = !0, this._sideA = this._freshSide(), this._sideB = this._freshSide(), this._diffOnly = !0, this._copyStatus = { state: "idle" }, this._activeMode = _;
   }
   get _busyCopy() {
     return this._copyStatus.state === "copying";
@@ -7262,8 +7375,8 @@ let S = class extends x {
   _freshSide() {
     return {
       ...uo,
-      scalarsByMode: { [y]: {} },
-      modes: [y]
+      scalarsByMode: { [_]: {} },
+      modes: [_]
     };
   }
   connectedCallback() {
@@ -7323,7 +7436,7 @@ let S = class extends x {
    */
   _extractScalarsByMode(e) {
     const t = {
-      [y]: {}
+      [_]: {}
     };
     for (const [r, a] of Object.entries(e)) {
       if (r === "modes" && a && typeof a == "object" && !Array.isArray(a)) {
@@ -7332,28 +7445,28 @@ let S = class extends x {
         )) {
           if (!i || typeof i != "object") continue;
           const n = {};
-          for (const [d, c] of Object.entries(
+          for (const [c, d] of Object.entries(
             i
           ))
-            c != null && typeof c != "object" && (n[d] = String(c));
+            d != null && typeof d != "object" && (n[c] = String(d));
           t[o] = n;
         }
         continue;
       }
-      a != null && typeof a != "object" && (t[y][r] = String(a));
+      a != null && typeof a != "object" && (t[_][r] = String(a));
     }
     return t;
   }
   /** Union der Modes aus A und B, "default" zuerst, Rest alphabetisch. */
   _availableModes() {
-    const e = /* @__PURE__ */ new Set([y]);
+    const e = /* @__PURE__ */ new Set([_]);
     for (const r of this._sideA.modes) e.add(r);
     for (const r of this._sideB.modes) e.add(r);
-    const t = [...e].filter((r) => r !== y).sort();
-    return [y, ...t];
+    const t = [...e].filter((r) => r !== _).sort();
+    return [_, ...t];
   }
   _modeLabel(e) {
-    return e === y ? s("compare.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
+    return e === _ ? s("compare.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
   }
   _onSelect(e, t) {
     const r = t.target.value;
@@ -7419,10 +7532,10 @@ let S = class extends x {
   }
   _renderModeSelector() {
     const e = this._availableModes();
-    return e.length <= 1 ? "" : (e.includes(this._activeMode) || (this._activeMode = y), l`
+    return e.length <= 1 ? "" : (e.includes(this._activeMode) || (this._activeMode = _), l`
       <div class="mode-selector">
         ${e.map((t) => {
-      const r = this._sideA.modes.includes(t), a = this._sideB.modes.includes(t), o = t !== y && (!r || !a), i = this._modeLabel(t);
+      const r = this._sideA.modes.includes(t), a = this._sideB.modes.includes(t), o = t !== _ && (!r || !a), i = this._modeLabel(t);
       return l`
             <button
               class=${t === this._activeMode ? "active" : ""}
@@ -7466,25 +7579,25 @@ let S = class extends x {
       </div>`;
     if (!e.selection || !t.selection)
       return l`<div class="empty">${s("compare.pick_both")}</div>`;
-    const r = this._activeMode, a = e.scalarsByMode[r] ?? {}, o = t.scalarsByMode[r] ?? {}, i = r === y || e.modes.includes(r), n = r === y || t.modes.includes(r), d = this._modeLabel(r), c = Array.from(
+    const r = this._activeMode, a = e.scalarsByMode[r] ?? {}, o = t.scalarsByMode[r] ?? {}, i = r === _ || e.modes.includes(r), n = r === _ || t.modes.includes(r), c = this._modeLabel(r), d = Array.from(
       /* @__PURE__ */ new Set([...Object.keys(a), ...Object.keys(o)])
-    ).sort(), u = c.map((b) => ({
+    ).sort(), u = d.map((b) => ({
       key: b,
       valA: a[b] ?? null,
       valB: o[b] ?? null
-    })).filter((b) => !this._diffOnly || b.valA === null || b.valB === null ? !0 : b.valA !== b.valB), p = c.reduce((b, f) => {
-      const k = a[f] ?? null, V = o[f] ?? null;
-      return k === null || V === null ? b + 1 : b + (k !== V ? 1 : 0);
-    }, 0), h = r === y ? "" : !i || !n ? l` <em>
+    })).filter((b) => !this._diffOnly || b.valA === null || b.valB === null ? !0 : b.valA !== b.valB), p = d.reduce((b, f) => {
+      const w = a[f] ?? null, V = o[f] ?? null;
+      return w === null || V === null ? b + 1 : b + (w !== V ? 1 : 0);
+    }, 0), h = r === _ ? "" : !i || !n ? l` <em>
               ·
               ${s("compare.mode_missing_hint", void 0, {
       theme: i ? t.selection.theme_name : e.selection.theme_name,
-      mode: d
+      mode: c
     })}
             </em>` : "";
     return l`
       <div class="summary">
-        <strong>${s("compare.mode_label", void 0, { mode: d })}:</strong>
+        <strong>${s("compare.mode_label", void 0, { mode: c })}:</strong>
         ${s("compare.summary", void 0, {
       themeA: e.selection.theme_name,
       countA: Object.keys(a).length,
@@ -7496,7 +7609,7 @@ let S = class extends x {
         >${h}
       </div>
       ${u.length === 0 ? l`<div class="empty">
-            ${s("compare.no_diffs", void 0, { mode: d })}
+            ${s("compare.no_diffs", void 0, { mode: c })}
           </div>` : l`
             <table>
               <thead>
@@ -7515,14 +7628,14 @@ let S = class extends x {
     `;
   }
   _renderRow(e, t, r) {
-    const a = e.startsWith("--") ? e : `--${e}`, o = fe(a, t ?? r ?? void 0), i = t !== null && r === null, n = r !== null && t === null, c = [
+    const a = e.startsWith("--") ? e : `--${e}`, o = fe(a, t ?? r ?? void 0), i = t !== null && r === null, n = r !== null && t === null, d = [
       "row",
       i ? "only-a" : "",
       n ? "only-b" : "",
       !i && !n && t !== r ? "diff" : ""
     ].filter(Boolean).join(" "), u = t !== null && t !== r, p = r !== null && r !== t;
     return l`
-      <tr class=${c}>
+      <tr class=${d}>
         <td class="var-cell">
           ${a}
           ${o.description ? l`<div class="description">${o.description}</div>` : ""}
@@ -7566,13 +7679,13 @@ let S = class extends x {
   async _copy(e, t, r, a) {
     const o = e === "A" ? this._sideA : this._sideB, i = t === "A" ? this._sideA : this._sideB;
     if (!o.selection || !i.selection) return;
-    const n = this._activeMode, d = this._modeLabel(n), u = !(n === y) && !i.modes.includes(n), p = s("compare.copy_confirm", void 0, {
+    const n = this._activeMode, c = this._modeLabel(n), u = !(n === _) && !i.modes.includes(n), p = s("compare.copy_confirm", void 0, {
       key: r,
       value: a,
       from: o.selection.theme_name,
       to: i.selection.theme_name,
       file: i.selection.file,
-      mode: d + (u ? ` ${s("compare.copy_confirm_new_mode")}` : "")
+      mode: c + (u ? ` ${s("compare.copy_confirm_new_mode")}` : "")
     });
     if (!confirm(p)) return;
     this._copyStatus = { state: "copying" };
@@ -7588,7 +7701,7 @@ let S = class extends x {
         state: "success",
         yamlKey: r,
         themeName: i.selection.theme_name,
-        modeLabel: d,
+        modeLabel: c,
         backup: b.backup
       };
     } catch (b) {
@@ -7606,13 +7719,13 @@ let S = class extends x {
    */
   _mergeValue(e, t, r, a) {
     const o = { ...e }, i = (p) => Object.keys(p).find((b) => (b.startsWith("--") ? b.slice(2) : b) === r) ?? r;
-    if (t === y)
+    if (t === _)
       return o[i(o)] = a, o;
-    const n = o.modes, d = n && typeof n == "object" && !Array.isArray(n) ? { ...n } : {}, c = d[t], u = c && typeof c == "object" && !Array.isArray(c) ? { ...c } : {};
-    return u[i(u)] = a, d[t] = u, o.modes = d, o;
+    const n = o.modes, c = n && typeof n == "object" && !Array.isArray(n) ? { ...n } : {}, d = c[t], u = d && typeof d == "object" && !Array.isArray(d) ? { ...d } : {};
+    return u[i(u)] = a, c[t] = u, o.modes = c, o;
   }
 };
-S.styles = B`
+C.styles = B`
     :host {
       display: block;
       max-width: 1200px;
@@ -7821,40 +7934,40 @@ S.styles = B`
   `;
 P([
   g({ attribute: !1 })
-], S.prototype, "hass", 2);
+], C.prototype, "hass", 2);
 P([
   m()
-], S.prototype, "_themes", 2);
+], C.prototype, "_themes", 2);
 P([
   m()
-], S.prototype, "_themesError", 2);
+], C.prototype, "_themesError", 2);
 P([
   m()
-], S.prototype, "_themesLoading", 2);
+], C.prototype, "_themesLoading", 2);
 P([
   m()
-], S.prototype, "_sideA", 2);
+], C.prototype, "_sideA", 2);
 P([
   m()
-], S.prototype, "_sideB", 2);
+], C.prototype, "_sideB", 2);
 P([
   m()
-], S.prototype, "_diffOnly", 2);
+], C.prototype, "_diffOnly", 2);
 P([
   m()
-], S.prototype, "_copyStatus", 2);
+], C.prototype, "_copyStatus", 2);
 P([
   m()
-], S.prototype, "_activeMode", 2);
-S = P([
+], C.prototype, "_activeMode", 2);
+C = P([
   M("ts-compare-view")
-], S);
+], C);
 var po = Object.defineProperty, mo = Object.getOwnPropertyDescriptor, zt = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? mo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && po(t, r, o), o;
 };
-let xe = class extends x {
+let xe = class extends k {
   constructor() {
     super(...arguments), this._log = [];
   }
@@ -8040,13 +8153,13 @@ zt([
 xe = zt([
   M("ts-controls-demo")
 ], xe);
-var ho = Object.defineProperty, bo = Object.getOwnPropertyDescriptor, E = (e, t, r, a) => {
+var ho = Object.defineProperty, bo = Object.getOwnPropertyDescriptor, D = (e, t, r, a) => {
   for (var o = a > 1 ? void 0 : a ? bo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (o = (a ? n(t, r, o) : n(o)) || o);
   return a && o && ho(t, r, o), o;
 };
 const $e = "themes", Be = "modules", Me = "compare";
-let $ = class extends x {
+let $ = class extends k {
   constructor() {
     super(...arguments), this.narrow = !1, this._selectedTheme = null, this._selectedModule = null, this._topTab = $e, this._demoMode = !1, this._hacsError = null, this._hacsErrorDismissed = !1, this._onHashChange = () => {
       this._demoMode = window.location.hash === "#demo";
@@ -8290,34 +8403,34 @@ $.styles = B`
       color: var(--primary-text-color);
     }
   `;
-E([
+D([
   g({ attribute: !1 })
 ], $.prototype, "hass", 2);
-E([
+D([
   g({ type: Boolean })
 ], $.prototype, "narrow", 2);
-E([
+D([
   g({ attribute: !1 })
 ], $.prototype, "route", 2);
-E([
+D([
   m()
 ], $.prototype, "_selectedTheme", 2);
-E([
+D([
   m()
 ], $.prototype, "_selectedModule", 2);
-E([
+D([
   m()
 ], $.prototype, "_topTab", 2);
-E([
+D([
   m()
 ], $.prototype, "_demoMode", 2);
-E([
+D([
   m()
 ], $.prototype, "_hacsError", 2);
-E([
+D([
   m()
 ], $.prototype, "_hacsErrorDismissed", 2);
-$ = E([
+$ = D([
   M("theme-studio-panel")
 ], $);
 //# sourceMappingURL=theme-studio-panel.js.map

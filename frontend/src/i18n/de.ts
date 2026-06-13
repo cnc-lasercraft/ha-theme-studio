@@ -25,6 +25,8 @@ export const messages: Record<string, string> = {
   "picker.badge_hacs_title":
     "HACS-verwaltet — Updates überschreiben deine Änderungen. Studio bietet beim Speichern an, ein eigenes Theme abzuleiten.",
   "picker.badge_own": "Eigen",
+  "picker.badge_default": "Default",
+  "picker.badge_default_title": "Globales Standard-Theme von Home Assistant",
   "picker.delete_tooltip": "Dieses abgeleitete Theme löschen (Backup bleibt)",
   "picker.delete_confirm":
     "Abgeleitetes Theme '{theme}' löschen?\n\nEine Sicherung wird unter themes/.backups/ angelegt — der Schritt ist reversibel.",
@@ -179,6 +181,14 @@ export const messages: Record<string, string> = {
   "editor.fork_prompt_save":
     "'{theme}' ist HACS-verwaltet — direktes Speichern würde beim nächsten HACS-Update überschrieben.\n\nDeine Änderungen werden stattdessen in ein eigenes Theme abgeleitet. Name des neuen Themes:",
   "editor.fork_success": "Als eigenes Theme abgeleitet: '{theme}'",
+  // editor — Default-Theme setzen (v1.1)
+  "editor.set_default": "Als Default setzen",
+  "editor.set_default_tooltip":
+    "Dieses Theme als globales Standard-Theme von Home Assistant setzen (frontend.set_theme)",
+  "editor.setting_default": "Setze…",
+  "editor.is_default": "Standard-Theme",
+  "editor.is_default_tooltip": "Dieses Theme ist bereits das globale Standard-Theme",
+  "editor.set_default_failed": "Default setzen fehlgeschlagen",
 
   // preview-pane
   "preview.label": "Preview",

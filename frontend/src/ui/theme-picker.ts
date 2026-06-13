@@ -146,6 +146,10 @@ export class ThemePicker extends LitElement {
       background: rgba(67, 160, 71, 0.14);
       color: var(--success-color, #43a047);
     }
+    .badge.default {
+      background: var(--primary-color);
+      color: #fff;
+    }
     .meta {
       color: var(--secondary-text-color);
       font-size: 0.85rem;
@@ -252,6 +256,13 @@ export class ThemePicker extends LitElement {
                             : html`<span class="badge own"
                                 >${t("picker.badge_own")}</span
                               >`}
+                          ${this.hass.themes?.default_theme === theme.theme_name
+                            ? html`<span
+                                class="badge default"
+                                title=${t("picker.badge_default_title")}
+                                >★ ${t("picker.badge_default")}</span
+                              >`
+                            : ""}
                         </div>
                         <div class="meta">
                           ${theme.file} ·

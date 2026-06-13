@@ -149,18 +149,18 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 - Rückkanal „Fork-Änderungen upstream beitragen" (PR an das HACS-Repo) — out of scope.
 - Verschieben/Löschen von HACS-Originaldateien — Studio fasst die HACS-Quelle nie an, nur lesen + ableiten.
 
-## v1.x – Default-Theme aus dem Panel setzen (geplant)
+## v1.1 – Default-Theme aus dem Panel setzen (Baustein 7, ✓ erledigt)
 
-**Problem.** HA hat **keine UI** zum Setzen des *globalen* Default-Themes (`frontend_default_theme` in `.storage/frontend_theme`). Das Profil-Dropdown ändert nur die Theme-Präferenz des eingeloggten Users, nicht den globalen Default. Wer im Studio ein (ggf. abgeleitetes) Theme baut, muss den Default-Wechsel aktuell über den Service `frontend.set_theme` in den Entwicklerwerkzeugen machen. Siehe `ha_quirks.md` → „Globales Default-Theme hat keine UI".
+**Problem.** HA hat **keine UI** zum Setzen des *globalen* Default-Themes (`frontend_default_theme` in `.storage/frontend_theme`). Das Profil-Dropdown ändert nur die Theme-Präferenz des eingeloggten Users, nicht den globalen Default. Wer im Studio ein (ggf. abgeleitetes) Theme baut, muss den Default-Wechsel sonst über den Service `frontend.set_theme` in den Entwicklerwerkzeugen machen. Siehe `ha_quirks.md` → „Globales Default-Theme hat keine UI".
 
 **Lösung.** Ein „Als Default setzen"-Button im Theme-Editor, der `frontend.set_theme` mit dem Theme-Namen callt — und ein Default-Marker im Picker.
 
 | Feature | Status | Commit |
 |---|---|---|
-| **„★ Als Default setzen"-Button** im Editor-Header: ruft `hass.callService("frontend", "set_theme", { name: <themeName> })`. Optional `mode: "dark"` für das Dark-Default. Kein eigener WS-Command nötig (HA-Service existiert). | 📋 geplant | — |
-| **Default-Marker im Picker:** aktuellen Default aus `.storage/frontend_theme` lesen (kleiner WS-Read im Backend, analog `list_themes`) und das aktive Default-Theme mit „★ Default" markieren. | 📋 geplant | — |
-| **Fork-Guard-Verzahnung:** Nach „Ableiten" optionaler Hinweis „Jetzt als Default aktivieren?" — so wird direkt das eigene, update-sichere Theme zum Default. | 📋 geplant | — |
+| **„☆ Als Default setzen"-Button** im Editor-Header: schickt `call_service frontend.set_theme { name: <themeName> }` via `connection.sendMessagePromise`. Setzt nur den allgemeinen Default (Themes mit modes.light/dark werden von HA passend angewandt). Wird nach Erfolg zu „★ Standard-Theme" (deaktiviert), Fehler als Banner. | ✓ erledigt (B7) | — |
+| **Default-Marker im Picker:** liest den aktuellen Default direkt aus `hass.themes.default_theme` (kein Backend nötig) und markiert das aktive Default-Theme mit blauem „★ Default"-Badge. | ✓ erledigt (B7) | — |
+| **Fork-Guard-Verzahnung:** Nach „Ableiten" optionaler Hinweis „Jetzt als Default aktivieren?". | 📋 offen (optional) | — |
 
 **Hinweis:** Steht bewusst im Kontrast zum v1.1-Ausschluss „Auto-Umschalten des aktiven Themes". Hier geht es nicht um automatisches Umschalten, sondern um eine **explizite, vom User ausgelöste** Default-Setzung, die HA selbst per UI nicht anbietet.
 
-**Notiert 2026-06-13** auf User-Wunsch — Reihenfolge: erst v1.1 Fork-Guard fertig, dann dieser Punkt.
+**Erledigt 2026-06-13** (B7). Dark-Default separat setzen + Post-Fork-Hinweis bleiben optional offen.
