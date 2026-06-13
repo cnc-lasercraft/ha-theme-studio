@@ -4263,9 +4263,9 @@ function Dr(e, t) {
   return `${a} · vermutlich ${o} (Heuristik).`;
 }
 const Er = /* @__PURE__ */ Object.assign({
-  "../plugins/bubble-card/manifest.json": lr,
-  "../plugins/ha-core/manifest.json": cr,
-  "../plugins/mushroom/manifest.json": pr
+  "../plugins/bubble-card/plugin.json": lr,
+  "../plugins/ha-core/plugin.json": cr,
+  "../plugins/mushroom/plugin.json": pr
 }), Hr = /* @__PURE__ */ Object.assign({
   "../plugins/bubble-card/schema.json": hr,
   "../plugins/ha-core/schema.json": gr,
@@ -4274,7 +4274,7 @@ const Er = /* @__PURE__ */ Object.assign({
 function Fr() {
   const e = [];
   for (const [t, r] of Object.entries(Er)) {
-    const a = t.replace(/\/manifest\.json$/, "/schema.json"), o = Hr[a];
+    const a = t.replace(/\/plugin\.json$/, "/schema.json"), o = Hr[a];
     if (!o) {
       console.warn(
         `[theme-studio] Plugin at ${t} has no schema.json — skipping.`

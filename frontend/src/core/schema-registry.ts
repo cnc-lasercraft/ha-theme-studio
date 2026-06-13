@@ -1,10 +1,11 @@
-// Plugin-Registry. Lädt alle `plugins/*/manifest.json` + `schema.json` zur
+// Plugin-Registry. Lädt alle `plugins/*/plugin.json` + `schema.json` zur
 // Build-Zeit (Vite `import.meta.glob` mit `eager: true` → JSON wird ins
 // Bundle inlined) und exportiert Lookup-Funktionen.
 //
 // Neues Plugin = neue Dir unter `frontend/src/plugins/<id>/` mit den
-// beiden JSON-Files. Kein Code-Change hier nötig — Vite picked es beim
-// nächsten Build auf.
+// beiden JSON-Files (`plugin.json` + `schema.json`). Kein Code-Change hier
+// nötig — Vite picked es beim nächsten Build auf. (Metadaten heißen bewusst
+// `plugin.json`, nicht manifest.json — siehe Glob unten.)
 
 import { getLocale } from "./i18n";
 import { inferHint, inferType } from "./heuristic";
@@ -17,8 +18,11 @@ import type {
   VariableMeta,
 } from "./types";
 
+// Plugin-Metadaten heißen `plugin.json` (NICHT manifest.json): HACS' Default-
+// Validierung sucht repoweit nach genau EINER `*manifest.json` (die HA-
+// Integration) — weitere manifest.json würden sie brechen.
 const manifestModules = import.meta.glob<{ default: PluginManifest }>(
-  "../plugins/*/manifest.json",
+  "../plugins/*/plugin.json",
   { eager: true },
 );
 
@@ -30,7 +34,7 @@ const schemaModules = import.meta.glob<{ default: PluginSchema }>(
 function loadAll(): LoadedPlugin[] {
   const plugins: LoadedPlugin[] = [];
   for (const [path, mod] of Object.entries(manifestModules)) {
-    const schemaPath = path.replace(/\/manifest\.json$/, "/schema.json");
+    const schemaPath = path.replace(/\/plugin\.json$/, "/schema.json");
     const schemaMod = schemaModules[schemaPath];
     if (!schemaMod) {
       console.warn(
