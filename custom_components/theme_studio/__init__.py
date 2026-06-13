@@ -4,13 +4,14 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.frontend import async_register_built_in_panel
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 
 from .const import (
-    DOMAIN,  # noqa: F401 — re-exportiert
+    DOMAIN,
     PANEL_CUSTOM_NAME,
     PANEL_ICON,
     PANEL_TITLE,
@@ -21,6 +22,10 @@ from .const import (
 from .websocket_api import async_register_websocket_api
 
 _LOGGER = logging.getLogger(__name__)
+
+# theme_studio: hat keine YAML-Config-Parameter (nur Trigger für async_setup).
+# cv.empty_config_schema deklariert das explizit (hassfest-Anforderung).
+CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
 
 # HACS-Layout: Bundle liegt INSIDE der Integration unter
 # custom_components/theme_studio/dist/. So funktioniert HACS-Install
