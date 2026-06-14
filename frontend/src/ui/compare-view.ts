@@ -16,6 +16,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { t } from "../core/i18n";
 import { getVariableMeta } from "../core/schema-registry";
 import type { HomeAssistant } from "../types";
+import { confirmDialog } from "./modal";
 
 interface ThemeEntry {
   file: string;
@@ -880,7 +881,7 @@ export class TsCompareView extends LitElement {
         modeLabel +
         (targetMissingMode ? ` ${t("compare.copy_confirm_new_mode")}` : ""),
     });
-    if (!confirm(confirmMsg)) return;
+    if (!(await confirmDialog({ message: confirmMsg }))) return;
 
     this._copyStatus = { state: "copying" };
 

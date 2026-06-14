@@ -48,6 +48,7 @@ import "./controls/length-slider";
 import "./controls/raw-input";
 import "./controls/background-picker";
 import "./preview-pane";
+import { confirmDialog, promptDialog } from "./modal";
 
 interface GetThemeResult {
   file: string;
@@ -793,7 +794,7 @@ export class TsEditorView extends LitElement {
       file: this.file,
       theme: this.themeName,
     });
-    if (!confirm(confirmMsg)) return;
+    if (!(await confirmDialog({ message: confirmMsg }))) return;
 
     this._saveStatus = { state: "saving" };
 
@@ -861,7 +862,10 @@ export class TsEditorView extends LitElement {
       undefined,
       { theme: this.themeName },
     );
-    const newName = window.prompt(promptMsg, defaultName);
+    const newName = await promptDialog({
+      message: promptMsg,
+      defaultValue: defaultName,
+    });
     if (newName === null) return; // abgebrochen
     const trimmed = newName.trim();
     if (trimmed === "") return;
@@ -1102,10 +1106,15 @@ export class TsEditorView extends LitElement {
     );
   }
 
-  private _resetAll() {
+  private async _resetAll() {
     const dirtyCount = this._dirtyCount();
     if (dirtyCount === 0) return;
-    if (!confirm(t("editor.reset_confirm", undefined, { n: dirtyCount }))) {
+    if (
+      !(await confirmDialog({
+        message: t("editor.reset_confirm", undefined, { n: dirtyCount }),
+        danger: true,
+      }))
+    ) {
       return;
     }
     this._revertAll();
@@ -1148,10 +1157,15 @@ export class TsEditorView extends LitElement {
     );
   }
 
-  private _onBack() {
+  private async _onBack() {
     const dirtyCount = this._dirtyCount();
     if (dirtyCount > 0) {
-      if (!confirm(t("editor.back_confirm", undefined, { n: dirtyCount }))) {
+      if (
+        !(await confirmDialog({
+          message: t("editor.back_confirm", undefined, { n: dirtyCount }),
+          danger: true,
+        }))
+      ) {
         return;
       }
     }

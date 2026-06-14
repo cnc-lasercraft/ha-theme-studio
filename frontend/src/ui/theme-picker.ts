@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { t } from "../core/i18n";
 import type { HomeAssistant } from "../types";
+import { confirmDialog } from "./modal";
 
 interface ThemeEntry {
   file: string;
@@ -355,9 +356,11 @@ export class ThemePicker extends LitElement {
    */
   private async _deleteFork(theme: ThemeEntry) {
     if (this._deleting !== null) return;
-    const ok = window.confirm(
-      t("picker.delete_confirm", undefined, { theme: theme.theme_name }),
-    );
+    const ok = await confirmDialog({
+      message: t("picker.delete_confirm", undefined, { theme: theme.theme_name }),
+      confirmLabel: t("common.delete"),
+      danger: true,
+    });
     if (!ok) return;
 
     this._actionError = null;

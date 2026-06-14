@@ -17,6 +17,7 @@ import { t } from "../core/i18n";
 import { getVariableMeta } from "../core/schema-registry";
 import type { VariableMeta } from "../core/types";
 import type { HomeAssistant } from "../types";
+import { confirmDialog } from "./modal";
 
 interface GetModuleResult {
   file: string;
@@ -461,9 +462,14 @@ export class TsModuleEditor extends LitElement {
     return JSON.stringify(this._content) !== JSON.stringify(this._original);
   }
 
-  private _onBack() {
+  private async _onBack() {
     if (this._isDirty()) {
-      if (!confirm(t("module_editor.back_confirm"))) {
+      if (
+        !(await confirmDialog({
+          message: t("module_editor.back_confirm"),
+          danger: true,
+        }))
+      ) {
         return;
       }
     }
@@ -479,12 +485,12 @@ export class TsModuleEditor extends LitElement {
   private async _save() {
     if (!this._isDirty() || this._saveStatus.state === "saving") return;
     if (
-      !confirm(
-        t("module_editor.save_confirm", undefined, {
+      !(await confirmDialog({
+        message: t("module_editor.save_confirm", undefined, {
           moduleId: this.moduleId,
           file: this.file,
         }),
-      )
+      }))
     ) {
       return;
     }
@@ -505,9 +511,14 @@ export class TsModuleEditor extends LitElement {
     }
   }
 
-  private _resetAll() {
+  private async _resetAll() {
     if (!this._isDirty()) return;
-    if (!confirm(t("module_editor.reset_confirm"))) {
+    if (
+      !(await confirmDialog({
+        message: t("module_editor.reset_confirm"),
+        danger: true,
+      }))
+    ) {
       return;
     }
     this._content = JSON.parse(JSON.stringify(this._original));
