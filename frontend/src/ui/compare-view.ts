@@ -247,6 +247,19 @@ export class TsCompareView extends LitElement {
     .error {
       color: var(--error-color);
     }
+    .retry-btn {
+      margin-top: 12px;
+      padding: 8px 16px;
+      border: 1px solid var(--primary-color, #03a9f4);
+      border-radius: 6px;
+      background: none;
+      color: var(--primary-color, #03a9f4);
+      font: inherit;
+      cursor: pointer;
+    }
+    .retry-btn:hover {
+      background: rgba(3, 169, 244, 0.08);
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -538,6 +551,11 @@ export class TsCompareView extends LitElement {
     if (this._themesError) {
       return html`<div class="error">
         ${t("common.error_prefix")}: ${this._themesError}
+        <div>
+          <button class="retry-btn" @click=${() => void this._loadThemes()}>
+            ↻ ${t("common.retry")}
+          </button>
+        </div>
       </div>`;
     }
     if (this._themes.length < 2) {

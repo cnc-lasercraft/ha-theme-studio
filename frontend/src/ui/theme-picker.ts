@@ -196,6 +196,19 @@ export class ThemePicker extends LitElement {
     .error {
       color: var(--error-color);
     }
+    .retry-btn {
+      margin-top: 12px;
+      padding: 8px 16px;
+      border: 1px solid var(--primary-color, #03a9f4);
+      border-radius: 6px;
+      background: none;
+      color: var(--primary-color, #03a9f4);
+      font: inherit;
+      cursor: pointer;
+    }
+    .retry-btn:hover {
+      background: rgba(3, 169, 244, 0.08);
+    }
     .errors-list {
       margin-top: 24px;
       padding: 12px 16px;
@@ -247,6 +260,11 @@ export class ThemePicker extends LitElement {
     if (this._loadError) {
       return html`<div class="error">
         ${t("common.error_prefix")}: ${this._loadError}
+        <div>
+          <button class="retry-btn" @click=${() => this._load()}>
+            ↻ ${t("common.retry")}
+          </button>
+        </div>
       </div>`;
     }
     return html`

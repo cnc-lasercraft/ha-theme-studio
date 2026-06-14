@@ -88,6 +88,7 @@ export const messages: Record<string, string> = {
   "common.ok": "OK",
   "common.cancel": "Cancel",
   "common.delete": "Delete",
+  "common.retry": "Retry",
   "common.fallback": "Fallback",
   "common.tag_heuristic": "heuristic",
   "common.save_failed": "Save failed",

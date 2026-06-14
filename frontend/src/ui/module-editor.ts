@@ -167,6 +167,19 @@ export class TsModuleEditor extends LitElement {
     .error {
       color: var(--error-color);
     }
+    .retry-btn {
+      margin-top: 12px;
+      padding: 8px 16px;
+      border: 1px solid var(--primary-color, #03a9f4);
+      border-radius: 6px;
+      background: none;
+      color: var(--primary-color, #03a9f4);
+      font: inherit;
+      cursor: pointer;
+    }
+    .retry-btn:hover {
+      background: rgba(3, 169, 244, 0.08);
+    }
     .card {
       background: var(--card-background-color);
       border-radius: var(--ha-card-border-radius, 12px);
@@ -531,6 +544,11 @@ export class TsModuleEditor extends LitElement {
     if (this._error) {
       return html`<div class="error">
         ${t("common.error_prefix")}: ${this._error}
+        <div>
+          <button class="retry-btn" @click=${() => this._load()}>
+            ↻ ${t("common.retry")}
+          </button>
+        </div>
       </div>`;
     }
     const name = (this._content["name"] as string) || this.moduleId;
