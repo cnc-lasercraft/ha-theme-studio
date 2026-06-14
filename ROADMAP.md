@@ -178,3 +178,35 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 | **var()-Referenz-Guard:** Variablen mit `var(...)`-Wert (z.B. `lovelace-background`) zeigen statt URL/Browse eine Warnung + Raw-Editor — kein blindes Anhängen mehr. Bild gehört an die Ziel-Variable (`background-image` im Mode). | ✓ erledigt (B8) | — |
 
 **Erledigt 2026-06-13** (B8). Live verifiziert (HG huegel-nebel-sw.jpg gesetzt, kaputte `lovelace-background`-Zeile eines Test-Themes repariert).
+
+## v1.1 – Audit-Items (Bausteine 10–12, ✓ erledigt)
+
+Aufarbeitung der v1.0.3-Audit-Befunde.
+
+| Feature | Status | Commit |
+|---|---|---|
+| **Custom-Modal** statt nativem `confirm()`/`prompt()` — `ts-modal` (Promise-basiert, HA-themed, Singleton am body), `confirmDialog()`/`promptDialog()`. Ersetzt alle 8 Call-Sites inkl. des deprecated `window.prompt`. Esc/Enter/Backdrop, danger-Style. | ✓ erledigt (B10) | — |
+| **Retry-Buttons** bei Load-Fehlern (theme-picker, module-picker, compare-view, editor-view, module-editor) — „↻ Erneut versuchen" ruft die Load-Methode neu, statt Page-Reload. | ✓ erledigt (B11) | — |
+| **Backend `variables`-Validierung** vor Schreiben (`_validate_theme_variables` in save_theme + fork_theme): Top-Level-Scalars + `modes`-Map, lehnt None/Listen/Fremd-Verschachtelung ab (`invalid_variables`). | ✓ erledigt (B12) | — |
+
+**Bewusst NICHT umgesetzt (wontfix):**
+- **Backup-Race bei Concurrent-Saves** — irrelevant für ein Einzel-Admin-Tool (zwei gleichzeitige Saves desselben Themes praktisch ausgeschlossen); Timestamp+Counter fängt Filename-Kollisionen ohnehin.
+- **View-Switch-während-Pending-Save Race** — Lit fängt State-Updates auf disconnected Components stillschweigend ab (kein Crash, kein sichtbarer Effekt); Aufwand/Nutzen schlecht.
+
+## v1.2 – Auto-Snapshot beim Fork (Baustein 13, ✓ erledigt)
+
+**Problem.** Nach einem HACS-Update zeigt der ⇄-Vergleich (Fork ↔ Upstream) alle Unterschiede gemischt (eigene Edits + Update-Änderungen). Es fehlt „was hat NUR das Update gebracht" — dafür bräuchte es den Upstream-Stand *zum Fork-Zeitpunkt* (3-Wege-Basis).
+
+**Lösung.** Beim Fork wird der Upstream-Stand automatisch eingefroren; ein neuer Δ-Button vergleicht Snapshot ↔ aktuelles Upstream.
+
+| Feature | Status | Commit |
+|---|---|---|
+| **Snapshot-Capture beim Fork:** `_capture_snapshot` liest das Quell-Theme, `_do_fork` legt `snapshot: {source_file, source_theme, captured, variables}` in der Registry ab. `has_snapshot` in `list_themes`. | ✓ erledigt (B13) | — |
+| **WS `get_snapshot`** liefert den gespeicherten Snapshot (`no_snapshot` wenn keiner). | ✓ erledigt (B13) | — |
+| **Δ-Button im Picker** (auf Forks mit Snapshot + existierendem Upstream) → Compare-View „Snapshot (bei Fork) ↔ aktuelles Upstream" = isolierte Update-Änderungen. Snapshot-Seite als festes Label (kein Dropdown), 📷-Banner. | ✓ erledigt (B13) | — |
+
+**Bestehende Forks:** beim Deploy mit dem aktuellen Upstream als Baseline gebackfillt (echter Fork-Zeitpunkt war nicht mehr rekonstruierbar). Künftige Forks bekommen den echten Snapshot automatisch.
+
+**Hinweis Registry-Größe:** Snapshots liegen (für wenige Forks unkritisch) im Registry-JSON. Bei vielen Forks ggf. in separate Dateien auslagern.
+
+**Erledigt 2026-06-14** (B13, manifest 1.2.0). Live verifiziert.

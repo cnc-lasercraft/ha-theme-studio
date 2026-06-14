@@ -29,6 +29,9 @@ export const messages: Record<string, string> = {
   "picker.badge_default_title": "Globales Standard-Theme von Home Assistant",
   "picker.compare_upstream_tooltip":
     "Mit Upstream vergleichen (Fork ↔ HACS-Quelle) — Updates per ←-Pfeil in den Fork ziehen",
+  "picker.compare_snapshot_tooltip":
+    "Update-Änderungen zeigen: Upstream-Snapshot (bei Fork) ↔ aktuelles Upstream — nur was sich seither geändert hat",
+  "picker.snapshot_label": "{theme} — Snapshot bei Fork",
   "picker.delete_tooltip": "Dieses abgeleitete Theme löschen (Backup bleibt)",
   "picker.delete_confirm":
     "Abgeleitetes Theme '{theme}' löschen?\n\nEine Sicherung wird unter themes/.backups/ angelegt — der Schritt ist reversibel.",
@@ -68,6 +71,8 @@ export const messages: Record<string, string> = {
   "compare.mode_diff_badge_title": "{n} Unterschiede in diesem Modus",
   "compare.no_diffs_here": "Keine Unterschiede im {mode}-Modus.",
   "compare.diffs_elsewhere": "Aber Unterschiede in:",
+  "compare.snapshot_banner":
+    "Update-Änderungen: links der Upstream-Stand bei Fork-Erstellung, rechts das aktuelle Upstream. Die Unterschiede sind genau das, was ein HACS-Update seither geändert/hinzugefügt hat.",
   "compare.col_variable": "Variable",
   "compare.col_action": "Aktion",
   "compare.not_in_theme": "(nicht im Theme)",

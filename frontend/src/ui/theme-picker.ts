@@ -17,6 +17,8 @@ interface ThemeEntry {
   // Herkunft eines Forks (für Upstream-Merge) — null bei Nicht-Forks.
   source_file?: string | null;
   source_theme?: string | null;
+  // Upstream-Snapshot zum Fork-Zeitpunkt vorhanden (für „Update-Änderungen").
+  has_snapshot?: boolean;
 }
 
 interface DeleteThemeResult {
@@ -315,6 +317,17 @@ export class ThemePicker extends LitElement {
                       </div>
                       <div class="arrow">→</div>
                     </button>
+                    ${theme.is_fork &&
+                    theme.has_snapshot &&
+                    this._upstreamFor(theme)
+                      ? html`<button
+                          class="compare-btn"
+                          title=${t("picker.compare_snapshot_tooltip")}
+                          @click=${() => this._compareSnapshot(theme)}
+                        >
+                          Δ
+                        </button>`
+                      : ""}
                     ${theme.is_fork && this._upstreamFor(theme)
                       ? html`<button
                           class="compare-btn"
@@ -423,6 +436,33 @@ export class ThemePicker extends LitElement {
       new CustomEvent("compare-upstream", {
         detail: {
           fork: { file: theme.file, theme_name: theme.theme_name },
+          upstream: {
+            file: upstream.file,
+            theme_name: upstream.theme_name,
+          },
+        },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+  }
+
+  /**
+   * Öffnet „Update-Änderungen": Upstream-Snapshot (bei Fork) ↔ aktuelles
+   * Upstream = exakt das, was ein HACS-Update seither geändert hat.
+   */
+  private _compareSnapshot(theme: ThemeEntry) {
+    const upstream = this._upstreamFor(theme);
+    if (!upstream) return;
+    this.dispatchEvent(
+      new CustomEvent("compare-snapshot", {
+        detail: {
+          snapshot: {
+            file: theme.file,
+            label: t("picker.snapshot_label", undefined, {
+              theme: upstream.theme_name,
+            }),
+          },
           upstream: {
             file: upstream.file,
             theme_name: upstream.theme_name,

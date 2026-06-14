@@ -35,6 +35,25 @@ interface GetThemeResult {
   variables: Record<string, unknown>;
 }
 
+interface GetSnapshotResult {
+  file: string;
+  source_theme: string | null;
+  captured: string | null;
+  variables: Record<string, unknown>;
+}
+
+// Eine Compare-Vorauswahl ist entweder ein echtes Theme (file+theme_name)
+// oder ein Upstream-Snapshot (snapshot_file = die Fork-Datei + Label).
+type ComparePreset =
+  | { file: string; theme_name: string }
+  | { snapshot_file: string; label: string };
+
+function isSnapshotPreset(
+  p: ComparePreset | null,
+): p is { snapshot_file: string; label: string } {
+  return !!p && "snapshot_file" in p;
+}
+
 interface SaveThemeResult {
   file: string;
   theme_name: string;
@@ -79,16 +98,10 @@ const EMPTY_SIDE: SideState = {
 @customElement("ts-compare-view")
 export class TsCompareView extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
-  // Vorauswahl (vom Picker „⇄ Upstream"): A=Fork, B=Upstream. null =
-  // normaler Auto-Select der ersten beiden Themes.
-  @property({ attribute: false }) presetA: {
-    file: string;
-    theme_name: string;
-  } | null = null;
-  @property({ attribute: false }) presetB: {
-    file: string;
-    theme_name: string;
-  } | null = null;
+  // Vorauswahl (vom Picker „⇄ Upstream" oder „Δ Update-Änderungen"). Jede Seite
+  // entweder ein echtes Theme oder ein Upstream-Snapshot. null = Auto-Select.
+  @property({ attribute: false }) presetA: ComparePreset | null = null;
+  @property({ attribute: false }) presetB: ComparePreset | null = null;
 
   @state() private _themes: ThemeEntry[] = [];
   @state() private _themesError: string | null = null;
@@ -100,6 +113,9 @@ export class TsCompareView extends LitElement {
   @state() private _diffOnly = true;
   @state() private _copyStatus: CopyStatus = { state: "idle" };
   @state() private _activeMode: string = DEFAULT_MODE;
+  // Welche Seite ein Upstream-Snapshot ist (Update-Änderungen-Ansicht), sonst
+  // null. Diese Seite zeigt statt eines Dropdowns ein festes Label.
+  @state() private _snapshotSide: Side | null = null;
 
   private get _busyCopy(): boolean {
     return this._copyStatus.state === "copying";
@@ -260,6 +276,25 @@ export class TsCompareView extends LitElement {
     .retry-btn:hover {
       background: rgba(3, 169, 244, 0.08);
     }
+    .snapshot-banner {
+      margin: 8px 0 4px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      background: rgba(3, 169, 244, 0.1);
+      border-left: 4px solid var(--primary-color, #03a9f4);
+      font-size: 0.9rem;
+    }
+    .snapshot-pill {
+      padding: 8px 10px;
+      border: 1px solid var(--primary-color, #03a9f4);
+      border-radius: 4px;
+      background: rgba(3, 169, 244, 0.08);
+      color: var(--primary-text-color);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -392,10 +427,8 @@ export class TsCompareView extends LitElement {
       // bereits ein await gelaufen ist, sind die Preset-Properties sicher
       // gesetzt (initiales Render längst committed).
       if (this.presetA || this.presetB) {
-        const a = this._findEntry(this.presetA);
-        const b = this._findEntry(this.presetB);
-        if (a) await this._setSide("A", a);
-        if (b) await this._setSide("B", b);
+        await this._applyPreset("A", this.presetA);
+        await this._applyPreset("B", this.presetB);
       } else {
         // Auto-select first two themes wenn vorhanden — quick start
         if (this._themes.length >= 1 && !this._sideA.selection) {
@@ -422,6 +455,51 @@ export class TsCompareView extends LitElement {
         (e) => e.file === sel.file && e.theme_name === sel.theme_name,
       ) ?? null
     );
+  }
+
+  private async _applyPreset(side: Side, preset: ComparePreset | null) {
+    if (!preset) return;
+    if (isSnapshotPreset(preset)) {
+      await this._setSideSnapshot(side, preset.snapshot_file, preset.label);
+    } else {
+      const entry = this._findEntry(preset);
+      if (entry) await this._setSide(side, entry);
+    }
+  }
+
+  /** Lädt einen Upstream-Snapshot (via get_snapshot) als Vergleichs-Seite. */
+  private async _setSideSnapshot(
+    side: Side,
+    snapshotFile: string,
+    label: string,
+  ) {
+    this._writeSide(side, { ...this._freshSide(), loading: true });
+    try {
+      const result =
+        await this.hass.connection.sendMessagePromise<GetSnapshotResult>({
+          type: "theme_studio/get_snapshot",
+          file: snapshotFile,
+        });
+      const scalarsByMode = this._extractScalarsByMode(result.variables);
+      this._writeSide(side, {
+        selection: {
+          file: snapshotFile,
+          theme_name: label,
+          variable_count: Object.keys(result.variables).length,
+        },
+        full: result.variables,
+        scalarsByMode,
+        modes: Object.keys(scalarsByMode),
+        loading: false,
+        error: null,
+      });
+      this._snapshotSide = side;
+    } catch (err) {
+      this._writeSide(side, {
+        ...this._freshSide(),
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
   }
 
   private async _setSide(side: Side, entry: ThemeEntry | null) {
@@ -530,6 +608,9 @@ export class TsCompareView extends LitElement {
   }
 
   private _onSelect(side: Side, e: Event) {
+    // Manuelle Auswahl auf der Snapshot-Seite verlässt den Snapshot-Modus
+    // (die andere Seite frei wechseln lässt den Snapshot stehen).
+    if (this._snapshotSide === side) this._snapshotSide = null;
     const value = (e.target as HTMLSelectElement).value;
     if (!value) {
       void this._setSide(side, null);
@@ -589,6 +670,11 @@ export class TsCompareView extends LitElement {
           <label for="diff-only">${t("compare.diff_only")}</label>
         </div>
       </div>
+      ${this._snapshotSide
+        ? html`<div class="snapshot-banner">
+            📷 ${t("compare.snapshot_banner")}
+          </div>`
+        : ""}
       ${this._renderModeSelector()} ${this._renderCopyStatus()}
       ${this._renderBody()}
     `;
@@ -659,6 +745,13 @@ export class TsCompareView extends LitElement {
   }
 
   private _renderSelector(side: Side, selection: ThemeEntry | null) {
+    // Snapshot-Seite: kein Dropdown (der Snapshot ist kein wählbares Theme),
+    // sondern ein festes Label, damit klar ist was verglichen wird.
+    if (side === this._snapshotSide) {
+      return html`<div class="snapshot-pill" title=${selection?.theme_name ?? ""}>
+        📷 ${selection?.theme_name ?? ""}
+      </div>`;
+    }
     const value = selection
       ? `${selection.file}§§${selection.theme_name}`
       : "";

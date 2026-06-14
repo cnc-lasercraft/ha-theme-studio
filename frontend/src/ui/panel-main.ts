@@ -23,6 +23,11 @@ type TopTab =
   | typeof TAB_MODULES
   | typeof TAB_COMPARE;
 
+// Eine Compare-Vorauswahl-Seite: echtes Theme oder Upstream-Snapshot.
+type ComparePresetSide =
+  | { file: string; theme_name: string }
+  | { snapshot_file: string; label: string };
+
 @customElement("theme-studio-panel")
 export class ThemeStudioPanel extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
@@ -44,11 +49,12 @@ export class ThemeStudioPanel extends LitElement {
   // Top-Level-Tab: zwischen Theme- und Modul-Verwaltung (v0.4).
   @state() private _topTab: TopTab = TAB_THEMES;
 
-  // Vorauswahl für die Compare-View, wenn vom Picker aus „⇄ Upstream"
-  // geöffnet (A=Fork, B=Upstream). null = normaler Auto-Select.
+  // Vorauswahl für die Compare-View (vom Picker „⇄ Upstream" oder „Δ
+  // Update-Änderungen"). Jede Seite ein Theme oder ein Upstream-Snapshot.
+  // null = normaler Auto-Select.
   @state() private _comparePreset: {
-    fork: { file: string; theme_name: string };
-    upstream: { file: string; theme_name: string };
+    a: ComparePresetSide;
+    b: ComparePresetSide;
   } | null = null;
 
   // Demo-Mode via URL-Hash `#demo` — zeigt <ts-controls-demo> statt Picker.
@@ -323,8 +329,8 @@ export class ThemeStudioPanel extends LitElement {
     if (this._topTab === TAB_COMPARE) {
       return html`<ts-compare-view
         .hass=${this.hass}
-        .presetA=${this._comparePreset?.fork ?? null}
-        .presetB=${this._comparePreset?.upstream ?? null}
+        .presetA=${this._comparePreset?.a ?? null}
+        .presetB=${this._comparePreset?.b ?? null}
       ></ts-compare-view>`;
     }
     return html`
@@ -332,6 +338,7 @@ export class ThemeStudioPanel extends LitElement {
         .hass=${this.hass}
         @theme-selected=${this._onThemeSelect}
         @compare-upstream=${this._onCompareUpstream}
+        @compare-snapshot=${this._onCompareSnapshot}
       ></theme-picker>
     `;
   }
@@ -351,7 +358,22 @@ export class ThemeStudioPanel extends LitElement {
       upstream: { file: string; theme_name: string };
     }>,
   ) {
-    this._comparePreset = e.detail;
+    this._comparePreset = { a: e.detail.fork, b: e.detail.upstream };
+    this._topTab = TAB_COMPARE;
+  }
+
+  // Picker hat „Δ Update-Änderungen" ausgelöst — A = Upstream-Snapshot (bei
+  // Fork), B = aktuelles Upstream → zeigt, was ein HACS-Update geändert hat.
+  private _onCompareSnapshot(
+    e: CustomEvent<{
+      snapshot: { file: string; label: string };
+      upstream: { file: string; theme_name: string };
+    }>,
+  ) {
+    this._comparePreset = {
+      a: { snapshot_file: e.detail.snapshot.file, label: e.detail.snapshot.label },
+      b: e.detail.upstream,
+    };
     this._topTab = TAB_COMPARE;
   }
 

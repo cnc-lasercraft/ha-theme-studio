@@ -35,6 +35,7 @@ from .const import (
     WS_DELETE_THEME,
     WS_FORK_THEME,
     WS_GET_MODULE,
+    WS_GET_SNAPSHOT,
     WS_GET_THEME,
     WS_LIST_HACS_REPOS,
     WS_LIST_MODULES,
@@ -72,6 +73,45 @@ def _validate_path(name: str) -> str:
         if segment.startswith("."):
             raise vol.Invalid(f"hidden segment {segment!r} not allowed in {name!r}")
     return name
+
+
+_SCALAR_TYPES = (str, int, float, bool)
+
+
+def _validate_theme_variables(variables: dict[str, Any]) -> None:
+    """Prüft die Theme-Struktur vor dem Schreiben — verhindert kaputtes YAML/Theme.
+
+    HA-Theme-Spec: flache Map var→Scalar, plus optional `modes` → {mode: {var:
+    Scalar}}. Bisher Client-Trust; diese Defensive fängt Frontend-Bugs ab, bevor
+    Müll (None→`null`, Listen, Fremd-Verschachtelung) ins Theme-File geschrieben
+    wird. Wirft `ValueError` mit klarer Meldung.
+    """
+    for key, value in variables.items():
+        if not isinstance(key, str) or not key:
+            raise ValueError(f"invalid variable key: {key!r}")
+        if key == "modes":
+            if not isinstance(value, dict):
+                raise ValueError("'modes' must be a mapping")
+            for mode_name, mode_vars in value.items():
+                if not isinstance(mode_name, str) or not mode_name:
+                    raise ValueError(f"invalid mode name: {mode_name!r}")
+                if not isinstance(mode_vars, dict):
+                    raise ValueError(f"mode {mode_name!r} must be a mapping")
+                for mk, mv in mode_vars.items():
+                    if not isinstance(mk, str) or not mk:
+                        raise ValueError(
+                            f"invalid variable key {mk!r} in mode {mode_name!r}"
+                        )
+                    if not isinstance(mv, _SCALAR_TYPES):
+                        raise ValueError(
+                            f"variable {mk!r} in mode {mode_name!r} must be a "
+                            f"scalar, got {type(mv).__name__}"
+                        )
+            continue
+        if not isinstance(value, _SCALAR_TYPES):
+            raise ValueError(
+                f"variable {key!r} must be a scalar, got {type(value).__name__}"
+            )
 
 
 def _slugify(name: str) -> str:
@@ -137,6 +177,28 @@ def _save_registry(root: Path, forks: dict[str, Any]) -> None:
     os.replace(tmp, path)
 
 
+def _capture_snapshot(
+    root: Path, source_file: str | None, source_theme: str | None
+) -> dict[str, Any] | None:
+    """Liest das Quell-(Upstream-)Theme → Snapshot-Dict. None wenn unlesbar.
+
+    Wird beim Fork aufgerufen, um den Upstream-Stand einzufrieren. Später lässt
+    sich `Snapshot ↔ aktuelles Upstream` vergleichen = exakt das, was ein
+    HACS-Update geändert/hinzugefügt hat (3-Wege-Basis, manuell).
+    """
+    if not source_file or not source_theme:
+        return None
+    try:
+        src_path = _safe_join(root, source_file)
+        data = _load_file(src_path)
+    except (OSError, ValueError, yaml.YAMLError):
+        return None
+    theme = data.get(source_theme)
+    if not isinstance(theme, dict):
+        return None
+    return dict(theme)
+
+
 def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Walk themes-dir, liefert (themes, errors). Backups-Dir wird übersprungen."""
     found: list[dict[str, Any]] = []
@@ -178,6 +240,7 @@ def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
         fork_meta = forks.get(str(rel), {}) if is_fork else {}
         source_file = fork_meta.get("source_file")
         source_theme = fork_meta.get("source_theme")
+        has_snapshot = isinstance(fork_meta.get("snapshot"), dict)
 
         for theme_name, theme_data in data.items():
             if not isinstance(theme_data, dict):
@@ -191,6 +254,7 @@ def _scan_themes(root: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]
                     "is_fork": is_fork,
                     "source_file": source_file,
                     "source_theme": source_theme,
+                    "has_snapshot": has_snapshot,
                 }
             )
 
@@ -302,8 +366,8 @@ async def ws_get_theme(
         vol.Required("type"): WS_SAVE_THEME,
         vol.Required("file"): vol.All(str, _validate_path),
         vol.Required("theme_name"): str,
-        # Variablen-Werte sind frei (string, dict für modes:, etc.) — Validierung
-        # ist Aufgabe des Frontends/Plugins.
+        # Struktur wird server-seitig via _validate_theme_variables geprüft
+        # (Scalars + modes-Map) — voluptuous prüft nur den dict-Typ.
         vol.Required("variables"): dict,
         vol.Optional("create", default=False): bool,
     }
@@ -324,6 +388,12 @@ async def ws_save_theme(
     theme_name: str = msg["theme_name"]
     variables: dict[str, Any] = msg["variables"]
     filename: str = msg["file"]
+
+    try:
+        _validate_theme_variables(variables)
+    except ValueError as exc:
+        connection.send_error(msg["id"], "invalid_variables", str(exc))
+        return
 
     def _do_save() -> str | None:
         existed = path.exists()
@@ -398,6 +468,12 @@ async def ws_fork_theme(
     source_file: str | None = msg.get("source_file")
     source_theme: str | None = msg.get("source_theme")
 
+    try:
+        _validate_theme_variables(variables)
+    except ValueError as exc:
+        connection.send_error(msg["id"], "invalid_variables", str(exc))
+        return
+
     slug = _slugify(new_name)
     if not new_name or not slug:
         connection.send_error(
@@ -424,13 +500,25 @@ async def ws_fork_theme(
         _dump_file(target_path, {new_name: dict(variables)})
         # Fork-Marker in der Registry → macht das Theme löschbar und hält die
         # Herkunft fest (für späteren Upstream-Merge Fork ↔ HACS-Quelle).
+        now_iso = datetime.now().isoformat(timespec="seconds")
         forks = _load_registry(root)
-        forks[target_rel] = {
+        entry: dict[str, Any] = {
             "new_name": new_name,
             "source_file": source_file,
             "source_theme": source_theme,
-            "created": datetime.now().isoformat(timespec="seconds"),
+            "created": now_iso,
         }
+        # Upstream-Snapshot zum Fork-Zeitpunkt einfrieren (für „was hat das
+        # Update geändert?" — Snapshot ↔ aktuelles Upstream).
+        snap = _capture_snapshot(root, source_file, source_theme)
+        if snap is not None:
+            entry["snapshot"] = {
+                "source_file": source_file,
+                "source_theme": source_theme,
+                "captured": now_iso,
+                "variables": snap,
+            }
+        forks[target_rel] = entry
         _save_registry(root, forks)
 
     try:
@@ -528,6 +616,62 @@ async def ws_delete_theme(
     connection.send_result(
         msg["id"],
         {"file": file_rel, "backup": backup_rel},
+    )
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): WS_GET_SNAPSHOT,
+        vol.Required("file"): vol.All(str, _validate_path),
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def ws_get_snapshot(
+    hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]
+) -> None:
+    """Liefert den Upstream-Snapshot eines Forks (Stand bei Fork-Zeitpunkt).
+
+    Damit lässt sich `Snapshot ↔ aktuelles Upstream` vergleichen = was ein
+    HACS-Update seither geändert/hinzugefügt hat. `no_snapshot` wenn keiner da.
+    """
+    root = _themes_root(hass)
+    file_rel: str = msg["file"]
+
+    def _read() -> dict[str, Any] | None:
+        forks = _load_registry(root)
+        entry = forks.get(file_rel)
+        if not isinstance(entry, dict):
+            return None
+        snap = entry.get("snapshot")
+        if not isinstance(snap, dict) or not isinstance(
+            snap.get("variables"), dict
+        ):
+            return None
+        return snap
+
+    try:
+        snap = await hass.async_add_executor_job(_read)
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        _LOGGER.exception("get_snapshot failed for %s", file_rel)
+        connection.send_error(msg["id"], "snapshot_read_failed", str(exc))
+        return
+
+    if snap is None:
+        connection.send_error(
+            msg["id"], "no_snapshot", f"no snapshot for {file_rel!r}"
+        )
+        return
+
+    connection.send_result(
+        msg["id"],
+        {
+            "file": file_rel,
+            "source_file": snap.get("source_file"),
+            "source_theme": snap.get("source_theme"),
+            "captured": snap.get("captured"),
+            "variables": snap["variables"],
+        },
     )
 
 
@@ -853,6 +997,7 @@ def async_register_websocket_api(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, ws_save_theme)
     websocket_api.async_register_command(hass, ws_fork_theme)
     websocket_api.async_register_command(hass, ws_delete_theme)
+    websocket_api.async_register_command(hass, ws_get_snapshot)
     websocket_api.async_register_command(hass, ws_list_www_images)
     websocket_api.async_register_command(hass, ws_list_hacs_repos)
     websocket_api.async_register_command(hass, ws_list_modules)
