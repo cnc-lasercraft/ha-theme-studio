@@ -14,6 +14,7 @@ import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { t } from "../core/i18n";
+import { LocaleController } from "../core/locale-controller";
 import { getVariableMeta } from "../core/schema-registry";
 import type { VariableMeta } from "../core/types";
 import type { HomeAssistant } from "../types";
@@ -86,6 +87,7 @@ type SaveStatus =
 @customElement("ts-module-editor")
 export class TsModuleEditor extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
+  _locale = new LocaleController(this);
   @property({ type: String }) file = "";
   @property({ type: String }) moduleId = "";
 

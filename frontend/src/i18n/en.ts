@@ -3,6 +3,7 @@
 
 export const messages: Record<string, string> = {
   // panel-main
+  "panel.language": "Language",
   "panel.tab_themes": "Themes",
   "panel.tab_modules": "Bubble Card Modules",
   "panel.tab_compare": "Compare",

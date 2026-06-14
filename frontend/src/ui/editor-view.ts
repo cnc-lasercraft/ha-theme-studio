@@ -34,6 +34,7 @@ import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { t } from "../core/i18n";
+import { LocaleController } from "../core/locale-controller";
 import {
   getActivePlugins,
   getCategoryLabel,
@@ -130,6 +131,7 @@ function categoryLabel(cat: Category): string {
 @customElement("ts-editor-view")
 export class TsEditorView extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
+  _locale = new LocaleController(this);
   @property({ type: String }) file = "";
   @property({ type: String }) themeName = "";
   // Theme stammt aus einem HACS-Subdir → Save löst Fork-Guard aus (v1.1).

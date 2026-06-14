@@ -210,3 +210,19 @@ Aufarbeitung der v1.0.3-Audit-Befunde.
 **Hinweis Registry-Größe:** Snapshots liegen (für wenige Forks unkritisch) im Registry-JSON. Bei vielen Forks ggf. in separate Dateien auslagern.
 
 **Erledigt 2026-06-14** (B13, manifest 1.2.0). Live verifiziert.
+
+## v1.3 – Sprach-Override + Live-Switching (Baustein 14, ✓ erledigt)
+
+**Problem.** Locale wurde beim Mount aus `hass.language` fixiert — kein Wechsel zur Laufzeit, kein Override unabhängig von der HA-Sprache.
+
+**Lösung.** Sprach-Selector im Panel-Header + Live-Switching ohne Reload.
+
+| Feature | Status | Commit |
+|---|---|---|
+| **i18n-Core:** `subscribeLocale`-Notify, localStorage-Override (`getLocaleOverride`/`setLocaleOverride`), `availableLocales`/`LOCALE_NAMES`; `setLocale` benachrichtigt bei Änderung. | ✓ erledigt (B14) | — |
+| **`LocaleController`** (Lit ReactiveController): re-rendert die Host-Komponente bei Sprachwechsel; in alle 8 t()-Komponenten eingehängt. | ✓ erledigt (B14) | — |
+| **Sprach-Dropdown im Header** (DE/EN): Override in localStorage, schlägt `hass.language`, schaltet live um. | ✓ erledigt (B14) | — |
+
+**Offen (separat, große Übersetzungsarbeit):** weitere Sprachen FR/IT/ES — je ~540 Strings (165 UI + 376 Schema-`*_xx`). Erst mit Muttersprachler-Review oder konkretem Bedarf; die Infrastruktur zeigt jede ergänzte Sprache automatisch im Dropdown.
+
+**Erledigt 2026-06-14** (B14, manifest 1.3.0). Live verifiziert.

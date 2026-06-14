@@ -14,9 +14,11 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { t } from "../core/i18n";
+import { LocaleController } from "../core/locale-controller";
 
 @customElement("ts-preview-pane")
 export class TsPreviewPane extends LitElement {
+  _locale = new LocaleController(this);
   @property({ type: String }) src = "/lovelace/0";
   @property({ attribute: false }) overrides: Map<string, string> = new Map();
 

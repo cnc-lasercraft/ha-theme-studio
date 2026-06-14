@@ -14,6 +14,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { t } from "../../core/i18n";
+import { LocaleController } from "../../core/locale-controller";
 import type { HomeAssistant } from "../../types";
 
 interface Parsed {
@@ -108,6 +109,7 @@ export class TsBackgroundPicker extends LitElement {
   @property({ type: String }) value = "";
   // Optional: nur mit hass kann der www/-Bild-Browser geladen werden.
   @property({ attribute: false }) hass?: HomeAssistant;
+  _locale = new LocaleController(this);
 
   @state() private _browsing = false;
   @state() private _imagesLoaded = false;

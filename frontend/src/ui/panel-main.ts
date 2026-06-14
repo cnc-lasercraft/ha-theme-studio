@@ -6,7 +6,16 @@ import {
   onActivePluginsChanged,
   setInstalledHacsRepos,
 } from "../core/schema-registry";
-import { setLocale, t } from "../core/i18n";
+import {
+  availableLocales,
+  getLocale,
+  getLocaleOverride,
+  LOCALE_NAMES,
+  setLocale,
+  setLocaleOverride,
+  t,
+} from "../core/i18n";
+import { LocaleController } from "../core/locale-controller";
 import type { HomeAssistant, PanelRoute } from "../types";
 import "./theme-picker";
 import "./editor-view";
@@ -67,10 +76,13 @@ export class ThemeStudioPanel extends LitElement {
   @state() private _hacsErrorDismissed = false;
 
   private _unsubRegistry?: () => void;
+  // Re-rendert das Panel bei Live-Sprachwechsel.
+  _locale = new LocaleController(this);
 
   override connectedCallback() {
     super.connectedCallback();
-    setLocale(this.hass?.language);
+    // User-Override (localStorage, vom Sprach-Selector) schlägt hass.language.
+    setLocale(getLocaleOverride() ?? this.hass?.language);
     console.info("[theme-studio] registry (initial):", getRegistryStats());
     this._demoMode = window.location.hash === "#demo";
     window.addEventListener("hashchange", this._onHashChange);
@@ -141,6 +153,20 @@ export class ThemeStudioPanel extends LitElement {
       margin: 0;
       font-size: 1.25rem;
       font-weight: 500;
+    }
+    .locale-select {
+      margin-left: auto;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.12);
+      color: inherit;
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .locale-select option {
+      color: var(--primary-text-color, #212121);
     }
     main {
       padding: 24px;
@@ -229,8 +255,34 @@ export class ThemeStudioPanel extends LitElement {
       <header>
         <ha-icon icon="mdi:palette"></ha-icon>
         <h1>Theme Studio</h1>
+        ${this._renderLocaleSelector()}
       </header>
       <main>${this._renderHacsWarn()} ${this._renderBody()}</main>
+    `;
+  }
+
+  private _renderLocaleSelector() {
+    const locales = availableLocales();
+    if (locales.length <= 1) return "";
+    const current = getLocale();
+    return html`
+      <select
+        class="locale-select"
+        title=${t("panel.language")}
+        aria-label=${t("panel.language")}
+        @change=${(e: Event) =>
+          setLocaleOverride(
+            (e.target as HTMLSelectElement).value as ReturnType<
+              typeof getLocale
+            >,
+          )}
+      >
+        ${locales.map(
+          (loc) => html`<option value=${loc} ?selected=${loc === current}>
+            ${LOCALE_NAMES[loc]}
+          </option>`,
+        )}
+      </select>
     `;
   }
 

@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { t } from "../core/i18n";
+import { LocaleController } from "../core/locale-controller";
 import type { HomeAssistant } from "../types";
 import { confirmDialog } from "./modal";
 
@@ -39,6 +40,7 @@ interface ListThemesResult {
 @customElement("theme-picker")
 export class ThemePicker extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
+  _locale = new LocaleController(this);
 
   @state() private _loading = true;
   @state() private _themes: ThemeEntry[] = [];
