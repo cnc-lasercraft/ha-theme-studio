@@ -204,6 +204,12 @@ export const messages: Record<string, string> = {
   "editor.setting_default": "Setting…",
   "editor.is_default": "Default theme",
   "editor.is_default_tooltip": "This theme is already the global default theme",
+  "editor.set_dark_default": "As dark default",
+  "editor.set_dark_default_tooltip":
+    "Set this theme as the global dark-mode default theme (frontend.set_theme mode: dark)",
+  "editor.is_dark_default": "Dark default",
+  "editor.is_dark_default_tooltip":
+    "This theme is already the global dark-mode default theme",
   "editor.set_default_failed": "Setting default failed",
 
   // preview-pane

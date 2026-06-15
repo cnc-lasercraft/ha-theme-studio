@@ -45,7 +45,7 @@ const Vt = (e) => new at(typeof e == "string" ? e : e + "", void 0, Le), B = (e,
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: Kt, defineProperty: Zt, getOwnPropertyDescriptor: Yt, getOwnPropertyNames: qt, getOwnPropertySymbols: Jt, getPrototypeOf: Xt } = Object, I = globalThis, We = I.trustedTypes, Qt = We ? We.emptyScript : "", er = I.reactiveElementPolyfillSupport, se = (e, t) => e, we = { toAttribute(e, t) {
+const { is: Kt, defineProperty: Zt, getOwnPropertyDescriptor: Jt, getOwnPropertyNames: Yt, getOwnPropertySymbols: qt, getPrototypeOf: Xt } = Object, I = globalThis, We = I.trustedTypes, Qt = We ? We.emptyScript : "", er = I.reactiveElementPolyfillSupport, se = (e, t) => e, ke = { toAttribute(e, t) {
   switch (t) {
     case Boolean:
       e = e ? Qt : null;
@@ -73,7 +73,7 @@ const { is: Kt, defineProperty: Zt, getOwnPropertyDescriptor: Yt, getOwnProperty
       }
   }
   return r;
-} }, Ge = (e, t) => !Kt(e, t), Ke = { attribute: !0, type: String, converter: we, reflect: !1, useDefault: !1, hasChanged: Ge };
+} }, Ge = (e, t) => !Kt(e, t), Ke = { attribute: !0, type: String, converter: ke, reflect: !1, useDefault: !1, hasChanged: Ge };
 Symbol.metadata ?? (Symbol.metadata = Symbol("metadata")), I.litPropertyMetadata ?? (I.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
 let X = class extends HTMLElement {
   static addInitializer(t) {
@@ -89,7 +89,7 @@ let X = class extends HTMLElement {
     }
   }
   static getPropertyDescriptor(t, r, o) {
-    const { get: a, set: i } = Yt(this.prototype, t) ?? { get() {
+    const { get: a, set: i } = Jt(this.prototype, t) ?? { get() {
       return this[r];
     }, set(n) {
       this[r] = n;
@@ -110,7 +110,7 @@ let X = class extends HTMLElement {
   static finalize() {
     if (this.hasOwnProperty(se("finalized"))) return;
     if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(se("properties"))) {
-      const r = this.properties, o = [...qt(r), ...Jt(r)];
+      const r = this.properties, o = [...Yt(r), ...qt(r)];
       for (const a of o) this.createProperty(a, r[a]);
     }
     const t = this[Symbol.metadata];
@@ -172,14 +172,14 @@ let X = class extends HTMLElement {
   _$ET(t, r) {
     const o = this.constructor.elementProperties.get(t), a = this.constructor._$Eu(t, o);
     if (a !== void 0 && o.reflect === !0) {
-      const i = (o.converter?.toAttribute !== void 0 ? o.converter : we).toAttribute(r, o.type);
+      const i = (o.converter?.toAttribute !== void 0 ? o.converter : ke).toAttribute(r, o.type);
       this._$Em = t, i == null ? this.removeAttribute(a) : this.setAttribute(a, i), this._$Em = null;
     }
   }
   _$AK(t, r) {
     const o = this.constructor, a = o._$Eh.get(t);
     if (a !== void 0 && this._$Em !== a) {
-      const i = o.getPropertyOptions(a), n = typeof i.converter == "function" ? { fromAttribute: i.converter } : i.converter?.fromAttribute !== void 0 ? i.converter : we;
+      const i = o.getPropertyOptions(a), n = typeof i.converter == "function" ? { fromAttribute: i.converter } : i.converter?.fromAttribute !== void 0 ? i.converter : ke;
       this._$Em = a;
       const c = n.fromAttribute(r, i.type);
       this[a] = c ?? this._$Ej?.get(a) ?? c, this._$Em = null;
@@ -262,12 +262,12 @@ X.elementStyles = [], X.shadowRootOptions = { mode: "open" }, X[se("elementPrope
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const le = globalThis, Ze = (e) => e, ke = le.trustedTypes, Ye = ke ? ke.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, it = "$lit$", G = `lit$${Math.random().toFixed(9).slice(2)}$`, nt = "?" + G, tr = `<${nt}>`, Y = document, me = () => Y.createComment(""), he = (e) => e === null || typeof e != "object" && typeof e != "function", Ie = Array.isArray, rr = (e) => Ie(e) || typeof e?.[Symbol.iterator] == "function", Te = `[ 	
-\f\r]`, ae = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, qe = /-->/g, Je = />/g, K = RegExp(`>|${Te}(?:([^\\s"'>=/]+)(${Te}*=${Te}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), Xe = /'/g, Qe = /"/g, st = /^(?:script|style|textarea|title)$/i, or = (e) => (t, ...r) => ({ _$litType$: e, strings: t, values: r }), l = or(1), ee = Symbol.for("lit-noChange"), v = Symbol.for("lit-nothing"), et = /* @__PURE__ */ new WeakMap(), Z = Y.createTreeWalker(Y, 129);
+const le = globalThis, Ze = (e) => e, we = le.trustedTypes, Je = we ? we.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, it = "$lit$", G = `lit$${Math.random().toFixed(9).slice(2)}$`, nt = "?" + G, tr = `<${nt}>`, J = document, me = () => J.createComment(""), he = (e) => e === null || typeof e != "object" && typeof e != "function", Ie = Array.isArray, rr = (e) => Ie(e) || typeof e?.[Symbol.iterator] == "function", Te = `[ 	
+\f\r]`, ae = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, Ye = /-->/g, qe = />/g, K = RegExp(`>|${Te}(?:([^\\s"'>=/]+)(${Te}*=${Te}*(?:[^ 	
+\f\r"'\`<>=]|("|')|))|$)`, "g"), Xe = /'/g, Qe = /"/g, st = /^(?:script|style|textarea|title)$/i, or = (e) => (t, ...r) => ({ _$litType$: e, strings: t, values: r }), l = or(1), ee = Symbol.for("lit-noChange"), x = Symbol.for("lit-nothing"), et = /* @__PURE__ */ new WeakMap(), Z = J.createTreeWalker(J, 129);
 function lt(e, t) {
   if (!Ie(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-  return Ye !== void 0 ? Ye.createHTML(t) : t;
+  return Je !== void 0 ? Je.createHTML(t) : t;
 }
 const ar = (e, t) => {
   const r = e.length - 1, o = [];
@@ -275,7 +275,7 @@ const ar = (e, t) => {
   for (let c = 0; c < r; c++) {
     const d = e[c];
     let p, m, h = -1, b = 0;
-    for (; b < d.length && (n.lastIndex = b, m = n.exec(d), m !== null); ) b = n.lastIndex, n === ae ? m[1] === "!--" ? n = qe : m[1] !== void 0 ? n = Je : m[2] !== void 0 ? (st.test(m[2]) && (a = RegExp("</" + m[2], "g")), n = K) : m[3] !== void 0 && (n = K) : n === K ? m[0] === ">" ? (n = a ?? ae, h = -1) : m[1] === void 0 ? h = -2 : (h = n.lastIndex - m[2].length, p = m[1], n = m[3] === void 0 ? K : m[3] === '"' ? Qe : Xe) : n === Qe || n === Xe ? n = K : n === qe || n === Je ? n = ae : (n = K, a = void 0);
+    for (; b < d.length && (n.lastIndex = b, m = n.exec(d), m !== null); ) b = n.lastIndex, n === ae ? m[1] === "!--" ? n = Ye : m[1] !== void 0 ? n = qe : m[2] !== void 0 ? (st.test(m[2]) && (a = RegExp("</" + m[2], "g")), n = K) : m[3] !== void 0 && (n = K) : n === K ? m[0] === ">" ? (n = a ?? ae, h = -1) : m[1] === void 0 ? h = -2 : (h = n.lastIndex - m[2].length, p = m[1], n = m[3] === void 0 ? K : m[3] === '"' ? Qe : Xe) : n === Qe || n === Xe ? n = K : n === Ye || n === qe ? n = ae : (n = K, a = void 0);
     const f = n === K && e[c + 1].startsWith("/>") ? " " : "";
     i += n === ae ? d + tr : h >= 0 ? (o.push(p), d.slice(0, h) + it + d.slice(h) + G + f) : d + G + (h === -2 ? c : f);
   }
@@ -294,13 +294,13 @@ class be {
     for (; (a = Z.nextNode()) !== null && d.length < c; ) {
       if (a.nodeType === 1) {
         if (a.hasAttributes()) for (const h of a.getAttributeNames()) if (h.endsWith(it)) {
-          const b = m[n++], f = a.getAttribute(h).split(G), k = /([.?@])?(.*)/.exec(b);
-          d.push({ type: 1, index: i, name: k[2], strings: f, ctor: k[1] === "." ? nr : k[1] === "?" ? sr : k[1] === "@" ? lr : ze }), a.removeAttribute(h);
+          const b = m[n++], f = a.getAttribute(h).split(G), w = /([.?@])?(.*)/.exec(b);
+          d.push({ type: 1, index: i, name: w[2], strings: f, ctor: w[1] === "." ? nr : w[1] === "?" ? sr : w[1] === "@" ? lr : ze }), a.removeAttribute(h);
         } else h.startsWith(G) && (d.push({ type: 6, index: i }), a.removeAttribute(h));
         if (st.test(a.tagName)) {
           const h = a.textContent.split(G), b = h.length - 1;
           if (b > 0) {
-            a.textContent = ke ? ke.emptyScript : "";
+            a.textContent = we ? we.emptyScript : "";
             for (let f = 0; f < b; f++) a.append(h[f], me()), Z.nextNode(), d.push({ type: 2, index: ++i });
             a.append(h[b], me());
           }
@@ -314,7 +314,7 @@ class be {
     }
   }
   static createElement(t, r) {
-    const o = Y.createElement("template");
+    const o = J.createElement("template");
     return o.innerHTML = t, o;
   }
 }
@@ -335,7 +335,7 @@ class ir {
     return this._$AM._$AU;
   }
   u(t) {
-    const { el: { content: r }, parts: o } = this._$AD, a = (t?.creationScope ?? Y).importNode(r, !0);
+    const { el: { content: r }, parts: o } = this._$AD, a = (t?.creationScope ?? J).importNode(r, !0);
     Z.currentNode = a;
     let i = Z.nextNode(), n = 0, c = 0, d = o[0];
     for (; d !== void 0; ) {
@@ -345,7 +345,7 @@ class ir {
       }
       n !== d?.index && (i = Z.nextNode(), n++);
     }
-    return Z.currentNode = Y, a;
+    return Z.currentNode = J, a;
   }
   p(t) {
     let r = 0;
@@ -357,7 +357,7 @@ class ge {
     return this._$AM?._$AU ?? this._$Cv;
   }
   constructor(t, r, o, a) {
-    this.type = 2, this._$AH = v, this._$AN = void 0, this._$AA = t, this._$AB = r, this._$AM = o, this.options = a, this._$Cv = a?.isConnected ?? !0;
+    this.type = 2, this._$AH = x, this._$AN = void 0, this._$AA = t, this._$AB = r, this._$AM = o, this.options = a, this._$Cv = a?.isConnected ?? !0;
   }
   get parentNode() {
     let t = this._$AA.parentNode;
@@ -371,7 +371,7 @@ class ge {
     return this._$AB;
   }
   _$AI(t, r = this) {
-    t = te(this, t, r), he(t) ? t === v || t == null || t === "" ? (this._$AH !== v && this._$AR(), this._$AH = v) : t !== this._$AH && t !== ee && this._(t) : t._$litType$ !== void 0 ? this.$(t) : t.nodeType !== void 0 ? this.T(t) : rr(t) ? this.k(t) : this._(t);
+    t = te(this, t, r), he(t) ? t === x || t == null || t === "" ? (this._$AH !== x && this._$AR(), this._$AH = x) : t !== this._$AH && t !== ee && this._(t) : t._$litType$ !== void 0 ? this.$(t) : t.nodeType !== void 0 ? this.T(t) : rr(t) ? this.k(t) : this._(t);
   }
   O(t) {
     return this._$AA.parentNode.insertBefore(t, this._$AB);
@@ -380,7 +380,7 @@ class ge {
     this._$AH !== t && (this._$AR(), this._$AH = this.O(t));
   }
   _(t) {
-    this._$AH !== v && he(this._$AH) ? this._$AA.nextSibling.data = t : this.T(Y.createTextNode(t)), this._$AH = t;
+    this._$AH !== x && he(this._$AH) ? this._$AA.nextSibling.data = t : this.T(J.createTextNode(t)), this._$AH = t;
   }
   $(t) {
     const { values: r, _$litType$: o } = t, a = typeof o == "number" ? this._$AC(t) : (o.el === void 0 && (o.el = be.createElement(lt(o.h, o.h[0]), this.options)), o);
@@ -419,7 +419,7 @@ class ze {
     return this._$AM._$AU;
   }
   constructor(t, r, o, a, i) {
-    this.type = 1, this._$AH = v, this._$AN = void 0, this.element = t, this.name = r, this._$AM = a, this.options = i, o.length > 2 || o[0] !== "" || o[1] !== "" ? (this._$AH = Array(o.length - 1).fill(new String()), this.strings = o) : this._$AH = v;
+    this.type = 1, this._$AH = x, this._$AN = void 0, this.element = t, this.name = r, this._$AM = a, this.options = i, o.length > 2 || o[0] !== "" || o[1] !== "" ? (this._$AH = Array(o.length - 1).fill(new String()), this.strings = o) : this._$AH = x;
   }
   _$AI(t, r = this, o, a) {
     const i = this.strings;
@@ -428,12 +428,12 @@ class ze {
     else {
       const c = t;
       let d, p;
-      for (t = i[0], d = 0; d < i.length - 1; d++) p = te(this, c[o + d], r, d), p === ee && (p = this._$AH[d]), n || (n = !he(p) || p !== this._$AH[d]), p === v ? t = v : t !== v && (t += (p ?? "") + i[d + 1]), this._$AH[d] = p;
+      for (t = i[0], d = 0; d < i.length - 1; d++) p = te(this, c[o + d], r, d), p === ee && (p = this._$AH[d]), n || (n = !he(p) || p !== this._$AH[d]), p === x ? t = x : t !== x && (t += (p ?? "") + i[d + 1]), this._$AH[d] = p;
     }
     n && !a && this.j(t);
   }
   j(t) {
-    t === v ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t ?? "");
+    t === x ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, t ?? "");
   }
 }
 class nr extends ze {
@@ -441,7 +441,7 @@ class nr extends ze {
     super(...arguments), this.type = 3;
   }
   j(t) {
-    this.element[this.name] = t === v ? void 0 : t;
+    this.element[this.name] = t === x ? void 0 : t;
   }
 }
 class sr extends ze {
@@ -449,7 +449,7 @@ class sr extends ze {
     super(...arguments), this.type = 4;
   }
   j(t) {
-    this.element.toggleAttribute(this.name, !!t && t !== v);
+    this.element.toggleAttribute(this.name, !!t && t !== x);
   }
 }
 class lr extends ze {
@@ -457,8 +457,8 @@ class lr extends ze {
     super(t, r, o, a, i), this.type = 5;
   }
   _$AI(t, r = this) {
-    if ((t = te(this, t, r, 0) ?? v) === ee) return;
-    const o = this._$AH, a = t === v && o !== v || t.capture !== o.capture || t.once !== o.once || t.passive !== o.passive, i = t !== v && (o === v || a);
+    if ((t = te(this, t, r, 0) ?? x) === ee) return;
+    const o = this._$AH, a = t === x && o !== x || t.capture !== o.capture || t.once !== o.once || t.passive !== o.passive, i = t !== x && (o === x || a);
     a && this.element.removeEventListener(this.name, this, o), i && this.element.addEventListener(this.name, this, t), this._$AH = t;
   }
   handleEvent(t) {
@@ -493,7 +493,7 @@ const pr = (e, t, r) => {
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const de = globalThis;
-class w extends X {
+class k extends X {
   constructor() {
     super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
   }
@@ -516,9 +516,9 @@ class w extends X {
     return ee;
   }
 }
-w._$litElement$ = !0, w.finalized = !0, de.litElementHydrateSupport?.({ LitElement: w });
+k._$litElement$ = !0, k.finalized = !0, de.litElementHydrateSupport?.({ LitElement: k });
 const ur = de.litElementPolyfillSupport;
-ur?.({ LitElement: w });
+ur?.({ LitElement: k });
 (de.litElementVersions ?? (de.litElementVersions = [])).push("4.2.2");
 /**
  * @license
@@ -535,7 +535,7 @@ const M = (e) => (t, r) => {
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const mr = { attribute: !0, type: String, converter: we, reflect: !1, hasChanged: Ge }, hr = (e = mr, t, r) => {
+const mr = { attribute: !0, type: String, converter: ke, reflect: !1, hasChanged: Ge }, hr = (e = mr, t, r) => {
   const { kind: o, metadata: a } = r;
   let i = globalThis.litPropertyMetadata.get(a);
   if (i === void 0 && globalThis.litPropertyMetadata.set(a, i = /* @__PURE__ */ new Map()), o === "setter" && ((e = Object.create(e)).wrapped = !0), i.set(r.name, e), o === "accessor") {
@@ -626,13 +626,13 @@ const dt = "bubble-card", ct = "Bubble Card", pt = "0.1.0", ut = ">=2.0.0", mt =
   name: gt,
   version: ft,
   version_supported: _t
-}, Symbol.toStringTag, { value: "Module" })), xt = "mushroom", wt = "Mushroom", kt = "0.1.0", St = ">=3.0.0", Ct = {
+}, Symbol.toStringTag, { value: "Module" })), xt = "mushroom", kt = "Mushroom", wt = "0.1.0", St = ">=3.0.0", Ct = {
   method: "hacs-repo",
   value: "piitaya/lovelace-mushroom"
 }, $t = "CSS-Variablen für Mushroom Cards (piitaya/lovelace-mushroom). Typografie (Title/Subtitle/Card-Primary/Card-Secondary), Icons, Chips, Controls, Material-RGB-Palette und State-spezifische RGB-Farben für Climate/Cover/Lock/Person/etc. Plugin wird nur geladen wenn HACS piitaya/lovelace-mushroom als installiert meldet.", vr = {
   id: xt,
-  name: wt,
-  version: kt,
+  name: kt,
+  version: wt,
   version_supported: St,
   detect: Ct,
   description: $t
@@ -642,8 +642,8 @@ const dt = "bubble-card", ct = "Bubble Card", pt = "0.1.0", ut = ">=2.0.0", mt =
   description: $t,
   detect: Ct,
   id: xt,
-  name: wt,
-  version: kt,
+  name: kt,
+  version: wt,
   version_supported: St
 }, Symbol.toStringTag, { value: "Module" })), Bt = "bubble-card", Mt = [
   {
@@ -1697,14 +1697,14 @@ const dt = "bubble-card", ct = "Bubble Card", pt = "0.1.0", ut = ">=2.0.0", mt =
     description: "Bubble Card · Color-Cursor · Default-Position des Indikators (oben).",
     description_en: "Bubble Card · Color cursor · Default position of the indicator (top)."
   }
-], wr = {
+], kr = {
   id: Bt,
   categories: Mt,
   variables: At
-}, kr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+}, wr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   categories: Mt,
-  default: wr,
+  default: kr,
   id: Bt,
   variables: At
 }, Symbol.toStringTag, { value: "Module" })), zt = "ha-core", Tt = [
@@ -1810,7 +1810,7 @@ const dt = "bubble-card", ct = "Bubble Card", pt = "0.1.0", ut = ">=2.0.0", mt =
     label_en: "RGB triplets",
     icon: "mdi:format-list-numbered"
   }
-], Pt = [
+], Dt = [
   {
     name: "--primary-color",
     type: "color",
@@ -2759,14 +2759,14 @@ const dt = "bubble-card", ct = "Bubble Card", pt = "0.1.0", ut = ">=2.0.0", mt =
 ], Sr = {
   id: zt,
   categories: Tt,
-  variables: Pt
+  variables: Dt
 }, Cr = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   categories: Tt,
   default: Sr,
   id: zt,
-  variables: Pt
-}, Symbol.toStringTag, { value: "Module" })), Dt = "mushroom", Et = [
+  variables: Dt
+}, Symbol.toStringTag, { value: "Module" })), Pt = "mushroom", Et = [
   {
     id: "card-primary",
     label: "Card-Primary (Hauptzeile)",
@@ -3790,14 +3790,14 @@ const dt = "bubble-card", ct = "Bubble Card", pt = "0.1.0", ut = ">=2.0.0", mt =
     description_en: "Mushroom · State · Vacuum entity."
   }
 ], $r = {
-  id: Dt,
+  id: Pt,
   categories: Et,
   variables: Ht
 }, Br = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   categories: Et,
   default: $r,
-  id: Dt,
+  id: Pt,
   variables: Ht
 }, Symbol.toStringTag, { value: "Module" })), Mr = {
   // panel-main
@@ -3968,6 +3968,10 @@ Deine Änderungen werden stattdessen in ein eigenes Theme abgeleitet. Name des n
   "editor.setting_default": "Setze…",
   "editor.is_default": "Standard-Theme",
   "editor.is_default_tooltip": "Dieses Theme ist bereits das globale Standard-Theme",
+  "editor.set_dark_default": "Als Dark-Default",
+  "editor.set_dark_default_tooltip": "Dieses Theme als globales Dark-Mode-Standard-Theme setzen (frontend.set_theme mode: dark)",
+  "editor.is_dark_default": "Dark-Standard",
+  "editor.is_dark_default_tooltip": "Dieses Theme ist bereits das globale Dark-Mode-Standard-Theme",
   "editor.set_default_failed": "Default setzen fehlgeschlagen",
   // preview-pane
   "preview.label": "Preview",
@@ -4161,6 +4165,10 @@ Your changes are derived into your own theme instead. Name of the new theme:`,
   "editor.setting_default": "Setting…",
   "editor.is_default": "Default theme",
   "editor.is_default_tooltip": "This theme is already the global default theme",
+  "editor.set_dark_default": "As dark default",
+  "editor.set_dark_default_tooltip": "Set this theme as the global dark-mode default theme (frontend.set_theme mode: dark)",
+  "editor.is_dark_default": "Dark default",
+  "editor.is_dark_default_tooltip": "This theme is already the global dark-mode default theme",
   "editor.set_default_failed": "Setting default failed",
   // preview-pane
   "preview.label": "Preview",
@@ -4195,13 +4203,13 @@ function Tr() {
 const Ft = "theme_studio_locale";
 let ce = He;
 const Fe = /* @__PURE__ */ new Set();
-function Pr(e) {
+function Dr(e) {
   if (!e) return He;
   const t = e.toLowerCase().split(/[-_]/, 1)[0];
   return t in Q ? t : He;
 }
 function Rt(e) {
-  const t = Pr(e);
+  const t = Dr(e);
   if (t !== ce) {
     ce = t;
     for (const r of [...Fe])
@@ -4215,7 +4223,7 @@ function Rt(e) {
 function Ne() {
   return ce;
 }
-function Dr(e) {
+function Pr(e) {
   return Fe.add(e), () => Fe.delete(e);
 }
 function Er() {
@@ -4319,15 +4327,15 @@ const Zr = /* @__PURE__ */ Object.assign({
   "../plugins/bubble-card/plugin.json": fr,
   "../plugins/ha-core/plugin.json": yr,
   "../plugins/mushroom/plugin.json": xr
-}), Yr = /* @__PURE__ */ Object.assign({
-  "../plugins/bubble-card/schema.json": kr,
+}), Jr = /* @__PURE__ */ Object.assign({
+  "../plugins/bubble-card/schema.json": wr,
   "../plugins/ha-core/schema.json": Cr,
   "../plugins/mushroom/schema.json": Br
 });
-function qr() {
+function Yr() {
   const e = [];
   for (const [t, r] of Object.entries(Zr)) {
-    const o = t.replace(/\/plugin\.json$/, "/schema.json"), a = Yr[o];
+    const o = t.replace(/\/plugin\.json$/, "/schema.json"), a = Jr[o];
     if (!a) {
       console.warn(
         `[theme-studio] Plugin at ${t} has no schema.json — skipping.`
@@ -4338,10 +4346,10 @@ function qr() {
   }
   return e;
 }
-const pe = Object.freeze(qr());
+const pe = Object.freeze(Yr());
 let Se = null;
 const Re = /* @__PURE__ */ new Set();
-function Jr(e) {
+function qr(e) {
   Se = e === null ? null : new Set(e);
   for (const t of Re)
     try {
@@ -4412,7 +4420,7 @@ class V {
     this._host = t, t.addController(this);
   }
   hostConnected() {
-    this._unsub = Dr(() => this._host.requestUpdate());
+    this._unsub = Pr(() => this._host.requestUpdate());
   }
   hostDisconnected() {
     this._unsub?.(), this._unsub = void 0;
@@ -4423,7 +4431,7 @@ var to = Object.defineProperty, ro = Object.getOwnPropertyDescriptor, F = (e, t,
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
   return o && a && to(t, r, a), a;
 };
-let z = class extends w {
+let z = class extends k {
   constructor() {
     super(...arguments), this._open = !1, this._mode = "confirm", this._message = "", this._value = "", this._confirmLabel = "", this._cancelLabel = "", this._danger = !1, this._pending = null;
   }
@@ -4612,7 +4620,7 @@ var ao = Object.defineProperty, io = Object.getOwnPropertyDescriptor, W = (e, t,
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
   return o && a && ao(t, r, a), a;
 };
-let H = class extends w {
+let H = class extends k {
   constructor() {
     super(...arguments), this._locale = new V(this), this._loading = !0, this._themes = [], this._errors = [], this._loadError = null, this._actionError = null, this._deleting = null;
   }
@@ -5025,7 +5033,7 @@ var no = Object.defineProperty, so = Object.getOwnPropertyDescriptor, Gt = (e, t
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
   return o && a && no(t, r, a), a;
 };
-let Be = class extends w {
+let Be = class extends k {
   constructor() {
     super(...arguments), this.value = "";
   }
@@ -5134,7 +5142,7 @@ var lo = Object.defineProperty, co = Object.getOwnPropertyDescriptor, re = (e, t
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
   return o && a && lo(t, r, a), a;
 };
-let N = class extends w {
+let N = class extends k {
   constructor() {
     super(...arguments), this.value = "0px", this.units = ["px"], this.min = 0, this.max = 100, this.step = 1;
   }
@@ -5258,7 +5266,7 @@ var po = Object.defineProperty, uo = Object.getOwnPropertyDescriptor, It = (e, t
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
   return o && a && po(t, r, a), a;
 };
-let Me = class extends w {
+let Me = class extends k {
   constructor() {
     super(...arguments), this.value = "";
   }
@@ -5365,7 +5373,7 @@ function bo(e) {
 function go(e) {
   return /\bvar\(/.test(e);
 }
-let T = class extends w {
+let T = class extends k {
   constructor() {
     super(...arguments), this.value = "", this._locale = new V(this), this._browsing = !1, this._imagesLoaded = !1, this._loadingImages = !1, this._images = [], this._imagesTruncated = !1, this._imagesError = null;
   }
@@ -5737,7 +5745,7 @@ var fo = Object.defineProperty, _o = Object.getOwnPropertyDescriptor, oe = (e, t
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
   return o && a && fo(t, r, a), a;
 };
-let j = class extends w {
+let j = class extends k {
   constructor() {
     super(...arguments), this._locale = new V(this), this.src = "/lovelace/0", this.overrides = /* @__PURE__ */ new Map(), this._loaded = !1, this._loadError = null, this._appliedToFrame = /* @__PURE__ */ new Set();
   }
@@ -5886,7 +5894,7 @@ oe([
 j = oe([
   M("ts-preview-pane")
 ], j);
-var yo = Object.defineProperty, vo = Object.getOwnPropertyDescriptor, x = (e, t, r, o) => {
+var yo = Object.defineProperty, vo = Object.getOwnPropertyDescriptor, y = (e, t, r, o) => {
   for (var a = o > 1 ? void 0 : o ? vo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
   return o && a && yo(t, r, a), a;
@@ -5900,15 +5908,15 @@ const ve = {
   label: "_other_placeholder",
   icon: "mdi:dots-horizontal"
 }, E = "in-theme", S = "default";
-function Pe(e) {
+function De(e) {
   return e === S ? s("editor.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
 }
 function xo(e) {
   return e === ve ? s("editor.cat_unknown") : e === xe ? s("editor.cat_other") : eo(e);
 }
-let _ = class extends w {
+let _ = class extends k {
   constructor() {
-    super(...arguments), this._locale = new V(this), this.file = "", this.themeName = "", this.hacsManaged = !1, this._loading = !0, this._error = null, this._rows = [], this._skippedKeys = [], this._saveStatus = { state: "idle" }, this._activeTab = E, this._activeMode = S, this._modes = [S], this._showPreview = !1, this._previewSrc = "/lovelace/0", this._settingDefault = !1, this._defaultJustSet = !1, this._defaultError = null, this._appliedVars = /* @__PURE__ */ new Set(), this._originalFullTheme = {}, this._onBeforeUnload = (e) => {
+    super(...arguments), this._locale = new V(this), this.file = "", this.themeName = "", this.hacsManaged = !1, this._loading = !0, this._error = null, this._rows = [], this._skippedKeys = [], this._saveStatus = { state: "idle" }, this._activeTab = E, this._activeMode = S, this._modes = [S], this._showPreview = !1, this._previewSrc = "/lovelace/0", this._settingDefault = !1, this._defaultJustSet = !1, this._darkDefaultJustSet = !1, this._defaultError = null, this._appliedVars = /* @__PURE__ */ new Set(), this._originalFullTheme = {}, this._onBeforeUnload = (e) => {
       this._dirtyCount() !== 0 && (e.preventDefault(), e.returnValue = "");
     };
   }
@@ -5920,7 +5928,7 @@ let _ = class extends w {
   }
   updated(e) {
     const t = e.has("file") && e.get("file") !== void 0, r = e.has("themeName") && e.get("themeName") !== void 0;
-    (t || r) && (this._revertAll(), this._rows = [], this._activeTab = E, this._activeMode = S, this._modes = [S], this._defaultJustSet = !1, this._defaultError = null, this._load());
+    (t || r) && (this._revertAll(), this._rows = [], this._activeTab = E, this._activeMode = S, this._modes = [S], this._defaultJustSet = !1, this._darkDefaultJustSet = !1, this._defaultError = null, this._load());
   }
   async _load() {
     this._loading = !0, this._error = null, this._saveStatus = { state: "idle" };
@@ -5958,13 +5966,13 @@ let _ = class extends w {
               h
             )) {
               if (f == null || typeof f == "object") continue;
-              const k = String(f), J = b.startsWith("--") ? b : `--${b}`, Nt = J.slice(2), jt = $e(J, k);
+              const w = String(f), q = b.startsWith("--") ? b : `--${b}`, Nt = q.slice(2), jt = $e(q, w);
               t.push({
-                varName: J,
+                varName: q,
                 yamlKey: Nt,
                 meta: jt,
-                original: k,
-                current: k,
+                original: w,
+                current: w,
                 inTheme: !0,
                 mode: m
               });
@@ -6163,7 +6171,7 @@ let _ = class extends w {
             continue;
           }
           const b = m.startsWith("--") ? m.slice(2) : m, f = this._rows.find(
-            (k) => k.mode === n && k.inTheme && k.yamlKey === b
+            (w) => w.mode === n && w.inTheme && w.yamlKey === b
           );
           if (f) {
             if (f.markedForRemoval) {
@@ -6288,45 +6296,60 @@ let _ = class extends w {
     const e = this._rows.filter((t) => t.mode === this._activeMode);
     return this._activeTab === E ? e.filter((t) => t.inTheme) : e.filter((t) => t.meta.plugin === this._activeTab);
   }
-  /** Ist das aktuell editierte Theme das globale Default-Theme? */
+  /** Ist das aktuell editierte Theme das globale (Hell-)Default-Theme? */
   _isDefault() {
     return this._defaultJustSet ? !0 : !!this.themeName && this.hass?.themes?.default_theme === this.themeName;
   }
+  /** Ist das aktuell editierte Theme das globale Dark-Default-Theme? */
+  _isDarkDefault() {
+    return this._darkDefaultJustSet ? !0 : !!this.themeName && this.hass?.themes?.default_dark_theme === this.themeName;
+  }
   /**
    * Setzt das aktuelle Theme als globales Default (frontend.set_theme).
-   * HA bietet dafür keine eigene UI. Setzt nur das allgemeine Default
-   * (`frontend_default_theme`) — Themes mit eigenen modes.light/dark werden
-   * von HA passend angewandt.
+   * HA bietet dafür keine eigene UI. `mode === "dark"` setzt separat das
+   * Dark-Default (`frontend_default_dark_theme`), sonst das allgemeine Default.
    */
-  async _setDefault() {
-    if (!(this._isDefault() || this._settingDefault || !this.themeName)) {
+  async _setDefault(e) {
+    const t = e === "dark";
+    if (!((t ? this._isDarkDefault() : this._isDefault()) || this._settingDefault || !this.themeName)) {
       this._settingDefault = !0, this._defaultError = null;
       try {
-        await this.hass.connection.sendMessagePromise({
+        const o = { name: this.themeName };
+        t && (o.mode = "dark"), await this.hass.connection.sendMessagePromise({
           type: "call_service",
           domain: "frontend",
           service: "set_theme",
-          service_data: { name: this.themeName }
-        }), this._defaultJustSet = !0;
-      } catch (e) {
-        this._defaultError = e instanceof Error ? e.message : String(e);
+          service_data: o
+        }), t ? this._darkDefaultJustSet = !0 : this._defaultJustSet = !0;
+      } catch (o) {
+        this._defaultError = o instanceof Error ? o.message : String(o);
       } finally {
         this._settingDefault = !1;
       }
     }
   }
-  _renderDefaultBtn() {
+  _renderDefaultBtn(e) {
     if (this._loading || this._error) return "";
-    const e = this._isDefault();
+    const t = e === "dark", r = t ? this._isDarkDefault() : this._isDefault(), o = t ? {
+      set: "editor.set_dark_default",
+      is: "editor.is_dark_default",
+      setTip: "editor.set_dark_default_tooltip",
+      isTip: "editor.is_dark_default_tooltip"
+    } : {
+      set: "editor.set_default",
+      is: "editor.is_default",
+      setTip: "editor.set_default_tooltip",
+      isTip: "editor.is_default_tooltip"
+    };
     return l`
       <button
-        class="default-btn ${e ? "is-default" : ""}"
-        ?disabled=${e || this._settingDefault}
-        @click=${this._setDefault}
-        title=${s(e ? "editor.is_default_tooltip" : "editor.set_default_tooltip")}
+        class="default-btn ${r ? "is-default" : ""}"
+        ?disabled=${r || this._settingDefault}
+        @click=${() => this._setDefault(e)}
+        title=${s(r ? o.isTip : o.setTip)}
       >
-        ${e ? "★" : "☆"}
-        ${this._settingDefault ? s("editor.setting_default") : s(e ? "editor.is_default" : "editor.set_default")}
+        ${t ? "🌙" : r ? "★" : "☆"}
+        ${this._settingDefault ? s("editor.setting_default") : s(r ? o.is : o.set)}
       </button>
     `;
   }
@@ -6349,6 +6372,7 @@ let _ = class extends w {
           <code>${this.file}</code>
         </div>
         ${this._renderDirtyBadge()} ${this._renderDefaultBtn()}
+        ${this._renderDefaultBtn("dark")}
         <button
           class="preview-toggle ${this._showPreview ? "active" : ""}"
           @click=${this._togglePreview}
@@ -6420,7 +6444,7 @@ let _ = class extends w {
               class="mode-btn ${this._activeMode === e ? "active" : ""}"
               @click=${() => this._onModeSelect(e)}
             >
-              ${Pe(e)}
+              ${De(e)}
               ${t > 0 ? l`<span class="mode-count">${t} ●</span>` : ""}
             </button>
           `;
@@ -6477,6 +6501,14 @@ let _ = class extends w {
         <div class="status-banner success">
           ✓ ${s("editor.fork_success", void 0, { theme: e.theme })}
           &middot; <code>themes/${e.file}</code>
+          ${this._isDefault() ? "" : l` &middot;
+                <button
+                  class="banner-action"
+                  ?disabled=${this._settingDefault}
+                  @click=${() => this._setDefault()}
+                >
+                  ★ ${s("editor.set_default")}
+                </button>`}
         </div>
       ` : l`
       <div class="status-banner error">
@@ -6513,7 +6545,7 @@ let _ = class extends w {
     const e = this._visibleRows();
     if (e.length === 0) {
       const r = this._activeTab === E ? this._activeMode === S ? s("editor.empty_default") : s("editor.empty_mode", void 0, {
-        mode: Pe(this._activeMode)
+        mode: De(this._activeMode)
       }) : s("editor.empty_plugin");
       return l`<div class="empty">${r}</div>`;
     }
@@ -6526,7 +6558,7 @@ let _ = class extends w {
     )}${s("editor.notice_skipped_suffix")}
           </div>` : ""}
       ${this._activeMode !== S ? l`<div class="notice">
-            <strong>${Pe(this._activeMode)}-Mode:</strong>
+            <strong>${De(this._activeMode)}-Mode:</strong>
             ${s("editor.notice_mode_prefix")}
             <code>modes.${this._activeMode}</code>
             ${s("editor.notice_mode_suffix")}
@@ -7053,67 +7085,83 @@ _.styles = B`
       padding: 1px 4px;
       border-radius: 3px;
     }
+    .banner-action {
+      border: 1px solid currentColor;
+      border-radius: 6px;
+      padding: 4px 10px;
+      background: none;
+      color: inherit;
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .banner-action:hover:not([disabled]) {
+      background: rgba(255, 255, 255, 0.15);
+    }
   `;
-x([
+y([
   g({ attribute: !1 })
 ], _.prototype, "hass", 2);
-x([
+y([
   g({ type: String })
 ], _.prototype, "file", 2);
-x([
+y([
   g({ type: String })
 ], _.prototype, "themeName", 2);
-x([
+y([
   g({ type: Boolean })
 ], _.prototype, "hacsManaged", 2);
-x([
+y([
   u()
 ], _.prototype, "_loading", 2);
-x([
+y([
   u()
 ], _.prototype, "_error", 2);
-x([
+y([
   u()
 ], _.prototype, "_rows", 2);
-x([
+y([
   u()
 ], _.prototype, "_skippedKeys", 2);
-x([
+y([
   u()
 ], _.prototype, "_saveStatus", 2);
-x([
+y([
   u()
 ], _.prototype, "_activeTab", 2);
-x([
+y([
   u()
 ], _.prototype, "_activeMode", 2);
-x([
+y([
   u()
 ], _.prototype, "_modes", 2);
-x([
+y([
   u()
 ], _.prototype, "_showPreview", 2);
-x([
+y([
   u()
 ], _.prototype, "_previewSrc", 2);
-x([
+y([
   u()
 ], _.prototype, "_settingDefault", 2);
-x([
+y([
   u()
 ], _.prototype, "_defaultJustSet", 2);
-x([
+y([
+  u()
+], _.prototype, "_darkDefaultJustSet", 2);
+y([
   u()
 ], _.prototype, "_defaultError", 2);
-_ = x([
+_ = y([
   M("ts-editor-view")
 ], _);
-var wo = Object.defineProperty, ko = Object.getOwnPropertyDescriptor, q = (e, t, r, o) => {
-  for (var a = o > 1 ? void 0 : o ? ko(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+var ko = Object.defineProperty, wo = Object.getOwnPropertyDescriptor, Y = (e, t, r, o) => {
+  for (var a = o > 1 ? void 0 : o ? wo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
-  return o && a && wo(t, r, a), a;
+  return o && a && ko(t, r, a), a;
 };
-let R = class extends w {
+let R = class extends k {
   constructor() {
     super(...arguments), this._locale = new V(this), this._loading = !0, this._modules = [], this._errors = [], this._rootExists = !0, this._loadError = null;
   }
@@ -7336,25 +7384,25 @@ R.styles = B`
       border-radius: 3px;
     }
   `;
-q([
+Y([
   g({ attribute: !1 })
 ], R.prototype, "hass", 2);
-q([
+Y([
   u()
 ], R.prototype, "_loading", 2);
-q([
+Y([
   u()
 ], R.prototype, "_modules", 2);
-q([
+Y([
   u()
 ], R.prototype, "_errors", 2);
-q([
+Y([
   u()
 ], R.prototype, "_rootExists", 2);
-q([
+Y([
   u()
 ], R.prototype, "_loadError", 2);
-R = q([
+R = Y([
   M("ts-module-picker")
 ], R);
 var So = Object.defineProperty, Co = Object.getOwnPropertyDescriptor, L = (e, t, r, o) => {
@@ -7389,7 +7437,7 @@ function $o(e) {
   }
   return [...t.values()].sort((a, i) => a.name.localeCompare(i.name));
 }
-let P = class extends w {
+let D = class extends k {
   constructor() {
     super(...arguments), this._locale = new V(this), this.file = "", this.moduleId = "", this._loading = !0, this._error = null, this._content = {}, this._original = {}, this._saveStatus = { state: "idle" }, this._onBeforeUnload = (e) => {
       this._isDirty() && (e.preventDefault(), e.returnValue = "");
@@ -7654,7 +7702,7 @@ let P = class extends w {
     this._setField("supported", r);
   }
 };
-P.styles = B`
+D.styles = B`
     :host {
       display: block;
       max-width: 1100px;
@@ -7984,31 +8032,31 @@ P.styles = B`
   `;
 L([
   g({ attribute: !1 })
-], P.prototype, "hass", 2);
+], D.prototype, "hass", 2);
 L([
   g({ type: String })
-], P.prototype, "file", 2);
+], D.prototype, "file", 2);
 L([
   g({ type: String })
-], P.prototype, "moduleId", 2);
+], D.prototype, "moduleId", 2);
 L([
   u()
-], P.prototype, "_loading", 2);
+], D.prototype, "_loading", 2);
 L([
   u()
-], P.prototype, "_error", 2);
+], D.prototype, "_error", 2);
 L([
   u()
-], P.prototype, "_content", 2);
+], D.prototype, "_content", 2);
 L([
   u()
-], P.prototype, "_original", 2);
+], D.prototype, "_original", 2);
 L([
   u()
-], P.prototype, "_saveStatus", 2);
-P = L([
+], D.prototype, "_saveStatus", 2);
+D = L([
   M("ts-module-editor")
-], P);
+], D);
 var Bo = Object.defineProperty, Mo = Object.getOwnPropertyDescriptor, A = (e, t, r, o) => {
   for (var a = o > 1 ? void 0 : o ? Mo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
@@ -8017,17 +8065,17 @@ var Bo = Object.defineProperty, Mo = Object.getOwnPropertyDescriptor, A = (e, t,
 function Ao(e) {
   return !!e && "snapshot_file" in e;
 }
-const y = "default", zo = {
+const v = "default", zo = {
   selection: null,
   full: {},
-  scalarsByMode: { [y]: {} },
-  modes: [y],
+  scalarsByMode: { [v]: {} },
+  modes: [v],
   loading: !1,
   error: null
 };
-let C = class extends w {
+let C = class extends k {
   constructor() {
-    super(...arguments), this._locale = new V(this), this.presetA = null, this.presetB = null, this._themes = [], this._themesError = null, this._themesLoading = !0, this._sideA = this._freshSide(), this._sideB = this._freshSide(), this._diffOnly = !0, this._copyStatus = { state: "idle" }, this._activeMode = y, this._snapshotSide = null;
+    super(...arguments), this._locale = new V(this), this.presetA = null, this.presetB = null, this._themes = [], this._themesError = null, this._themesLoading = !0, this._sideA = this._freshSide(), this._sideB = this._freshSide(), this._diffOnly = !0, this._copyStatus = { state: "idle" }, this._activeMode = v, this._snapshotSide = null;
   }
   get _busyCopy() {
     return this._copyStatus.state === "copying";
@@ -8035,8 +8083,8 @@ let C = class extends w {
   _freshSide() {
     return {
       ...zo,
-      scalarsByMode: { [y]: {} },
-      modes: [y]
+      scalarsByMode: { [v]: {} },
+      modes: [v]
     };
   }
   connectedCallback() {
@@ -8138,7 +8186,7 @@ let C = class extends w {
    */
   _extractScalarsByMode(e) {
     const t = {
-      [y]: {}
+      [v]: {}
     };
     for (const [r, o] of Object.entries(e)) {
       if (r === "modes" && o && typeof o == "object" && !Array.isArray(o)) {
@@ -8155,7 +8203,7 @@ let C = class extends w {
         }
         continue;
       }
-      o != null && typeof o != "object" && (t[y][r] = String(o));
+      o != null && typeof o != "object" && (t[v][r] = String(o));
     }
     return t;
   }
@@ -8171,14 +8219,14 @@ let C = class extends w {
   }
   /** Union der Modes aus A und B, "default" zuerst, Rest alphabetisch. */
   _availableModes() {
-    const e = /* @__PURE__ */ new Set([y]);
+    const e = /* @__PURE__ */ new Set([v]);
     for (const r of this._sideA.modes) e.add(r);
     for (const r of this._sideB.modes) e.add(r);
-    const t = [...e].filter((r) => r !== y).sort();
-    return [y, ...t];
+    const t = [...e].filter((r) => r !== v).sort();
+    return [v, ...t];
   }
   _modeLabel(e) {
-    return e === y ? s("compare.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
+    return e === v ? s("compare.mode_default") : e.charAt(0).toUpperCase() + e.slice(1);
   }
   _onSelect(e, t) {
     this._snapshotSide === e && (this._snapshotSide = null);
@@ -8254,13 +8302,13 @@ let C = class extends w {
   _renderModeSelector() {
     const e = this._availableModes();
     if (e.length <= 1) return "";
-    e.includes(this._activeMode) || (this._activeMode = y);
+    e.includes(this._activeMode) || (this._activeMode = v);
     const t = !!this._sideA.selection && !!this._sideB.selection;
     return l`
       <div class="mode-selector">
         <span class="label">${s("compare.mode_selector_label")}</span>
         ${e.map((r) => {
-      const o = this._sideA.modes.includes(r), a = this._sideB.modes.includes(r), i = r !== y && (!o || !a), n = this._modeLabel(r), c = t ? this._diffCountForMode(r) : 0;
+      const o = this._sideA.modes.includes(r), a = this._sideB.modes.includes(r), i = r !== v && (!o || !a), n = this._modeLabel(r), c = t ? this._diffCountForMode(r) : 0;
       return l`
             <button
               class=${r === this._activeMode ? "active" : ""}
@@ -8308,16 +8356,16 @@ let C = class extends w {
       </div>`;
     if (!e.selection || !t.selection)
       return l`<div class="empty">${s("compare.pick_both")}</div>`;
-    const r = this._activeMode, o = e.scalarsByMode[r] ?? {}, a = t.scalarsByMode[r] ?? {}, i = r === y || e.modes.includes(r), n = r === y || t.modes.includes(r), c = this._modeLabel(r), d = Array.from(
+    const r = this._activeMode, o = e.scalarsByMode[r] ?? {}, a = t.scalarsByMode[r] ?? {}, i = r === v || e.modes.includes(r), n = r === v || t.modes.includes(r), c = this._modeLabel(r), d = Array.from(
       /* @__PURE__ */ new Set([...Object.keys(o), ...Object.keys(a)])
     ).sort(), p = d.map((b) => ({
       key: b,
       valA: o[b] ?? null,
       valB: a[b] ?? null
     })).filter((b) => !this._diffOnly || b.valA === null || b.valB === null ? !0 : b.valA !== b.valB), m = d.reduce((b, f) => {
-      const k = o[f] ?? null, J = a[f] ?? null;
-      return k === null || J === null ? b + 1 : b + (k !== J ? 1 : 0);
-    }, 0), h = r === y ? "" : !i || !n ? l` <em>
+      const w = o[f] ?? null, q = a[f] ?? null;
+      return w === null || q === null ? b + 1 : b + (w !== q ? 1 : 0);
+    }, 0), h = r === v ? "" : !i || !n ? l` <em>
               ·
               ${s("compare.mode_missing_hint", void 0, {
       theme: i ? t.selection.theme_name : e.selection.theme_name,
@@ -8432,7 +8480,7 @@ let C = class extends w {
   async _copy(e, t, r, o) {
     const a = e === "A" ? this._sideA : this._sideB, i = t === "A" ? this._sideA : this._sideB;
     if (!a.selection || !i.selection) return;
-    const n = this._activeMode, c = this._modeLabel(n), p = !(n === y) && !i.modes.includes(n), m = s("compare.copy_confirm", void 0, {
+    const n = this._activeMode, c = this._modeLabel(n), p = !(n === v) && !i.modes.includes(n), m = s("compare.copy_confirm", void 0, {
       key: r,
       value: o,
       from: a.selection.theme_name,
@@ -8472,7 +8520,7 @@ let C = class extends w {
    */
   _mergeValue(e, t, r, o) {
     const a = { ...e }, i = (m) => Object.keys(m).find((b) => (b.startsWith("--") ? b.slice(2) : b) === r) ?? r;
-    if (t === y)
+    if (t === v)
       return a[i(a)] = o, a;
     const n = a.modes, c = n && typeof n == "object" && !Array.isArray(n) ? { ...n } : {}, d = c[t], p = d && typeof d == "object" && !Array.isArray(d) ? { ...d } : {};
     return p[i(p)] = o, c[t] = p, a.modes = c, a;
@@ -8796,12 +8844,12 @@ A([
 C = A([
   M("ts-compare-view")
 ], C);
-var To = Object.defineProperty, Po = Object.getOwnPropertyDescriptor, Ut = (e, t, r, o) => {
-  for (var a = o > 1 ? void 0 : o ? Po(t, r) : t, i = e.length - 1, n; i >= 0; i--)
+var To = Object.defineProperty, Do = Object.getOwnPropertyDescriptor, Ut = (e, t, r, o) => {
+  for (var a = o > 1 ? void 0 : o ? Do(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
   return o && a && To(t, r, a), a;
 };
-let Ae = class extends w {
+let Ae = class extends k {
   constructor() {
     super(...arguments), this._log = [];
   }
@@ -8987,15 +9035,15 @@ Ut([
 Ae = Ut([
   M("ts-controls-demo")
 ], Ae);
-var Do = Object.defineProperty, Eo = Object.getOwnPropertyDescriptor, D = (e, t, r, o) => {
+var Po = Object.defineProperty, Eo = Object.getOwnPropertyDescriptor, P = (e, t, r, o) => {
   for (var a = o > 1 ? void 0 : o ? Eo(t, r) : t, i = e.length - 1, n; i >= 0; i--)
     (n = e[i]) && (a = (o ? n(t, r, a) : n(a)) || a);
-  return o && a && Do(t, r, a), a;
+  return o && a && Po(t, r, a), a;
 };
-const De = "themes", Ee = "modules", ne = "compare";
-let $ = class extends w {
+const Pe = "themes", Ee = "modules", ne = "compare";
+let $ = class extends k {
   constructor() {
-    super(...arguments), this.narrow = !1, this._selectedTheme = null, this._selectedModule = null, this._topTab = De, this._comparePreset = null, this._demoMode = !1, this._hacsError = null, this._hacsErrorDismissed = !1, this._locale = new V(this), this._onHashChange = () => {
+    super(...arguments), this.narrow = !1, this._selectedTheme = null, this._selectedModule = null, this._topTab = Pe, this._comparePreset = null, this._demoMode = !1, this._hacsError = null, this._hacsErrorDismissed = !1, this._locale = new V(this), this._onHashChange = () => {
       this._demoMode = window.location.hash === "#demo";
     };
   }
@@ -9005,7 +9053,7 @@ let $ = class extends w {
   async _loadHacsRepos() {
     try {
       const e = await this.hass.connection.sendMessagePromise({ type: "theme_studio/list_hacs_repos" });
-      e.found ? (Jr(e.repos), console.info(
+      e.found ? (qr(e.repos), console.info(
         "[theme-studio] HACS-Filter aktiv:",
         e.repos.length,
         "installierte Repos →",
@@ -9099,8 +9147,8 @@ let $ = class extends w {
     return l`
       <div class="top-tabs">
         <button
-          class="top-tab ${this._topTab === De ? "active" : ""}"
-          @click=${() => this._setTopTab(De)}
+          class="top-tab ${this._topTab === Pe ? "active" : ""}"
+          @click=${() => this._setTopTab(Pe)}
         >
           ${s("panel.tab_themes")}
         </button>
@@ -9292,37 +9340,37 @@ $.styles = B`
       color: var(--primary-text-color);
     }
   `;
-D([
+P([
   g({ attribute: !1 })
 ], $.prototype, "hass", 2);
-D([
+P([
   g({ type: Boolean })
 ], $.prototype, "narrow", 2);
-D([
+P([
   g({ attribute: !1 })
 ], $.prototype, "route", 2);
-D([
+P([
   u()
 ], $.prototype, "_selectedTheme", 2);
-D([
+P([
   u()
 ], $.prototype, "_selectedModule", 2);
-D([
+P([
   u()
 ], $.prototype, "_topTab", 2);
-D([
+P([
   u()
 ], $.prototype, "_comparePreset", 2);
-D([
+P([
   u()
 ], $.prototype, "_demoMode", 2);
-D([
+P([
   u()
 ], $.prototype, "_hacsError", 2);
-D([
+P([
   u()
 ], $.prototype, "_hacsErrorDismissed", 2);
-$ = D([
+$ = P([
   M("theme-studio-panel")
 ], $);
 //# sourceMappingURL=theme-studio-panel.js.map

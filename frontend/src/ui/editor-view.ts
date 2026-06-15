@@ -151,6 +151,7 @@ export class TsEditorView extends LitElement {
   // bis hass.themes.default_theme nachzieht; bei Theme-Wechsel zurückgesetzt.
   @state() private _settingDefault = false;
   @state() private _defaultJustSet = false;
+  @state() private _darkDefaultJustSet = false;
   @state() private _defaultError: string | null = null;
 
   private _appliedVars = new Set<string>();
@@ -575,6 +576,19 @@ export class TsEditorView extends LitElement {
       padding: 1px 4px;
       border-radius: 3px;
     }
+    .banner-action {
+      border: 1px solid currentColor;
+      border-radius: 6px;
+      padding: 4px 10px;
+      background: none;
+      color: inherit;
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .banner-action:hover:not([disabled]) {
+      background: rgba(255, 255, 255, 0.15);
+    }
   `;
 
   override connectedCallback() {
@@ -615,6 +629,7 @@ export class TsEditorView extends LitElement {
       this._activeMode = DEFAULT_MODE;
       this._modes = [DEFAULT_MODE];
       this._defaultJustSet = false;
+      this._darkDefaultJustSet = false;
       this._defaultError = null;
       this._load();
     }
@@ -1216,7 +1231,7 @@ export class TsEditorView extends LitElement {
     return byMode.filter((r) => r.meta.plugin === this._activeTab);
   }
 
-  /** Ist das aktuell editierte Theme das globale Default-Theme? */
+  /** Ist das aktuell editierte Theme das globale (Hell-)Default-Theme? */
   private _isDefault(): boolean {
     if (this._defaultJustSet) return true;
     return (
@@ -1224,24 +1239,37 @@ export class TsEditorView extends LitElement {
     );
   }
 
+  /** Ist das aktuell editierte Theme das globale Dark-Default-Theme? */
+  private _isDarkDefault(): boolean {
+    if (this._darkDefaultJustSet) return true;
+    return (
+      !!this.themeName &&
+      this.hass?.themes?.default_dark_theme === this.themeName
+    );
+  }
+
   /**
    * Setzt das aktuelle Theme als globales Default (frontend.set_theme).
-   * HA bietet dafür keine eigene UI. Setzt nur das allgemeine Default
-   * (`frontend_default_theme`) — Themes mit eigenen modes.light/dark werden
-   * von HA passend angewandt.
+   * HA bietet dafür keine eigene UI. `mode === "dark"` setzt separat das
+   * Dark-Default (`frontend_default_dark_theme`), sonst das allgemeine Default.
    */
-  private async _setDefault() {
-    if (this._isDefault() || this._settingDefault || !this.themeName) return;
+  private async _setDefault(mode?: "dark") {
+    const dark = mode === "dark";
+    const already = dark ? this._isDarkDefault() : this._isDefault();
+    if (already || this._settingDefault || !this.themeName) return;
     this._settingDefault = true;
     this._defaultError = null;
     try {
+      const service_data: Record<string, string> = { name: this.themeName };
+      if (dark) service_data.mode = "dark";
       await this.hass.connection.sendMessagePromise({
         type: "call_service",
         domain: "frontend",
         service: "set_theme",
-        service_data: { name: this.themeName },
+        service_data,
       });
-      this._defaultJustSet = true;
+      if (dark) this._darkDefaultJustSet = true;
+      else this._defaultJustSet = true;
     } catch (err) {
       this._defaultError = err instanceof Error ? err.message : String(err);
     } finally {
@@ -1249,24 +1277,36 @@ export class TsEditorView extends LitElement {
     }
   }
 
-  private _renderDefaultBtn() {
+  private _renderDefaultBtn(mode?: "dark") {
     if (this._loading || this._error) return "";
-    const isDefault = this._isDefault();
+    const dark = mode === "dark";
+    const isSet = dark ? this._isDarkDefault() : this._isDefault();
+    const k = dark
+      ? {
+          set: "editor.set_dark_default",
+          is: "editor.is_dark_default",
+          setTip: "editor.set_dark_default_tooltip",
+          isTip: "editor.is_dark_default_tooltip",
+        }
+      : {
+          set: "editor.set_default",
+          is: "editor.is_default",
+          setTip: "editor.set_default_tooltip",
+          isTip: "editor.is_default_tooltip",
+        };
     return html`
       <button
-        class="default-btn ${isDefault ? "is-default" : ""}"
-        ?disabled=${isDefault || this._settingDefault}
-        @click=${this._setDefault}
-        title=${isDefault
-          ? t("editor.is_default_tooltip")
-          : t("editor.set_default_tooltip")}
+        class="default-btn ${isSet ? "is-default" : ""}"
+        ?disabled=${isSet || this._settingDefault}
+        @click=${() => this._setDefault(mode)}
+        title=${isSet ? t(k.isTip) : t(k.setTip)}
       >
-        ${isDefault ? "★" : "☆"}
+        ${dark ? "🌙" : isSet ? "★" : "☆"}
         ${this._settingDefault
           ? t("editor.setting_default")
-          : isDefault
-            ? t("editor.is_default")
-            : t("editor.set_default")}
+          : isSet
+            ? t(k.is)
+            : t(k.set)}
       </button>
     `;
   }
@@ -1293,6 +1333,7 @@ export class TsEditorView extends LitElement {
           <code>${this.file}</code>
         </div>
         ${this._renderDirtyBadge()} ${this._renderDefaultBtn()}
+        ${this._renderDefaultBtn("dark")}
         <button
           class="preview-toggle ${this._showPreview ? "active" : ""}"
           @click=${this._togglePreview}
@@ -1457,10 +1498,22 @@ export class TsEditorView extends LitElement {
       `;
     }
     if (s.state === "forked") {
+      // Nach dem Fork zeigt der Editor bereits den Fork (themeName = Fork) →
+      // _setDefault() setzt ihn. Hinweis nur, wenn er noch nicht Default ist.
       return html`
         <div class="status-banner success">
           ✓ ${t("editor.fork_success", undefined, { theme: s.theme })}
           &middot; <code>themes/${s.file}</code>
+          ${this._isDefault()
+            ? ""
+            : html` &middot;
+                <button
+                  class="banner-action"
+                  ?disabled=${this._settingDefault}
+                  @click=${() => this._setDefault()}
+                >
+                  ★ ${t("editor.set_default")}
+                </button>`}
         </div>
       `;
     }

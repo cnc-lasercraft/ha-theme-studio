@@ -159,11 +159,25 @@ Tatsächliche Implementierungs-Reihenfolge: 1 → 2 → 3 → 6 (vorgezogen) →
 |---|---|---|
 | **„☆ Als Default setzen"-Button** im Editor-Header: schickt `call_service frontend.set_theme { name: <themeName> }` via `connection.sendMessagePromise`. Setzt nur den allgemeinen Default (Themes mit modes.light/dark werden von HA passend angewandt). Wird nach Erfolg zu „★ Standard-Theme" (deaktiviert), Fehler als Banner. | ✓ erledigt (B7) | — |
 | **Default-Marker im Picker:** liest den aktuellen Default direkt aus `hass.themes.default_theme` (kein Backend nötig) und markiert das aktive Default-Theme mit blauem „★ Default"-Badge. | ✓ erledigt (B7) | — |
-| **Fork-Guard-Verzahnung:** Nach „Ableiten" optionaler Hinweis „Jetzt als Default aktivieren?". | 📋 offen (optional) | — |
+| **Fork-Guard-Verzahnung:** Nach „Ableiten" optionaler Hinweis „Jetzt als Default aktivieren?". | ✓ erledigt (B15) | — |
 
 **Hinweis:** Steht bewusst im Kontrast zum v1.1-Ausschluss „Auto-Umschalten des aktiven Themes". Hier geht es nicht um automatisches Umschalten, sondern um eine **explizite, vom User ausgelöste** Default-Setzung, die HA selbst per UI nicht anbietet.
 
-**Erledigt 2026-06-13** (B7). Dark-Default separat setzen + Post-Fork-Hinweis bleiben optional offen.
+**Erledigt 2026-06-13** (B7), Dark-Default + Post-Fork-Hinweis nachgezogen in B15 (v1.3.1).
+
+## v1.3.1 – Dark-Default + Post-Fork-Default + Cleanup (Baustein 15, ✓ erledigt)
+
+Optionale Restpunkte aus dem Default-Setter-Umfeld.
+
+| Feature | Status | Commit |
+|---|---|---|
+| **Dark-Default-Button** im Editor („🌙 Als Dark-Default") → `frontend.set_theme {mode: dark}` setzt `frontend_default_dark_theme` separat. „🌙 Dark-Standard" wenn gesetzt. | ✓ erledigt (B15) | — |
+| **Post-Fork-Hinweis:** Erfolgs-Banner nach „Ableiten" bietet „★ Als Default setzen" (nur wenn der Fork noch nicht Default ist). | ✓ erledigt (B15) | — |
+| **Test-Fork aufgeräumt:** `visionos Theme Studio` reversibel entfernt (Backup + Registry). | ✓ erledigt (B15) | — |
+
+**Nicht gemacht (bewusst):** `home-assistant/brands`-PR (Icon im HA-Core-UI) — für HACS-Aufnahme nicht nötig, lokale Brand-Assets reichen. Bleibt optional.
+
+**Erledigt 2026-06-15** (B15, manifest 1.3.1).
 
 ## v1.1 – HG-Bild File-Picker + var()-Guard (Baustein 8, ✓ erledigt)
 
