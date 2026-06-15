@@ -26,9 +26,11 @@ Globale HA-Wissensbasis: `/Volumes/Daten/ClaudeCode/ha_quirks.md` – konsultier
 
 Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – konsultieren bei Automation/Helper/Dashboard-Themen.
 
-## Aktueller Stand (Stand: 2026-06-13)
+## Aktueller Stand (Stand: 2026-06-15)
 
-**v1.1.4 live.** Tag `v1.1.4`. **HACS-Default-PR `hacs/default#8473` eingereicht** (alle Checks grün, Maintainer-Review pending). Submission-Playbook: [`docs/HACS_DEFAULT_SUBMISSION.md`](./docs/HACS_DEFAULT_SUBMISSION.md). ⚠️ **Prod-HA läuft noch auf Stand vor v1.1.1** (Packaging-Fixes funktional identisch — Host-Deploy v1.1.4 optional offen).
+**v1.3.1 live** auf Prod-HA. Tag `v1.3.1`. **HACS-Default-PR `hacs/default#8473` eingereicht** (alle Checks grün, Maintainer-Review pending). Submission-Playbook: [`docs/HACS_DEFAULT_SUBMISSION.md`](./docs/HACS_DEFAULT_SUBMISSION.md).
+
+**Seit v1.1 dazugekommen:** v1.2.0 Auto-Snapshot (Δ-Vergleich „was hat das Update geändert") + Audit-Politur (Custom-Modal statt confirm/prompt, Retry-Buttons, Backend-`variables`-Validierung); v1.3.0 i18n Sprach-Override im Header + Live-Switching (LocaleController); v1.3.1 Dark-Default-Button + Post-Fork-„Als Default?"-Hinweis. Details: ROADMAP.md (Bausteine B10–B15).
 
 **v1.0 Basis-Featureset:**
 - Custom-Panel "Theme Studio" in der Sidebar (`/theme-studio`)
@@ -56,7 +58,7 @@ Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – 
 
 **Packaging-Patches v1.1.1–v1.1.4** (für HACS-Default): Brand-Assets lokal in `custom_components/theme_studio/brand/`, Plugin-Metadaten `manifest.json`→**`plugin.json`** (HACS verlangt repoweit genau 1 `manifest.json`), `http` in dependencies, `CONFIG_SCHEMA`, manifest-Keys sortiert, `validate.yml`.
 
-**Offen:** HACS-PR #8473 verfolgen; Host-Deploy v1.1.4 (optional); Audit-Items (Schema-Validation, Backup-Race, Custom-Modal statt confirm/prompt, Retry-Buttons); i18n-Erweiterungen; optional Dark-Default separat + Post-Fork-„Als Default?"-Hinweis. Siehe ROADMAP.md.
+**Offen:** HACS-PR #8473 verfolgen (Maintainer-Review); weitere Sprachen FR/IT/ES (große Übersetzung, bei Bedarf/Native-Review — Infra steht); optional `home-assistant/brands`-PR (Icon im HA-Core-UI, für HACS nicht nötig). Audit-Items #2/#3 (Backup-Race, View-Switch-Race) bewusst wontfix. Siehe ROADMAP.md.
 
 ## Deployment auf den HA-Host
 
