@@ -80,18 +80,21 @@ Bei uns hießen drei Frontend-Plugin-Schemas ebenfalls `manifest.json` →
 
 ## 4. Brand-Assets (Icon) — Pflicht für Integrationen
 
-Zwei Wege:
-
-**A) Lokal im Repo (einfacher, kein externer PR):**
+**Lokal im Repo — der einzige relevante Weg (kein externer PR):**
 - [ ] `custom_components/<domain>/brand/icon.png` (256×256, transparent)
 - [ ] `custom_components/<domain>/brand/icon@2x.png` (512×512)
+- optional: `dark_icon.png`, `logo.png` / `@2x`-Varianten
 
 HACS akzeptiert diese als Fallback → brands-Check grün **ohne**
-`home-assistant/brands`-PR. (Fürs Icon im HA-**Core**-UI braucht es trotzdem
-irgendwann einen brands-PR — für die HACS-Aufnahme aber nicht.)
+`home-assistant/brands`-PR.
 
-**B) `home-assistant/brands`-PR:** Domain unter `custom_integrations/<domain>/`
-mit `icon.png` + `icon@2x.png` eintragen.
+> ✅ **Seit HA 2026.3 (Brands Proxy API)** werden Icons von Custom-Integrationen
+> **ausschließlich** über den lokalen `brand/`-Ordner geliefert (serviert via
+> `/api/brands/integration/<domain>/<image>`, lokal gecacht). **PRs an
+> `home-assistant/brands` für Custom-Components werden NICHT mehr akzeptiert**
+> (das PR-Template lehnt sie explizit ab, kein `custom_integrations/`-Pfad mehr).
+> Der `brand/`-Ordner deckt damit sowohl HACS-Validierung als auch HA-Core-UI ab —
+> ein brands-PR entfällt komplett.
 
 > ⚠️ Die Assets müssen **im Release** liegen (siehe Kernprinzip). Wer sie nach
 > dem letzten Tag committet, bekommt trotzdem: `<Validation brands> failed: ...
