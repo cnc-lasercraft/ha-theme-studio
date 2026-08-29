@@ -141,6 +141,17 @@ jobs:
       (PR-Template-Pflicht: „created a new release **after** the validation
       actions were run successfully").
 
+> ⚠️ **Falle bei einem frisch angelegten Repo:** Die `release.yml` aus dem
+> Herold-Muster triggert auf `paths: ['custom_components/*/manifest.json']` —
+> der **allererste** Push enthält die manifest.json und erzeugt das Release
+> also *zeitgleich* mit dem allerersten Validate-Lauf, nicht danach. Fix ohne
+> Versions-Bump: `gh release delete vX.Y.Z --yes --cleanup-tag`, warten bis
+> Validate grün ist, dann `gh release create` erneut. **Beleg ist
+> `published_at`, nicht `created_at`** — letzteres zeigt das Commit-Datum des
+> Tags und liegt auch nach dem Neuanlegen vor dem grünen Run
+> (`gh api repos/<owner>/<repo>/releases/tags/vX.Y.Z --jq .published_at`).
+> Beobachtet bei uniali, 2026-08-30.
+
 ## 7. Der PR an `hacs/default`
 
 > ⚠️ **Format-Falle.** Der `hacs-bot` **schließt PRs automatisch**, die nicht
@@ -152,6 +163,14 @@ jobs:
 - [ ] **Datei `integration`** (JSON-Array) editieren: `"<owner>/<repo>",` an der
       **case-insensitiv alphabetisch korrekten** Position einfügen (CI-Check
       `Sorted` schlägt sonst fehl).
+      > ⚠️ **Zeile textuell einfügen, die Datei NICHT mit `json.dumps()` neu
+      > schreiben.** Der Katalog enthält Einträge mit trailing spaces und
+      > abweichender Einrückung; ein Re-Dump normalisiert sie und bläst den Diff
+      > von 1 auf ~7 Zeilen auf — das provoziert Merge-Konflikte und lässt den
+      > Bot beim `ready_for_review` mehr als den eigenen Eintrag sehen. Sauber:
+      > Anker-Zeile suchen, `lines.insert(i+1, ...)`, danach mit `json.loads`
+      > gegenprüfen (genau ein Element mehr, `sorted(key=str.lower)` intakt) und
+      > `diff` muss **genau eine** Zeile zeigen.
 - [ ] **Body = das PR-Template des Repos**, alle Boxen `[x]`, Links-Sektion
       gefüllt, **inkl. des `<!-- tid:... -->`-Markers** (Bot prüft ihn). Das
       Template liegt unter `.github/PULL_REQUEST_TEMPLATE.md` in `hacs/default`
