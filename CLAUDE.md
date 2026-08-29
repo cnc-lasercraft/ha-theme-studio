@@ -26,9 +26,9 @@ Globale HA-Wissensbasis: `/Volumes/Daten/ClaudeCode/ha_quirks.md` – konsultier
 
 Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – konsultieren bei Automation/Helper/Dashboard-Themen.
 
-## Aktueller Stand (Stand: 2026-06-15)
+## Aktueller Stand (Stand: 2026-08-29)
 
-**v1.3.1 live** auf Prod-HA. Tag `v1.3.1`. **HACS-Default-PR `hacs/default#8473` eingereicht** (alle Checks grün, Maintainer-Review pending). Submission-Playbook: [`docs/HACS_DEFAULT_SUBMISSION.md`](./docs/HACS_DEFAULT_SUBMISSION.md).
+**v1.3.1 live** auf Prod-HA. Tag `v1.3.1`. **HACS-Default-PR `hacs/default#8473` liegt seit 2026-08-29 wieder in der Review-Queue** (ready, 12/12 Checks grün, wartet auf frenck). Vorgeschichte: frenck hat am 31.07. wegen eines Merge-Konflikts `changes_requested` gesetzt, woraufhin hacs-bot den PR automatisch zu **Draft** konvertierte — dort lag er 4 Wochen unsichtbar, auch nachdem der Konflikt am 26.08. behoben war. Am 29.08. Branch auf `upstream/master` gebracht und in einem Rutsch auf «Ready for review» gesetzt. Submission-Playbook: [`docs/HACS_DEFAULT_SUBMISSION.md`](./docs/HACS_DEFAULT_SUBMISSION.md) — **§8 «Draft-Rückfall» lesen, bevor man an dem PR etwas anfasst.**
 
 **Seit v1.1 dazugekommen:** v1.2.0 Auto-Snapshot (Δ-Vergleich „was hat das Update geändert") + Audit-Politur (Custom-Modal statt confirm/prompt, Retry-Buttons, Backend-`variables`-Validierung); v1.3.0 i18n Sprach-Override im Header + Live-Switching (LocaleController); v1.3.1 Dark-Default-Button + Post-Fork-„Als Default?"-Hinweis. Details: ROADMAP.md (Bausteine B10–B15).
 
@@ -58,7 +58,7 @@ Best-Practice-Skill (über MCP verfügbar): `home-assistant-best-practices` – 
 
 **Packaging-Patches v1.1.1–v1.1.4** (für HACS-Default): Brand-Assets lokal in `custom_components/theme_studio/brand/`, Plugin-Metadaten `manifest.json`→**`plugin.json`** (HACS verlangt repoweit genau 1 `manifest.json`), `http` in dependencies, `CONFIG_SCHEMA`, manifest-Keys sortiert, `validate.yml`.
 
-**Offen:** HACS-PR #8473 verfolgen (Maintainer-Review); weitere Sprachen FR/IT/ES (große Übersetzung, bei Bedarf/Native-Review — Infra steht); optional `home-assistant/brands`-PR (Icon im HA-Core-UI, für HACS nicht nötig). Audit-Items #2/#3 (Backup-Race, View-Switch-Race) bewusst wontfix. Siehe ROADMAP.md.
+**Offen:** HACS-PR #8473 verfolgen (Maintainer-Review; dabei `isDraft` mitprüfen — ein neues `changes_requested` parkt ihn sofort wieder als Draft aus der Queue); weitere Sprachen FR/IT/ES (große Übersetzung, bei Bedarf/Native-Review — Infra steht). Der `home-assistant/brands`-PR ist **obsolet** — seit HA 2026.3 (Brands Proxy API) liefert der lokale `custom_components/theme_studio/brand/`-Ordner das Icon auch im Core-UI, und brands akzeptiert keine Custom-Component-PRs mehr. Audit-Items #2/#3 (Backup-Race, View-Switch-Race) bewusst wontfix. Siehe ROADMAP.md.
 
 ## Deployment auf den HA-Host
 

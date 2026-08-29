@@ -184,6 +184,57 @@ Link to successful hassfest action (if integration): <https://github.com/<owner>
 
 ---
 
+## 8. Draft-Rückfall — der PR, der auf niemanden wartet
+
+> ⚠️ **Der teuerste Fehler nach dem Einreichen.** Bei jedem `changes_requested`
+> (auch vom Maintainer) konvertiert `hacs-bot` den PR **binnen Sekunden zu Draft**
+> — und holt ihn nach dem Fix **nicht** zurück. Die Review-Queue filtert
+> `draft:false`, ein Draft-PR ist dort **unsichtbar**. Bei Theme Studio #8473 lag
+> er so **4 Wochen** herum, obwohl der Konflikt längst behoben und CI 12/12 grün war.
+
+**Woran man es merkt:** `gh pr view <nr> --repo hacs/default --json isDraft` →
+`true`, obwohl alles grün ist. Queue-Kontrolle:
+<https://github.com/hacs/default/pulls?q=is:pr+is:open+draft:false+sort:created-asc>
+
+**Warum «Ready» allein nicht genügt.** Der Bot hängt dieselbe Eingangsprüfung wie
+bei einem neuen PR auch an das `ready_for_review`-Event
+(`hacs/bot` → `src/plugins/pull_request.opened.default.ts`). Sie vergleicht die
+Katalog-Datei `integration` auf `master` **elementweise** gegen die auf dem
+PR-Head. Ist dort mehr als der eigene Eintrag anders, gibt es
+`REQUEST_CHANGES` («Your branch seems out of date.») + sofort wieder Draft.
+Da `hacs/default` im Minutentakt merged, reicht **ein einziger fremder Eintrag
+zwischen Sync und Ready**. (Ein Push auf den Draft-PR löst dagegen gar nichts aus
+— das Plugin steigt bei `draft && action !== 'opened'` früh aus.)
+
+**Rezept — Sync und Ready ohne Denkpause hintereinander:**
+
+```bash
+# 1. Fork-master fast-forwarden + in den PR-Branch mergen (rein per API, kein Clone nötig)
+gh api -X POST repos/<user>/default/merge-upstream -f branch=master
+gh api -X POST repos/<user>/default/merges -f base=<branch> -f head=master   -f commit_message="Merge branch 'master' into <branch>"
+
+# 2. Unmittelbar davor verifizieren — BEIDES muss stimmen:
+gh api "repos/hacs/default/compare/master...<user>:default:<branch>" --jq .behind_by   # muss 0 sein
+gh api repos/hacs/default/pulls/<nr> --jq .head.sha                                    # muss == Branch-SHA sein
+#    (der PR-Head hinkt dem Push ein paar Sekunden nach — ein Ready in diesem
+#     Fenster prüft noch den alten Head und wirft zurück)
+
+# 3. Sofort readyen, dann nach ~10 s kontrollieren, dass es HÄLT:
+gh pr ready <nr> --repo hacs/default        # REST kann das nicht, intern GraphQL
+gh api repos/hacs/default/pulls/<nr> --jq .draft   # muss false BLEIBEN
+```
+
+Bei Rückwurf: erneut syncen und sofort readyen (Retry-Schleife, 2–3 Versuche).
+
+**Danach Ruhe halten.** Der Branch ist Minuten später wieder `behind` — das ist
+**egal**, solange der PR ready bleibt: nur das Ready-Event triggert die Prüfung.
+Nicht nachsyncen. Die Bot-`REQUEST_CHANGES`-Reviews aus Fehlversuchen bleiben als
+`reviewDecision: CHANGES_REQUESTED` stehen und verfallen nicht von selbst — der
+Maintainer löst sie mit seinem Review-Pass auf. **Nicht kommentieren**, der Bot
+rät ausdrücklich davon ab.
+
+---
+
 ## Ablauf in einem Rutsch (Reihenfolge ist entscheidend)
 
 1. Repo-Basics (0) + manifest (1) + CONFIG_SCHEMA (2) + Single-manifest (3) +
@@ -193,6 +244,8 @@ Link to successful hassfest action (if integration): <https://github.com/<owner>
 4. PR im korrekten Format öffnen (7).
 5. Bleibt der PR offen + grün → fertig eingereicht. Wird er sofort geschlossen
    → Format/Inhalt gegen Template prüfen, **neuen** PR öffnen (nicht reopen).
+6. **Danach regelmässig `isDraft` prüfen** (8). Ein `changes_requested` parkt den
+   PR als Draft ausserhalb der Review-Queue — das fällt sonst wochenlang nicht auf.
 
 ## Häufige Fehlersignaturen → Ursache
 
@@ -205,3 +258,5 @@ Link to successful hassfest action (if integration): <https://github.com/<owner>
 | `[CONFIG_SCHEMA] must define ...` | `async_setup` ohne Schema | `cv.empty_config_schema(DOMAIN)` |
 | PR sofort `closed`, kein Kommentar | falscher Titel/Body/`tid` | Template exakt befolgen, neuer PR |
 | CI-Check `Sorted` fail | Zeile an falscher Position | case-insensitiv alphabetisch einsortieren |
+| PR `isDraft: true`, alles grün, nichts passiert | `changes_requested` → Bot-Draft, nie zurückgeholt | Branch syncen, **sofort** danach `gh pr ready` (§8) |
+| Ready gesetzt → Sekunden später wieder Draft | Branch `behind` / fremder Katalog-Eintrag dazwischen | Sync + Ready in einem Rutsch, `behind_by == 0` und PR-Head-SHA vorher prüfen (§8) |
